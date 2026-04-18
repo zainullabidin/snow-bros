@@ -8,13 +8,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Platform-specific SFML path
 # ─────────────────────────────────────────
 if(WIN32)
-    # Windows — update this path to wherever YOU installed SFML
+    # Windows — update this to wherever you installed SFML
     set(SFML_DIR "C:/SFML/lib/cmake/SFML")
 elseif(APPLE)
-    # Mac — Homebrew default
+    # Mac — Homebrew default (M1/M2/M3)
     set(SFML_DIR "/opt/homebrew/lib/cmake/SFML")
 endif()
-# Linux (GitHub Actions) — no path needed, apt installs it globally
+# Linux (GitHub Actions) — no path needed
 
 # ─────────────────────────────────────────
 # Find SFML
@@ -27,11 +27,21 @@ find_package(SFML 2.5 COMPONENTS
 REQUIRED)
 
 # ─────────────────────────────────────────
-# Collect all source files
+# Collect all source files recursively
+# Works no matter how deep your folders go
 # ─────────────────────────────────────────
 file(GLOB_RECURSE SOURCES
     "src/*.cpp"
 )
+
+# ─────────────────────────────────────────
+# Only build if there are source files
+# ─────────────────────────────────────────
+if(NOT SOURCES)
+    message(WARNING "No source files found in src/ — adding dummy main.cpp")
+    file(WRITE ${CMAKE_BINARY_DIR}/dummy_main.cpp "int main(){return 0;}")
+    list(APPEND SOURCES ${CMAKE_BINARY_DIR}/dummy_main.cpp)
+endif()
 
 # ─────────────────────────────────────────
 # Create executable
@@ -40,8 +50,9 @@ add_executable(SnowBros ${SOURCES})
 
 # ─────────────────────────────────────────
 # Include directories
+# Flexible — add or remove folders freely
 # ─────────────────────────────────────────
-target_include_directories(SnowBros PRIVATE
+set(INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/include/core
     ${CMAKE_SOURCE_DIR}/include/entities
@@ -57,6 +68,16 @@ target_include_directories(SnowBros PRIVATE
     ${CMAKE_SOURCE_DIR}/include/ui
 )
 
+# Filter out only directories that actually exist
+set(VALID_INCLUDE_DIRS "")
+foreach(DIR ${INCLUDE_DIRS})
+    if(EXISTS ${DIR})
+        list(APPEND VALID_INCLUDE_DIRS ${DIR})
+    endif()
+endforeach()
+
+target_include_directories(SnowBros PRIVATE ${VALID_INCLUDE_DIRS})
+
 # ─────────────────────────────────────────
 # Link SFML
 # ─────────────────────────────────────────
@@ -68,28 +89,32 @@ target_link_libraries(SnowBros
 )
 
 # ─────────────────────────────────────────
-# Copy assets to build directory
+# Copy assets/config/data only if they exist
+# Safe — won't fail if folders are missing
 # ─────────────────────────────────────────
-add_custom_command(TARGET SnowBros POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/assets
-    $<TARGET_FILE_DIR:SnowBros>/assets
-)
+if(EXISTS ${CMAKE_SOURCE_DIR}/assets)
+    add_custom_command(TARGET SnowBros POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/assets
+        $<TARGET_FILE_DIR:SnowBros>/assets
+        COMMENT "Copying assets to build directory"
+    )
+endif()
 
-# ─────────────────────────────────────────
-# Copy config to build directory
-# ─────────────────────────────────────────
-add_custom_command(TARGET SnowBros POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/config
-    $<TARGET_FILE_DIR:SnowBros>/config
-)
+if(EXISTS ${CMAKE_SOURCE_DIR}/config)
+    add_custom_command(TARGET SnowBros POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/config
+        $<TARGET_FILE_DIR:SnowBros>/config
+        COMMENT "Copying config to build directory"
+    )
+endif()
 
-# ─────────────────────────────────────────
-# Copy data to build directory
-# ─────────────────────────────────────────
-add_custom_command(TARGET SnowBros POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/data
-    $<TARGET_FILE_DIR:SnowBros>/data
-)
+if(EXISTS ${CMAKE_SOURCE_DIR}/data)
+    add_custom_command(TARGET SnowBros POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/data
+        $<TARGET_FILE_DIR:SnowBros>/data
+        COMMENT "Copying data to build directory"
+    )
+endif()
