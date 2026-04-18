@@ -15,11 +15,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2 - Install SFML, CMake, and build tools
+      # Step 2 - Cache APT packages so it never hangs again
+      - name: Cache APT packages
+        uses: actions/cache@v3
+        with:
+          path: /var/cache/apt
+          key: apt-${{ runner.os }}-sfml
+
+      # Step 3 - Install SFML, CMake, and build tools
       - name: Install Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
+          sudo apt-get update -y
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
             libsfml-dev \
             cmake \
             build-essential \
@@ -28,14 +35,14 @@ jobs:
             libvorbis-dev \
             libflac-dev
 
-      # Step 3 - Configure the CMake build
+      # Step 4 - Configure the CMake build
       - name: Configure CMake
         run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
 
-      # Step 4 - Compile the project
+      # Step 5 - Compile the project
       - name: Build Project
         run: cmake --build build --config Release -- -j$(nproc)
 
-      # Step 5 - Confirm success
+      # Step 6 - Confirm success
       - name: Report
         run: echo "✅ Snow Bros compiled successfully!"
