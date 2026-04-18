@@ -1,0 +1,41 @@
+name: Snow Bros Build Check
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1 - Pull the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2 - Install SFML, CMake, and build tools
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libsfml-dev \
+            cmake \
+            build-essential \
+            libfreetype6-dev \
+            libopenal-dev \
+            libvorbis-dev \
+            libflac-dev
+
+      # Step 3 - Configure the CMake build
+      - name: Configure CMake
+        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      # Step 4 - Compile the project
+      - name: Build Project
+        run: cmake --build build --config Release -- -j$(nproc)
+
+      # Step 5 - Confirm success
+      - name: Report
+        run: echo "✅ Snow Bros compiled successfully!"
