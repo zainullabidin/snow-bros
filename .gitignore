@@ -1,0 +1,61 @@
+#build direct..
+build/
+out/
+bin/
+lib/
+
+#cmake file
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+#compiled ones
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.ilk
+*.pdb
+*.lib
+*.a
+*.so
+*.dll
+
+#any other files 
+
+.vscode/
+.idea/
+*.user
+*.suo
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+.vs/
+
+#zz mac files if any
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+#m os files if any
+Thumbs.db
+desktop.ini
+
+#db fikes 
+*.dat
+*.db
+*.sav
+saves/
+data/users/
+data/progress/
+
+#logs if any
+*.log
+logs/
