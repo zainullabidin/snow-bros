@@ -1,0 +1,96 @@
+1. PressStart2P-Regular.ttf
+
+
+   In (in-game overlay)
+   USED FOR:
+            - Score display         (top-left)
+            - Lives counter         (top-left)
+            - Gem count             (top-right)
+            - Level indicator       (top-center)
+            - Chain kill popup      (center screen)
+            - Boss health bar label (top-center)
+
+   SIZE   : 10-14px (small, crisp arcade feel)
+
+   As in Classic arcade pixel font — matches
+            the 1990 Snow Bros retro aesthetic
+            perfectly. Every arcade game uses
+            this style for score/stats.
+
+
+2. Silkscreen-Bold.ttf
+
+   In Game Over Screen & Level Complete Screen
+   USED FOR:
+            - "GAME OVER" heading
+            - "LEVEL COMPLETE" heading
+            - "BOSS DEFEATED" heading
+            - Final score display
+            - "NEW HIGH SCORE" alert
+   SIZE   : 28-48px (large, bold, impactful)
+   As for  Bold and punchy — perfect for
+            important game moment screens.
+            Grabs attention immediately.
+
+3. Silkscreen-Regular.ttf
+
+   For Pause Menu & Shop Screen
+
+   USED FOR:
+            - Menu item labels (Resume, Save, etc.)
+            - Shop item names
+            - Gem cost labels
+            - Button text
+            - Power-up names
+            - Active power-up status (bottom HUD)
+   SIZE   : 12-18px (readable, clean)
+   WHY    : Lighter weight version of Silkscreen
+            works well for lists and menus where
+            bold would feel too heavy.
+
+4. VT323-Regular.ttf
+   WHERE  : Dialogue, Notifications & Debug
+   USED FOR:
+            - In-game notifications ("Enemy Encased!")
+            - Power-up pickup messages
+            - Bonus level announcement
+            - Star event prompt
+            - F1 debug mode labels (hitbox info)
+            - Loading/transition messages
+   SIZE   : 18-24px (larger size needed for VT323
+            as it runs small)
+   WHY    : Retro terminal feel adds character
+            to quick pop-up messages without
+            being too formal.
+
+5. Orbitron-VariableFont_wght.ttf
+   WHERE  : Main Menu & Character Select Screen
+   USED FOR:
+            - "SNOW BROS" main title (large)
+            - Main menu button labels
+            - Character names on select screen
+            - Character stat labels
+            - Settings screen headings
+            - Leaderboard screen title
+   SIZE   : 32-64px for title, 16-20px for buttons
+   WHY    : Modern, futuristic, premium feel.
+            Makes the main menu look polished
+            and professional. Good contrast
+            against the arcade gameplay fonts.
+ 
+
+6. Cinzel-VariableFont_wght.ttf
+   WHERE  : Boss Encounter Screens & Special Events
+   USED FOR:
+            - Boss name reveal ("MOGERA AWAKENS")
+            - Boss defeated reward screen
+            - Currency reward display
+            - Star event title
+            - End game victory screen
+            - Any dramatic/cinematic moment
+   SIZE   : 28-48px (large, dramatic)
+   WHY    : Luxury/elegant serif font creates
+            a dramatic contrast when a boss
+            appears. Feels like an epic moment.
+            Very different from the arcade fonts
+            used everywhere else.
