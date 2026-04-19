@@ -10,9 +10,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(WIN32)
     # Windows — update this to wherever you installed SFML
     set(SFML_DIR "C:/SFML/lib/cmake/SFML")
+
 elseif(APPLE)
-    # Mac — Homebrew default (M1/M2/M3)
-    set(SFML_DIR "/opt/homebrew/lib/cmake/SFML")
+    set(SFML_DIR "/usr/local/opt/sfml@2/lib/cmake/SFML")
 endif()
 # Linux (GitHub Actions) — no path needed
 
