@@ -59,3 +59,5 @@ data/progress/
 #logs if any
 *.log
 logs/
+
+build/
