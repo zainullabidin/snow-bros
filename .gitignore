@@ -60,4 +60,7 @@ data/progress/
 *.log
 logs/
 
+#vs code config
+.vscode/c_cpp_properties.json
+
 build/
