@@ -36,12 +36,7 @@ protected:
 
 public:
 
-	Enemy() :
-		state(EnemyState::MOVING),  // default state -> always moving (need to confirm)
-		health(0), maxHealth(0), minScore(0), maxScore(0),
-		hitsToEncase(0), snowAccumulation(0),
-		gemDrop(0), x(0), y(0), Vx(0), Vy(0), hitboxWidth(0), hitboxHeight(0) {
-	}
+	Enemy();
 	
 	virtual ~Enemy();
 
