@@ -1,0 +1,269 @@
+================================================================
+SNOW BROS — CORE FOLDER GUIDE
+CS1004 OOP | FAST-NUCES Islamabad | Spring 2026
+================================================================
+OWNER: Student A (Zain)
+FOLDER: include/core/ and src/core/
+================================================================
+
+This folder is the heart of the entire game.
+Everything else depends on what lives here.
+Nothing in this folder depends on anything outside it
+except SFML itself.
+
+Write order: GameState.h → Game.h → GameLoop.h → InputManager.h → CollisionDetector.h
+
+----------------------------------------------------------------
+FILE 1: GameState.h
+----------------------------------------------------------------
+OWNER        : Student A
+DEPENDS ON   : Nothing
+NEEDED BY    : Game.h, GameLoop.h, all Screen files
+
+WHAT IT IS:
+Just an enum. No class, no methods, no logic.
+It defines all the possible states the game can be in
+at any given moment.
+
+WHAT IT LOOKS LIKE:
+    enum class GameState {
+        MAIN_MENU,
+        CHARACTER_SELECT,
+        PLAYING,
+        PAUSED,
+        GAME_OVER,
+        LEVEL_COMPLETE,
+        BOSS_DEFEATED
+    };
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Every other class can now ask "what state is the game in?"
+and get a clear answer. The Game class reads this every frame
+to decide what to update and what to draw.
+
+SIMPLE EXPLANATION:
+Think of it like a TV remote. At any moment the TV is on
+one channel. GameState tells the game which channel it is on.
+
+RULES:
+- Never add logic inside this file. It is data only.
+- Never hardcode state names as strings anywhere.
+  Always use this enum.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 2: Game.h
+----------------------------------------------------------------
+OWNER        : Student A
+DEPENDS ON   : GameState.h, SFML
+NEEDED BY    : main.cpp
+
+WHAT IT IS:
+The main class of the entire program. It owns everything.
+When main.cpp runs it creates one Game object and calls run().
+Everything in the game starts from here.
+
+WHAT IT HOLDS:
+- sf::RenderWindow  — the game window
+- GameState         — current state
+- LevelManager      — manages levels
+- Player array      — up to 2 players
+- Current Screen    — whichever screen is active
+- sf::Clock         — for delta time calculation
+
+KEY METHODS:
+- run()          — starts the game loop, never returns until game closes
+- update(dt)     — updates everything based on current state
+- draw()         — draws everything based on current state
+- handleEvents() — reads window events every frame
+- changeState()  — switches the game to a new state
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+A working entry point. You call game.run() and the game
+starts, runs, and closes properly without crashing.
+
+SIMPLE EXPLANATION:
+Think of Game like the director of a movie. It does not
+act itself but it tells everyone else what to do and when.
+
+HIERARCHY:
+    main.cpp
+        └── Game
+                ├── LevelManager
+                ├── Player (x2)
+                ├── Screen (current active screen)
+                └── GameState (enum)
+
+RULES:
+- Only one Game object ever exists in the entire program.
+- Game never draws sprites directly.
+  It delegates drawing to the active Screen and entities.
+- Game never does collision detection directly.
+  It calls CollisionDetector.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 3: GameLoop.h
+----------------------------------------------------------------
+OWNER        : Student A
+DEPENDS ON   : Game.h, SFML (sf::Clock)
+NEEDED BY    : Game.cpp
+
+WHAT IT IS:
+Controls the update and draw cycle every frame.
+Calculates delta time so movement is smooth on all machines.
+Enforces the 30 FPS minimum the spec requires.
+
+WHAT IT DOES:
+Every single frame it does exactly this:
+    1. Calculate how much time passed since last frame (delta time)
+    2. Call game.handleEvents()
+    3. Call game.update(deltaTime)
+    4. Call game.draw()
+    5. Repeat
+
+WHY DELTA TIME MATTERS:
+Without delta time if your computer runs at 60 FPS
+your player moves twice as fast as on a 30 FPS machine.
+Delta time makes speed frame-rate independent.
+
+    position += speed * deltaTime
+
+This way speed is always the same regardless of FPS.
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+A stable game loop that runs smoothly on both your Mac
+and Minahil's Windows machine at the same game speed.
+
+SIMPLE EXPLANATION:
+Think of GameLoop like a metronome. It keeps everything
+ticking at the right pace no matter what machine you are on.
+
+RULES:
+- Always multiply movement values by deltaTime.
+  If you forget this your game will run at different speeds
+  on different machines.
+- Cap delta time at 0.05 seconds maximum.
+  If the window is dragged or the machine lags, delta time
+  can spike to huge values and send entities flying off screen.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 4: InputManager.h
+----------------------------------------------------------------
+OWNER        : Student A
+DEPENDS ON   : SFML (sf::Keyboard)
+NEEDED BY    : Player.cpp, GameScreen.cpp
+
+WHAT IT IS:
+Reads keyboard input and maps it to game actions.
+Instead of writing sf::Keyboard checks everywhere,
+everything goes through InputManager.
+
+WHAT IT PROVIDES:
+    isMovingLeft(playerId)
+    isMovingRight(playerId)
+    isJumping(playerId)
+    isThrowing(playerId)
+    isPausing()
+    isDebugToggle()    ← F1 key
+
+WHY THIS EXISTS:
+The spec requires remappable key bindings.
+If you write sf::Keyboard::A checks directly in Player.cpp
+you cannot remap keys without changing code everywhere.
+InputManager reads key bindings from config/keybindings.json
+so keys can be changed without touching any game code.
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Any class that needs input just asks InputManager.
+Changing a key binding only requires changing one place.
+Player 1 and Player 2 automatically use different keys.
+
+SIMPLE EXPLANATION:
+Think of InputManager like a translator. The keyboard speaks
+in raw key codes. InputManager translates that into game
+actions that make sense like "player 1 is jumping."
+
+PLAYER KEY DEFAULTS:
+    Player 1: A/D move, W jump, Space throw, Escape pause
+    Player 2: Numpad4/6 move, Numpad8 jump, Numpad0 throw
+
+RULES:
+- Never write sf::Keyboard checks outside of InputManager.
+- Never hardcode key values. Always read from config.
+- F1 debug toggle is global. It does not belong to any player.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 5: CollisionDetector.h
+----------------------------------------------------------------
+OWNER        : Student A
+DEPENDS ON   : Entity.h, Player.h, Enemy.h, Snowball.h, Platform.h
+NEEDED BY    : Game.cpp, Player.cpp, LevelManager.cpp
+
+WHAT IT IS:
+A class with only static methods. No object needed.
+Every single collision check in the entire game goes
+through this class and nowhere else.
+
+WHAT IT PROVIDES:
+    checkAABB(a, b)              — basic overlap check
+    playerHitsEnemy(p, e)        — player touches live enemy
+    snowballHitsEnemy(s, e)      — snowball touches enemy
+    projectileHitsPlayer(pr, p)  — knife or rocket hits player
+    entityOnPlatform(e, pl)      — entity standing on platform
+    rollingSnowballHitsEnemy(s,e)— rolling snowball touches enemy
+    isOnGround(p, platforms, n)  — player is on floor or platform
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Any class can check any collision by calling one method.
+All collision bugs are fixed in one place.
+Student B never needs to write collision code.
+
+SIMPLE EXPLANATION:
+Think of CollisionDetector like a referee in a football game.
+When two things touch it is the referee that decides
+what happened and what the result is.
+
+HIERARCHY POSITION:
+    CollisionDetector is used by:
+        Game.cpp
+        Player.cpp
+        LevelManager.cpp
+    
+    CollisionDetector uses:
+        Entity hitboxes
+        Platform positions
+
+RULES:
+- All methods are static. Never create a CollisionDetector object.
+- No collision logic anywhere else in the codebase.
+  If Student B needs a collision check they call this class.
+- This file depends on Enemy.h and Player.h so write it
+  after those headers exist as shells.
+
+================================================================
+
+WRITE ORDER SUMMARY FOR STUDENT A:
+    1. GameState.h    — no dependencies, just an enum
+    2. Game.h         — shell only, fill in later
+    3. GameLoop.h     — depends on Game.h
+    4. InputManager.h — depends only on SFML
+    5. CollisionDetector.h — write last, needs entity headers
+
+WHAT THIS FOLDER DELIVERS WHEN COMPLETE:
+    - A window that opens and closes cleanly
+    - A stable game loop with delta time
+    - Input reading for both players
+    - All collision detection in one place
+    - A state machine controlling the entire game flow
+
+================================================================
+Last updated: April 20, 2026
+Place this file at: include/core/GUIDE.txt
+================================================================

@@ -1,0 +1,260 @@
+================================================================
+SNOW BROS — LEVELS FOLDER GUIDE
+CS1004 OOP | FAST-NUCES Islamabad | Spring 2026
+================================================================
+OWNER: Student A (Zain)
+FOLDER: include/levels/ and src/levels/
+================================================================
+
+This folder controls everything about how levels
+are structured and loaded. One of the most important
+rules in the entire project lives here:
+
+    NO HARDCODED LEVEL COUNTS ANYWHERE.
+
+The spec explicitly requires this. If you write the
+number 10 anywhere in your engine code to mean
+"there are 10 levels" that is a violation.
+TOTAL_LEVELS is the only allowed source of truth.
+
+Write order: LevelConfig.h → Platform.h → LevelManager.h
+
+----------------------------------------------------------------
+FILE 1: LevelConfig.h
+----------------------------------------------------------------
+OWNER        : Student A
+DEPENDS ON   : Nothing (pure data, no SFML needed)
+NEEDED BY    : LevelManager.h, Game.h, GameUI.h
+
+WHAT IT IS:
+A data file. No class, no methods, no logic.
+Just a struct and a const array that holds all
+level information in one place.
+
+WHAT IT LOOKS LIKE:
+
+    struct LevelConfig {
+        int         id;
+        const char* background;   // matches assets/backgrounds/ name
+        int         enemyCount;
+        bool        isBoss;
+        bool        canBeBonus;
+    };
+
+    const LevelConfig LEVELS[] = {
+        { 1,  "level1",       3, false, true  },
+        { 2,  "level2",       4, false, true  },
+        { 3,  "level3",       5, false, true  },
+        { 4,  "level4",       6, false, true  },
+        { 5,  "level5_boss",  0, true,  false },
+        { 6,  "level6",       5, false, true  },
+        { 7,  "level7",       6, false, true  },
+        { 8,  "level8",       7, false, true  },
+        { 9,  "level9",       8, false, true  },
+        { 10, "level10_boss", 0, true,  false },
+    };
+
+    const int TOTAL_LEVELS =
+        sizeof(LEVELS) / sizeof(LEVELS[0]);
+
+WHY sizeof INSTEAD OF HARDCODING 10:
+    sizeof(LEVELS) / sizeof(LEVELS[0])
+    
+    This calculates the number of elements in the array
+    automatically. If you add a level you just add one
+    line to the array. TOTAL_LEVELS updates itself.
+    You never touch the engine code.
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Any part of the game that needs to know about levels
+reads from LEVELS[] and TOTAL_LEVELS. Adding level 11
+requires only adding one line here. Zero engine changes.
+
+SIMPLE EXPLANATION:
+LevelConfig.h is like a spreadsheet row for each level.
+The game engine reads the spreadsheet. You never
+hardcode level data inside the engine.
+
+WHAT EACH FIELD MEANS:
+    id          — level number (1 to 10)
+    background  — folder name in assets/backgrounds/
+    enemyCount  — how many enemies spawn (0 on boss levels)
+    isBoss      — true only for levels 5 and 10
+    canBeBonus  — can this level be a bonus level?
+                  Boss levels cannot be bonus levels.
+
+RULES:
+- This file contains ONLY data. No functions, no class.
+- TOTAL_LEVELS must use sizeof. Never write = 10.
+- Enemy types per level are handled by LevelManager
+  reading from EnemyFactory. Not stored here.
+  This struct only stores COUNT not types.
+- Student B reads TOTAL_LEVELS to build the level
+  indicator in GameUI. Never pass the number 10 to B.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 2: Platform.h
+----------------------------------------------------------------
+OWNER        : Student A
+DEPENDS ON   : SFML (sf::FloatRect, sf::RenderWindow)
+NEEDED BY    : LevelManager.h, CollisionDetector.h, Player.cpp
+
+WHAT IT IS:
+Represents one platform on screen. Every level has
+multiple platforms at different heights. Players and
+enemies land on them, walk across them, and fall off edges.
+
+WHAT IT HOLDS:
+    float x, y       — top-left position of platform
+    float width      — how wide the platform is
+    float height     — how thick the platform is
+    sf::Color color  — visual color (or sprite if you use one)
+
+KEY METHODS:
+    draw(window)             — draws the platform rectangle
+    getRect() : FloatRect    — returns collision rectangle
+    contains(x) : bool       — is this x position above platform?
+
+HOW COLLISION WORKS WITH PLATFORMS:
+CollisionDetector.entityOnPlatform() checks if an
+entity's bottom edge is touching the platform's top edge.
+
+    entity bottom = entity.y + entity.height
+    platform top  = platform.y
+
+    If entity bottom ≈ platform top AND entity is above
+    platform horizontally → entity is standing on platform.
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Entities can land on platforms, walk across them,
+and fall off edges. The level feels like a real
+platform game rather than a flat floor.
+
+SIMPLE EXPLANATION:
+Platform is like a shelf. Characters walk on top of
+it and fall off the edges. That is all it needs to do.
+
+PLATFORM LAYOUT PER LEVEL:
+Each level has a different arrangement of platforms.
+LevelManager reads platform positions from the
+level configuration and creates Platform objects.
+You design platform layouts as arrays of positions.
+
+RULES:
+- Platforms are static. No moving platforms (unless
+  you want to do it as a bonus feature).
+- Always leave room for the player to reach all areas.
+  Never create a layout where part of the screen
+  is completely inaccessible.
+- Platform hitboxes must be thin (just the top surface).
+  Player should land ON TOP not get stuck inside.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 3: LevelManager.h
+----------------------------------------------------------------
+OWNER        : Student A
+DEPENDS ON   : LevelConfig.h, Platform.h, Enemy.h,
+               EnemyFactory.h, EventBus.h, SFML
+NEEDED BY    : Game.h, CollisionDetector.h, GameUI.h,
+               all Screen files
+
+WHAT IT IS:
+The director of each level. Reads LevelConfig data,
+creates enemies and platforms, tracks whether the
+level is cleared, manages bonus levels, and
+tells the game when to advance.
+
+WHAT IT HOLDS:
+    int currentLevel          — which level is active (1-10)
+    int bonusLevels[2]        — two randomly chosen bonus levels
+    Enemy* enemies[]          — all enemies in current level
+    Platform platforms[]      — all platforms in current level
+    int enemyCount            — how many enemies remain alive
+    sf::Texture background    — current level background image
+
+KEY METHODS:
+    loadLevel(n)              — loads level n from LevelConfig
+    update(dt)                — updates all enemies
+    draw(window)              — draws background, platforms, enemies
+    isCleared() : bool        — returns true when all enemies gone
+    nextLevel()               — advances to next level
+    isBossLevel() : bool      — returns true on levels 5 and 10
+    isBonusLevel() : bool     — returns true on the 2 bonus levels
+    getCurrentLevel() : int   — returns current level number
+    getTotalLevels() : int    — returns TOTAL_LEVELS
+
+HOW BONUS LEVELS ARE CHOSEN:
+At game start LevelManager picks 2 random non-boss
+levels and stores them in bonusLevels[2].
+
+    Example result: bonusLevels = {3, 7}
+
+These two levels will trigger the gem rain event
+when cleared. The selection is random each playthrough.
+
+HOW ENEMIES ARE SPAWNED:
+LevelManager does NOT create enemies with new Botom()
+or new Tornado() directly. It uses EnemyFactory:
+
+    for each enemy in level config:
+        Enemy* e = EnemyFactory::create(enemyType);
+        enemies[i] = e;
+
+This is why EnemyFactory exists. LevelManager never
+knows the concrete enemy types directly.
+
+HOW LEVEL CLEAR WORKS:
+Every frame LevelManager counts active enemies.
+When count reaches 0 it sets a cleared flag.
+Game.cpp reads isCleared() and triggers:
+    - Bonus gem rain if isBonusLevel() is true
+    - Level complete screen
+    - Calls nextLevel()
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+All 10 levels load correctly with their enemies,
+platforms, and backgrounds. Bonus levels trigger
+gem rain. Boss levels show health bars. Level
+progression works from 1 through 10.
+
+SIMPLE EXPLANATION:
+LevelManager is like a stage manager in a theater.
+It sets up the stage (platforms, background) and
+brings in the actors (enemies) for each scene (level).
+When all actors are gone the scene is over.
+
+RULES:
+- Never use the number 10 inside LevelManager.
+  Always use TOTAL_LEVELS from LevelConfig.h.
+- Never create enemy objects directly.
+  Always use EnemyFactory::create().
+- Always check isCleared() in Game.cpp, not inside
+  LevelManager itself. LevelManager reports status,
+  Game decides what to do with it.
+- Auto-save progress when nextLevel() is called.
+  Call ProgressRepository to save current state.
+
+================================================================
+
+WRITE ORDER SUMMARY FOR STUDENT A:
+    1. LevelConfig.h   — pure data, no dependencies
+    2. Platform.h      — only needs SFML
+    3. LevelManager.h  — needs everything above plus Enemy and Factory
+
+WHAT THIS FOLDER DELIVERS WHEN COMPLETE:
+    - All 10 levels load from config with no hardcoding
+    - Each level has correct enemies and platforms
+    - Bonus levels randomly selected each playthrough
+    - Boss levels identified and handled correctly
+    - Level clear detection working
+    - Auto-save on level complete
+    - Adding level 11 requires one line change only
+
+================================================================
+Last updated: April 20, 2026
+Place this file at: include/levels/GUIDE.txt
+================================================================

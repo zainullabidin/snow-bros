@@ -1,0 +1,315 @@
+================================================================
+SNOW BROS — SYSTEMS FOLDER GUIDE
+CS1004 OOP | FAST-NUCES Islamabad | Spring 2026
+================================================================
+OWNER: Student B (Minahil) — owns this entire folder
+FOLDER: include/systems/ and src/systems/
+================================================================
+
+CRITICAL DIRECTION RULE — READ THIS FIRST:
+
+    Student A's engine FIRES events.
+    Student B's systems LISTEN to events.
+    This direction must NEVER be reversed.
+
+    A → fires → EventBus → delivers → B's systems
+
+If Student B's systems ever fire events that Student A
+listens to — circular dependency, architecture collapses.
+
+Write order: EventBus.h → GemSystem.h → ScoreSystem.h
+             → ShopSystem.h → LeaderboardSystem.h
+
+----------------------------------------------------------------
+FILE 1: EventBus.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Nothing (no SFML needed here)
+NEEDED BY    : Every system file, Game.cpp, Player.cpp,
+               all enemy files, LevelManager.h
+
+WHAT IT IS:
+A singleton that connects Student A's engine to
+Student B's systems without either side knowing
+about the other directly.
+
+Think of it like a post office. Student A drops
+a letter (event) in the mailbox. The post office
+(EventBus) delivers it to whoever has a subscription.
+Student A never needs to know who receives the letter.
+
+THE EVENTS LIST:
+    enum class GameEvent {
+        ENEMY_KILLED,       // A fires when enemy is defeated
+        PLAYER_HIT,         // A fires when player takes damage
+        LEVEL_COMPLETE,     // A fires when all enemies cleared
+        BOSS_DEFEATED,      // A fires when boss is killed
+        POWERUP_COLLECTED,  // A fires when player picks up power-up
+        GEM_DROPPED,        // A fires when gem spawns on screen
+        GEM_COLLECTED,      // A fires when player collects gem
+        CHAIN_KILL,         // A fires when rolling snowball kills enemy
+        PLAYER_DIED,        // A fires when player loses a life
+        GAME_OVER           // A fires when all lives are gone
+    };
+
+KEY METHODS:
+    getInstance()              — returns the one singleton instance
+    publish(event, data*)      — Student A calls this to fire events
+    subscribe(event, callback) — Student B calls this to listen
+    clearAll()                 — clear all listeners on scene change
+
+HOW STUDENT A USES IT:
+    EnemyKilledData data = {score, gems, isChain, chainLen, x, y};
+    EventBus::getInstance().publish(GameEvent::ENEMY_KILLED, &data);
+
+HOW STUDENT B USES IT:
+    EventBus::getInstance().subscribe(GameEvent::ENEMY_KILLED,
+        [this](void* data) {
+            auto* d = static_cast<EnemyKilledData*>(data);
+            onEnemyKilled(d);
+        });
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Student A and Student B can work completely independently.
+A fires events, B listens. Neither needs to know the
+other's implementation details. This is the Observer
+design pattern — one of the required patterns in the spec.
+
+SIMPLE EXPLANATION:
+EventBus is like a group chat. A sends a message.
+Everyone who joined the chat receives it.
+A does not need to know who is in the chat.
+
+SINGLETON PATTERN:
+Only one EventBus exists in the entire program.
+getInstance() returns that one instance every time.
+Never create EventBus objects directly — always use getInstance().
+
+RULES:
+- Write and test this before any other system.
+  Everything depends on it.
+- Call clearAll() when changing scenes so old
+  callbacks from previous screens do not fire.
+- The void* data pointer must match the correct
+  struct for each event. See Event Data Structs
+  section below.
+
+================================================================
+
+EVENT DATA STRUCTS — BOTH STUDENTS MUST USE THESE EXACTLY:
+
+    // For ENEMY_KILLED and CHAIN_KILL
+    struct EnemyKilledData {
+        int   scoreAwarded;
+        int   gemCount;
+        bool  isChain;
+        int   chainLength;
+        float spawnX, spawnY;
+    };
+
+    // For BOSS_DEFEATED
+    struct BossDefeatedData {
+        int gemReward;
+        int bossId;      // 5 = Mogera, 10 = Gamakichi
+    };
+
+    // For POWERUP_COLLECTED
+    struct PowerUpData {
+        int         playerId;  // 0 = Player 1, 1 = Player 2
+        std::string type;      // "SpeedBoost", "BalloonMode" etc.
+    };
+
+    // For GEM_COLLECTED
+    struct GemData {
+        int playerId;
+        int amount;
+    };
+
+    // For PLAYER_HIT and PLAYER_DIED
+    struct PlayerHitData {
+        int playerId;
+        int livesRemaining;
+    };
+
+These structs must be defined in a shared header
+that both students include. Suggest: include/systems/EventData.h
+
+================================================================
+
+----------------------------------------------------------------
+FILE 2: ScoreSystem.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : EventBus.h
+NEEDED BY    : GameUI.h, LeaderboardSystem.h
+
+WHAT IT IS:
+Listens for kill events and manages the player's score.
+Applies chain kill bonuses.
+
+SUBSCRIBED EVENTS:
+    ENEMY_KILLED  — adds score, checks for chain bonus
+    CHAIN_KILL    — applies +10% per enemy in chain
+
+WHAT IT HOLDS:
+    int score          — current total score
+    int chainCount     — current chain length
+
+KEY METHODS:
+    onEnemyKilled(data*)    — processes kill event
+    applyChainBonus()       — adds 10% bonus per chain enemy
+    getScore() : int        — GameUI reads this every frame
+    reset()                 — resets score for new game
+
+CHAIN BONUS CALCULATION:
+    base score = random value from enemy's score range
+    chain bonus = base * (1 + 0.10 * chainLength)
+    
+    Example: chain of 4 enemies each worth 200 pts
+    enemy 1: 200 pts (no chain)
+    enemy 2: 200 * 1.1 = 220 pts
+    enemy 3: 200 * 1.2 = 240 pts
+    enemy 4: 200 * 1.3 = 260 pts
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Score updates correctly after every kill.
+Chain kills give bonus points automatically.
+GameUI always shows the current accurate score.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 3: GemSystem.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : EventBus.h
+NEEDED BY    : ShopSystem.h, GameUI.h, ProgressRepository.h
+
+WHAT IT IS:
+Tracks how many gems each player has.
+Single source of truth for gem count.
+Nothing else tracks gems independently.
+
+SUBSCRIBED EVENTS:
+    GEM_COLLECTED    — adds gems to player's count
+    BOSS_DEFEATED    — adds boss reward gems
+
+WHAT IT HOLDS:
+    int gems[2]      — gem count per player (index 0 and 1)
+
+KEY METHODS:
+    onGemCollected(data*)    — adds gems from event
+    onBossDefeated(data*)    — adds boss reward
+    getGems(playerId) : int  — ShopSystem and GameUI read this
+    deductGems(id, amount)   — ShopSystem calls this on purchase
+    reset()                  — resets gems for new game
+
+SYNC RULE:
+Whenever gem count changes GemSystem must notify
+ProgressRepository to save the new count.
+Never let gem count in memory differ from saved count
+for more than one level transition.
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Gem count is always accurate across gameplay, shop,
+and database. Player never loses gems to sync bugs.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 4: ShopSystem.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : EventBus.h, GemSystem.h
+NEEDED BY    : ShopScreen.h
+
+WHAT IT IS:
+Handles all shop purchase logic. When player buys
+something it checks gems, deducts cost, and applies
+the effect immediately.
+
+SHOP ITEMS AND COSTS:
+    Extra Life          50 gems  → player.addLife(1)
+    Speed Boost (30s)   20 gems  → apply SpeedBoost
+    Snowball Power      30 gems  → apply SnowballPower
+    Distance Increase   25 gems  → apply DistanceIncrease
+    Balloon Mode (30s)  35 gems  → apply BalloonMode
+
+KEY METHODS:
+    canAfford(playerId, cost) : bool  — check before purchase
+    purchase(playerId, itemName)      — ShopScreen calls this
+    getItemList()                     — ShopScreen reads this for display
+
+HOW A PURCHASE WORKS:
+    1. ShopScreen calls canAfford() — if false grey out button
+    2. Player clicks item button
+    3. ShopScreen calls purchase()
+    4. ShopSystem checks canAfford() again (safety check)
+    5. GemSystem.deductGems() called
+    6. Power-up applied to player via StatsComponent
+    7. ProgressRepository saves updated gem count
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Player can spend gems in the pause menu shop.
+Items apply immediately. Gem count updates correctly.
+Buttons are greyed out when player cannot afford them.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 5: LeaderboardSystem.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : EventBus.h, LeaderboardRepository.h
+NEEDED BY    : LeaderboardScreen.h
+
+WHAT IT IS:
+Listens for GAME_OVER event. When the game ends it
+takes the final score and updates the top 10 leaderboard.
+
+SUBSCRIBED EVENTS:
+    GAME_OVER   — triggers leaderboard update
+
+KEY METHODS:
+    onGameOver(data*)            — processes end of game
+    getTopTen()                  — LeaderboardScreen calls this
+    isHighScore(score) : bool    — check before game over screen
+
+HOW LEADERBOARD UPDATE WORKS:
+    1. GAME_OVER event fires with final score
+    2. LeaderboardSystem reads current top 10 from file
+    3. Checks if new score qualifies for top 10
+    4. If yes: inserts, sorts descending, trims to 10
+    5. Writes updated list back to leaderboard.txt
+    6. LeaderboardScreen displays updated list
+
+LEADERBOARD ENTRY FORMAT:
+    Rank | Username | Score | Level Reached | Date
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Top 10 scores persist across game sessions.
+High scores are saved automatically after every game.
+Leaderboard always shows the most current scores.
+
+================================================================
+
+WRITE ORDER SUMMARY FOR STUDENT B:
+    1. EventBus.h         — foundation, everything depends on it
+    2. EventData.h        — shared event structs (new file)
+    3. GemSystem.h        — needed by ShopSystem
+    4. ScoreSystem.h      — depends only on EventBus
+    5. ShopSystem.h       — depends on GemSystem
+    6. LeaderboardSystem.h— depends on EventBus and Repository
+
+WHAT THIS FOLDER DELIVERS WHEN COMPLETE:
+    - Complete event-driven communication between A and B
+    - Accurate score tracking with chain bonuses
+    - Gem tracking synced with database
+    - Functional in-game shop
+    - Persistent leaderboard across sessions
+    - Observer design pattern demonstrated (spec requirement)
+
+================================================================
+Last updated: April 20, 2026
+Place this file at: include/systems/GUIDE.txt
+================================================================
