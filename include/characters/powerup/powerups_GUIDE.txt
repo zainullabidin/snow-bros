@@ -1,0 +1,251 @@
+================================================================
+SNOW BROS — POWERUPS FOLDER GUIDE
+CS1004 OOP | FAST-NUCES Islamabad | Spring 2026
+================================================================
+OWNER: Student B (Minahil) — owns this entire folder
+FOLDER: include/entities/powerups/ and src/entities/powerups/
+================================================================
+
+HIERARCHY:
+    Entity
+        └── PowerUp (abstract) ← Student B
+                ├── SpeedBoost ← Student B
+                ├── SnowballPower ← Student B
+                ├── DistanceIncrease ← Student B
+                ├── BalloonMode ← Student B
+                └── ExtraLife ← Student B
+
+Write order:
+    PowerUp.h → then all 5 concrete classes in any order
+
+HOW POWER-UPS SPAWN:
+    When an enemy is defeated via chain roll it drops
+    a random power-up at its position.
+    Player collects it by walking over it.
+    Collection fires POWERUP_COLLECTED event via EventBus.
+
+----------------------------------------------------------------
+FILE 1: PowerUp.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Entity.h, SFML
+NEEDED BY    : All 5 concrete power-up classes,
+               StatsComponent.h, Player.h
+
+WHAT IT IS:
+Abstract base class for all power-ups. Defines the
+interface that every power-up must implement.
+Also handles the shared timer logic.
+
+PURE VIRTUAL METHODS:
+    apply(Player& p)         — apply effect to player
+    remove(Player& p)        — remove effect from player
+    getName() : string       — display name e.g. "Speed Boost"
+    draw(RenderWindow& w)    — draw the pickup on screen
+
+SHARED METHODS (Student B implements in PowerUp.cpp):
+    update(float dt)         — counts down the timer
+    isExpired() : bool       — has duration run out?
+
+PROTECTED MEMBERS:
+    float duration   — how long the effect lasts in seconds
+    float timer      — counts down from duration to 0
+    bool  permanent  — if true timer is ignored
+    bool  collected  — has player picked this up?
+    sf::Vector2f position — where the pickup sits on screen
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+A shared timer system so every power-up automatically
+expires at the right time without each one writing
+its own timer logic.
+
+SIMPLE EXPLANATION:
+PowerUp.h is like a standard vending machine slot.
+Every item in the machine has a name, an effect,
+and an expiry time. This class defines that standard.
+
+IMPORTANT RULE FOR ALL POWER-UPS:
+Never apply or remove effects directly on Player's
+private variables. Always go through StatsComponent.
+This keeps Player clean and power-up effects isolated.
+
+    CORRECT:
+        player.getStats().setSpeed(speed * 1.5f);
+    
+    WRONG:
+        player.speed *= 1.5f;  ← never do this
+
+================================================================
+
+----------------------------------------------------------------
+FILE 2: SpeedBoost.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : PowerUp.h
+DURATION     : 15 seconds
+SHOP COST    : 20 gems
+
+WHAT IT DOES:
+Increases player movement speed by 50% for 15 seconds.
+
+    apply()  → player.getStats().speed *= 1.5f
+    remove() → player.getStats().speed /= 1.5f
+
+IMPORTANT EDGE CASE:
+If player dies while SpeedBoost is active remove()
+must still be called to reset speed.
+Otherwise speed stays permanently increased — a bug.
+
+LevelManager calls remove() on all active power-ups
+when a level ends or player dies.
+
+WHAT IT DELIVERS:
+Player visibly moves faster making it easier to
+dodge enemies and collect gems quickly.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 3: SnowballPower.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : PowerUp.h
+DURATION     : Until level ends (permanent = true, level-scoped)
+SHOP COST    : 30 gems
+
+WHAT IT DOES:
+Makes snowballs encase enemies in ONE hit instead of two.
+
+    apply()  → player.getStats().snowballPower = 1
+    remove() → player.getStats().snowballPower = 2
+
+WHEN REMOVE IS CALLED:
+LevelManager calls remove() on all active power-ups
+when the level ends. This resets it for the next level.
+
+WHAT IT DELIVERS:
+Much faster enemy clearing. Player can encase enemies
+with a single throw which is a huge advantage on
+levels with many enemies.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 4: DistanceIncrease.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : PowerUp.h
+DURATION     : Until level ends (permanent = true, level-scoped)
+SHOP COST    : 25 gems
+
+WHAT IT DOES:
+Makes snowball travel the full width of the screen
+instead of its default medium range.
+
+    apply()  → player.getStats().snowballDistance = SCREEN_WIDTH
+    remove() → player.getStats().snowballDistance = DEFAULT_DISTANCE
+
+WHAT IT DELIVERS:
+Player can hit enemies anywhere on the screen with
+a single throw. Very powerful on wide open levels.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 5: BalloonMode.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : PowerUp.h
+DURATION     : 10 seconds
+SHOP COST    : 35 gems
+
+WHAT IT DOES:
+Player floats upward slowly instead of falling.
+Ground enemies cannot damage the player while floating.
+
+    apply()  → player.getStats().balloonMode = true
+    remove() → player.getStats().balloonMode = false
+
+HOW STUDENT A USES THIS:
+In Player.cpp update() every frame:
+
+    if (stats.balloonMode) {
+        velocity.y = -FLOAT_SPEED;  // float upward slowly
+    } else {
+        velocity.y += GRAVITY * dt; // normal gravity
+    }
+
+Also in collision checks:
+    if (stats.balloonMode) skip ground enemy damage check
+
+WHAT IT DELIVERS:
+Player floats above the ground avoiding ground-level
+enemies entirely. Very useful on crowded levels.
+Can still throw snowballs while floating.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 6: ExtraLife.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : PowerUp.h
+DURATION     : Permanent (adds directly to life count)
+SHOP COST    : 50 gems
+
+WHAT IT DOES:
+Adds 1 life to the player's current life count.
+This is the only power-up that talks to Player directly
+instead of going through StatsComponent.
+
+    apply()  → player.addLife(1)
+    remove() → does nothing (permanent, no reversal)
+
+WHAT IT DELIVERS:
+The most valuable power-up in the game.
+Gives the player an extra chance to complete the level.
+Spawns less frequently than other power-ups because
+of how valuable it is.
+
+================================================================
+
+STAR BONUS — RANDOM POWER-UP SELECTION:
+This is a special mechanic that is NOT a power-up class
+but is related to power-ups. Handled by Student B in
+the UI layer.
+
+HOW IT WORKS:
+    On a random non-boss level (chosen at game start)
+    a star icon appears somewhere on the level.
+    When player collects it:
+        1. Game pauses underneath
+        2. Three random power-ups shown as choices
+        3. Player picks one
+        4. Selected power-up applied immediately
+        5. Game resumes
+
+    This is handled in StarSelectScreen or inside
+    GameScreen by Student B.
+
+================================================================
+
+WRITE ORDER SUMMARY FOR STUDENT B:
+    1. PowerUp.h         — foundation, no dependencies
+    2. SpeedBoost.h      — simplest concrete class
+    3. SnowballPower.h
+    4. DistanceIncrease.h
+    5. BalloonMode.h     — slightly more complex, needs Player
+    6. ExtraLife.h       — talks to Player directly
+
+WHAT THIS FOLDER DELIVERS WHEN COMPLETE:
+    - 5 working power-ups with correct effects
+    - Automatic timer and expiry system
+    - Clean integration with StatsComponent
+    - Shop can sell all 5 types
+    - Star bonus selection works with all 5 types
+    - All power-ups reset cleanly at level end
+
+================================================================
+Last updated: April 20, 2026
+Place this file at: include/entities/powerups/GUIDE.txt
+================================================================

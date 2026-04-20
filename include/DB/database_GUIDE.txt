@@ -1,0 +1,427 @@
+================================================================
+SNOW BROS — DATABASE FOLDER GUIDE
+CS1004 OOP | FAST-NUCES Islamabad | Spring 2026
+================================================================
+OWNER: Student B (Minahil)
+FOLDER: include/database/ and src/database/
+================================================================
+
+This folder handles all persistent data storage.
+No actual SQL database — everything uses plain .txt files
+with fstream. Four files work as a layered system.
+
+THE THREE DATA FILES THIS FOLDER MANAGES:
+    data/users.txt         — registered accounts
+    data/progress.txt      — saved game state per player
+    data/leaderboard.txt   — top 10 scores
+
+LAYERED ARCHITECTURE:
+    Database.h           ← raw file reading and writing
+        └── UserRepository.h        ← operations on users.txt
+        └── ProgressRepository.h    ← operations on progress.txt
+        └── LeaderboardRepository.h ← operations on leaderboard.txt
+
+Repositories never touch fstream directly.
+They always call Database methods.
+This way file handling bugs are fixed in ONE place.
+
+CRITICAL RULE FOR ALL FILES IN THIS FOLDER:
+Always handle the case where a .txt file does not exist.
+First time the game runs those files are empty or missing.
+Never assume they exist. Never crash if they do not.
+Return empty/default data gracefully.
+
+Write order:
+    Database.h → UserRepository.h → ProgressRepository.h
+    → LeaderboardRepository.h
+
+----------------------------------------------------------------
+FILE 1: Database.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Nothing (uses only standard C++ fstream and string)
+NEEDED BY    : UserRepository.h, ProgressRepository.h,
+               LeaderboardRepository.h
+
+WHAT IT IS:
+The base layer. Handles raw file operations so that
+repositories never write fstream code directly.
+One place for all file handling logic.
+
+KEY METHODS:
+
+    readAllLines(filename) : vector<string>
+        — opens the file
+        — reads every line into a vector
+        — returns empty vector if file does not exist
+        — never throws exception for missing file
+
+    writeAllLines(filename, lines: vector<string>)
+        — opens file in write mode (overwrites everything)
+        — writes each string as one line
+        — creates the file if it does not exist
+
+    appendLine(filename, line: string)
+        — opens file in append mode
+        — adds one new line at the end
+        — creates file if it does not exist
+
+    fileExists(filename) : bool
+        — checks if a file exists before trying to open it
+        — returns false cleanly if file is missing
+
+    createFileIfMissing(filename)
+        — creates an empty file if it does not exist
+        — call this at game startup for all three .txt files
+
+HOW TO IMPLEMENT readAllLines SAFELY:
+
+    vector<string> Database::readAllLines(const string& path) {
+        vector<string> lines;
+        ifstream file(path);
+        if (!file.is_open()) return lines; // return empty, no crash
+        string line;
+        while (getline(file, line)) {
+            if (!line.empty()) lines.push_back(line);
+        }
+        return lines;
+    }
+
+FILE PATHS — ALWAYS USE data/ PREFIX:
+    "data/users.txt"
+    "data/progress.txt"
+    "data/leaderboard.txt"
+
+Never use just "users.txt" — always include the folder.
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+All three repositories can read and write files
+with a single method call. File handling is
+tested once and works correctly for everyone.
+
+SIMPLE EXPLANATION:
+Database is like a librarian. You ask for a book
+(readAllLines) and it fetches it. You hand over
+a manuscript (writeAllLines) and it files it.
+You never go to the shelves yourself.
+
+RULES:
+- Never throw exceptions for missing files.
+  Always return empty data and let the caller decide.
+- Always strip empty lines when reading.
+  Blank lines at end of file cause parsing bugs.
+- Use relative paths starting with "data/".
+  Never use absolute paths — they break on other machines.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 2: UserRepository.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Database.h
+NEEDED BY    : AuthManager.h
+
+WHAT IT IS:
+All operations on data/users.txt in one place.
+AuthManager calls these methods. Never touches
+fstream or Database directly from AuthManager.
+
+FILE FORMAT — one user per line, fields separated by |:
+    userId|username|passwordHash|email
+    
+    Example:
+    1|zain|8765432109876|zain@email.com
+    2|minahil|9876543210987|
+    3|ahmed|1234567890123|ahmed@fast.edu.pk
+
+HELPER STRUCT:
+    struct UserRecord {
+        int    userId;
+        string username;
+        string passwordHash;
+        string email;
+    };
+
+KEY METHODS:
+
+    findByUsername(username) : UserRecord*
+        — reads all lines from users.txt
+        — parses each line into a UserRecord
+        — returns pointer to matching record
+        — returns nullptr if username not found
+
+    create(username, passwordHash, email) : bool
+        — first checks if username already exists
+        — if exists → return false
+        — assigns next available userId
+        — formats as "id|username|hash|email"
+        — calls Database.appendLine() to add it
+        — returns true on success
+
+    usernameExists(username) : bool
+        — quick check used during registration
+        — calls findByUsername internally
+        — returns true if found
+
+    getNextId() : int
+        — reads all lines
+        — finds the maximum existing userId
+        — returns max + 1
+        — returns 1 if file is empty (first user)
+
+HOW TO PARSE A LINE:
+Each line looks like: "1|zain|8765432109876|zain@email.com"
+Split by the | character:
+
+    // Split string by delimiter
+    vector<string> parts = splitString(line, '|');
+    // parts[0] = "1"
+    // parts[1] = "zain"
+    // parts[2] = "8765432109876"
+    // parts[3] = "zain@email.com"
+
+Write a private splitString helper method.
+It is used by all repository classes.
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+AuthManager can find users and create accounts
+without writing a single line of file reading code.
+
+SIMPLE EXPLANATION:
+UserRepository is like HR records at a company.
+It knows where all employee files are stored and
+how to look them up. AuthManager just asks
+"does this person work here?" and gets an answer.
+
+RULES:
+- Never store plain text passwords here. Only hashes.
+  Receiving a hash and storing it is fine.
+  Receiving a plain password and storing it is not.
+- findByUsername returns nullptr for unknown users.
+  AuthManager must always check for nullptr before
+  accessing the returned record.
+- Email field is optional. Store empty string if not provided.
+  Line format: "1|zain|hash|"  (empty email at end is fine)
+
+================================================================
+
+----------------------------------------------------------------
+FILE 3: ProgressRepository.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Database.h
+NEEDED BY    : AuthManager.h (load on login),
+               LevelManager.h (save on level complete),
+               GemSystem.h (update gems when they change)
+
+WHAT IT IS:
+All operations on data/progress.txt.
+Saves and loads each player's game state so progress
+persists between sessions.
+
+FILE FORMAT — one player per line:
+    userId|currentLevel|livesRemaining|gemCount|highScore|lastUpdated
+    
+    Example:
+    1|4|2|150|8200|2026-04-20
+    2|1|2|0|0|2026-04-20
+
+HELPER STRUCT:
+    struct ProgressRecord {
+        int    userId;
+        int    currentLevel;
+        int    livesRemaining;
+        int    gemCount;
+        int    highScore;
+        string lastUpdated;
+    };
+
+KEY METHODS:
+
+    loadProgress(userId) : ProgressRecord
+        — reads progress.txt
+        — finds line matching userId
+        — parses and returns the record
+        — if no record found returns default:
+          { userId, 1, 2, 0, 0, "" }
+          (level 1, 2 lives, 0 gems, 0 score)
+
+    saveProgress(userId, level, lives, gems, score)
+        — reads all lines from progress.txt
+        — finds and replaces the matching userId line
+        — if no existing record adds a new line
+        — writes all lines back to file
+        — updates lastUpdated to current date
+
+    updateGems(userId, gemCount)
+        — quick update for just the gem count field
+        — reads, finds record, updates gems field, writes back
+        — called frequently so keep it efficient
+
+    updateHighScore(userId, score)
+        — updates high score if new score is higher
+        — called at game over
+
+HOW TO UPDATE A SPECIFIC RECORD:
+Since .txt files have no random access you must:
+    1. Read ALL lines into a vector
+    2. Find the line matching userId
+    3. Replace that line with updated data
+    4. Write ALL lines back to file
+
+    vector<string> lines = db.readAllLines("data/progress.txt");
+    for (auto& line : lines) {
+        if (lineMatchesUserId(line, userId)) {
+            line = buildUpdatedLine(userId, level, lives, gems, score);
+            break;
+        }
+    }
+    db.writeAllLines("data/progress.txt", lines);
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Game state persists between sessions. Player closes
+the game on level 4 with 150 gems. Reopens the game.
+Logs in. Continues from level 4 with 150 gems.
+Nothing is lost.
+
+SIMPLE EXPLANATION:
+ProgressRepository is like a bookmark in a book.
+When you stop reading (close the game) the bookmark
+saves your page. When you come back you open to
+exactly where you left off.
+
+RULES:
+- Always save on level complete. Never wait until game over.
+  If game crashes without saving the player loses progress.
+- loadProgress returns default values for new players.
+  Never crash when a userId has no saved progress.
+- updateGems is called frequently (every gem collected).
+  Keep it fast — only update the gems field not the whole record.
+- lastUpdated should store the current date as a string.
+  Use: time and put_time to get "YYYY-MM-DD" format.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 4: LeaderboardRepository.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Database.h
+NEEDED BY    : LeaderboardSystem.h, LeaderboardScreen.h
+
+WHAT IT IS:
+All operations on data/leaderboard.txt.
+Maintains the top 10 scores across all players
+across all game sessions.
+
+FILE FORMAT — one entry per line, sorted by score descending:
+    rank|username|score|levelReached|date
+    
+    Example:
+    1|zain|15200|8|2026-04-20
+    2|minahil|12400|6|2026-04-19
+    3|ahmed|9800|5|2026-04-18
+
+HELPER STRUCT:
+    struct LeaderboardEntry {
+        int    rank;
+        string username;
+        int    score;
+        int    levelReached;
+        string date;
+    };
+
+KEY METHODS:
+
+    getTopTen() : vector<LeaderboardEntry>
+        — reads leaderboard.txt
+        — parses all lines into LeaderboardEntry objects
+        — returns them sorted by score descending
+        — returns empty vector if file is empty or missing
+
+    insertScore(username, score, levelReached, date)
+        — reads all current entries
+        — adds the new entry
+        — sorts all entries by score descending
+        — trims to maximum 10 entries
+        — re-assigns rank numbers 1 through 10
+        — writes updated list back to file
+
+    isTopTen(score) : bool
+        — reads current entries
+        — if fewer than 10 entries → always return true
+        — if 10 entries exist → return true only if
+          new score is higher than the lowest score
+
+    getLowestScore() : int
+        — returns score of 10th place entry
+        — returns 0 if fewer than 10 entries exist
+
+HOW insertScore WORKS STEP BY STEP:
+    1. Read all current entries from leaderboard.txt
+    2. Create new LeaderboardEntry with provided data
+    3. Add it to the vector
+    4. Sort vector by score descending
+    5. Keep only first 10 entries (trim if more)
+    6. Re-number ranks 1 through vector size
+    7. Write all entries back to leaderboard.txt
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Top 10 scores persist forever. Every game session
+either enters the top 10 or does not. The leaderboard
+shown on the main menu is always current and accurate.
+
+SIMPLE EXPLANATION:
+LeaderboardRepository is like a sports record board
+on a gym wall. New records replace old ones.
+Only the top 10 are displayed. Everything else falls off.
+
+RULES:
+- Always sort after inserting. Never assume the file
+  is already sorted — it might not be.
+- Always trim to 10 after sorting. Not 11, not 9. Exactly 10.
+- Re-assign rank numbers after every update.
+  Never store rank as permanent data — always recalculate.
+- isTopTen must be called before insertScore to avoid
+  writing a non-qualifying score to the file.
+- getTopTen returns empty vector for missing file.
+  LeaderboardScreen handles the empty case with
+  a "No scores yet" message.
+
+================================================================
+
+WRITE ORDER SUMMARY FOR STUDENT B:
+    1. Database.h              — no dependencies at all
+    2. UserRepository.h        — needs Database.h
+    3. ProgressRepository.h    — needs Database.h
+    4. LeaderboardRepository.h — needs Database.h
+
+SHARED HELPER — splitString:
+All three repositories need to split lines by |.
+Write this once as a free function in Database.h
+or as a private static method:
+
+    vector<string> splitString(const string& str, char delimiter) {
+        vector<string> parts;
+        stringstream ss(str);
+        string part;
+        while (getline(ss, part, delimiter)) {
+            parts.push_back(part);
+        }
+        return parts;
+    }
+
+WHAT THIS FOLDER DELIVERS WHEN COMPLETE:
+    - User accounts stored and retrieved correctly
+    - Passwords stored as hashes only (never plain text)
+    - Game progress saved on every level complete
+    - Progress restored correctly on login
+    - Top 10 leaderboard persists across sessions
+    - Corrupted or missing files handled gracefully
+    - All data survives game close and reopen
+
+================================================================
+Last updated: April 20, 2026
+Place this file at: include/database/GUIDE.txt
+================================================================

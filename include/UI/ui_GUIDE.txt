@@ -1,0 +1,412 @@
+================================================================
+SNOW BROS — UI FOLDER GUIDE
+CS1004 OOP | FAST-NUCES Islamabad | Spring 2026
+================================================================
+OWNER: Student B (Minahil) — owns this entire folder
+FOLDER: include/ui/ and src/ui/
+================================================================
+
+CRITICAL RULE FOR ALL SCREEN FILES:
+Never put game logic inside a screen.
+Screens only display things and pass input to the right place.
+All actual logic lives in Game, LevelManager, Player,
+and the systems. If you find yourself writing collision
+detection or score calculation inside a screen — stop
+and move it to the correct class.
+
+HIERARCHY:
+    Screen (abstract) ← Student B
+        ├── MainMenuScreen
+        ├── CharacterSelectScreen
+        ├── GameScreen
+        ├── PauseMenuScreen
+        ├── ShopScreen
+        ├── LeaderboardScreen
+        ├── GameOverScreen
+        └── LevelCompleteScreen
+    
+    GameUI (separate, not a Screen subclass)
+
+FONT USAGE REMINDER:
+    PressStart2P  → score, lives, level number (HUD numbers)
+    Silkscreen    → menus, buttons, UI elements
+    VT323         → notifications, popups, temporary messages
+    Orbitron      → main menu title, screen headings
+    Cinzel        → boss reveal moments, dramatic text
+
+Write order:
+    Screen.h → GameUI.h → MainMenuScreen.h → CharacterSelectScreen.h
+    → GameScreen.h → PauseMenuScreen.h → ShopScreen.h
+    → LeaderboardScreen.h → GameOverScreen.h → LevelCompleteScreen.h
+
+----------------------------------------------------------------
+FILE 1: Screen.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : SFML
+NEEDED BY    : All 8 screen subclasses, Game.h
+
+WHAT IT IS:
+Abstract base class for every screen in the game.
+Game.h holds a pointer to the currently active Screen
+and calls update(), draw(), and handleInput() on it
+every frame without knowing which specific screen it is.
+
+PURE VIRTUAL METHODS:
+    update(float dt)         — logic every frame
+    draw()                   — draw this screen
+    handleInput(sf::Event&)  — process one input event
+
+TRANSITION SYSTEM:
+When a screen wants to switch to another screen it sets:
+    transitioning = true
+    nextScreen = "GameScreen"  (or whatever screen name)
+
+Game.cpp reads isTransitioning() every frame and
+swaps the active screen when true.
+
+PROTECTED MEMBERS:
+    sf::RenderWindow& window
+    sf::Font font
+    bool        transitioning = false
+    string      nextScreen    = ""
+
+KEY METHODS:
+    isTransitioning() : bool
+    getNextScreen() : string
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Game.cpp can hold one Screen pointer and call the
+same three methods regardless of which screen is active.
+This is polymorphism working in the UI layer.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 2: GameUI.h (previously called HUD)
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : SFML, ScoreSystem.h, GemSystem.h, LevelManager.h
+NEEDED BY    : GameScreen.h
+
+WHAT IT IS:
+The overlay drawn on top of the gameplay every frame.
+Shows all live game information without interrupting play.
+This is not a Screen subclass — it is drawn by GameScreen
+on top of the game world.
+
+WHAT IT DISPLAYS:
+    Score          — top left, reads from ScoreSystem every frame
+    Lives          — top left below score, drawn as icons
+    Gem count      — top right, reads from GemSystem every frame
+    Level          — top center, e.g. "Level 3 / 10"
+    Power-up info  — bottom, active power-up name and timer
+    Boss health bar— top center, ONLY on levels 5 and 10
+
+KEY METHODS:
+    update(dt)           — refreshes all displayed values
+    draw(window)         — draws all elements on screen
+
+BOSS HEALTH BAR RULE:
+Every frame GameUI checks LevelManager.isBossLevel().
+If true draw the health bar.
+If false do not draw it.
+Never hardcode level numbers 5 and 10 inside GameUI.
+Always ask LevelManager.
+
+FONT ASSIGNMENTS:
+    Score numbers     → PressStart2P
+    Lives count       → PressStart2P
+    Gem count         → PressStart2P
+    Level text        → Silkscreen
+    Power-up name     → VT323
+    Boss health label → Silkscreen
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Player always sees their current score, lives, gems,
+and level. Boss health bar appears automatically
+on boss levels. Power-up timer counts down visibly.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 3: MainMenuScreen.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Screen.h, AuthManager.h, LeaderboardSystem.h
+NEEDED BY    : Game.h (first screen shown)
+
+WHAT IT IS:
+First thing the player sees when they open the game.
+Shows login form if no one is logged in.
+Shows menu options after successful login.
+
+BUTTONS AND TRANSITIONS:
+    New Game     → transitions to "CharacterSelectScreen"
+    Continue     → transitions to "GameScreen" (if save exists)
+                   button greyed out if no save found
+    Leaderboard  → transitions to "LeaderboardScreen"
+    Settings     → shows key binding configuration
+    Exit         → closes the window
+
+LOGIN FORM (shown before menu if not logged in):
+    Username input field
+    Password input field (masked with asterisks)
+    Login button
+    Register button
+    
+    On successful login → show main menu options
+    On failed login     → show error message
+
+FONT: Orbitron for title, Silkscreen for buttons
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Players can log in or register and then navigate
+to starting a new game or continuing a saved game.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 4: CharacterSelectScreen.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Screen.h
+NEEDED BY    : MainMenuScreen.h (transition target)
+
+WHAT IT IS:
+Shows the 3 available characters with stat previews.
+Both players pick their character before game starts.
+
+SELECTION FLOW:
+    Player 1 picks first.
+    Player 2 picks second.
+    Neither player can pick the same character.
+    If same character selected show error and ask again.
+    
+    Confirm button → transitions to "GameScreen"
+                     passes selected characters to Game
+
+CHARACTERS TO SHOW:
+    Nick   — default character, balanced stats
+    Tom    — your group's design (second character)
+    Third  — your group's design (third character)
+
+Display for each:
+    Character sprite
+    Character name
+    Brief stat preview (speed, snowball range etc.)
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Both players choose their character before the game
+starts. Character choice is passed to Game which
+passes it to the Player objects.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 5: GameScreen.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Screen.h, GameUI.h, LevelManager.h
+NEEDED BY    : Game.h (main gameplay screen)
+
+WHAT IT IS:
+The wrapper screen during actual gameplay.
+Does NOT contain game logic. Just coordinates
+the game systems during play.
+
+WHAT IT DOES EVERY FRAME:
+    1. Calls game.update(dt) to update all game objects
+    2. Calls game.draw() to draw the game world
+    3. Calls gameUI.draw() to overlay the HUD on top
+    4. Checks if level is cleared → transition to LevelCompleteScreen
+    5. Checks if game over → transition to GameOverScreen
+
+KEY INPUT HANDLING:
+    Escape key → transitions to "PauseMenuScreen"
+    F1 key     → toggles HitBox debug mode globally
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+The game runs inside this screen. HUD overlays correctly.
+Pause works. Level complete and game over transitions work.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 6: PauseMenuScreen.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Screen.h, ShopSystem.h, AuthManager.h,
+               ProgressRepository.h
+NEEDED BY    : GameScreen.h (pause transition target)
+
+WHAT IT IS:
+Appears when Escape is pressed during gameplay.
+Game world freezes underneath — nothing updates
+while paused. Returns to GameScreen on resume.
+
+BUTTONS AND ACTIONS:
+    Resume         → transitions back to "GameScreen"
+    Open Shop      → transitions to "ShopScreen"
+    Save Game      → calls ProgressRepository.saveProgress()
+                     shows "Saved!" confirmation briefly
+    Logout         → calls AuthManager.logout()
+                     transitions to "MainMenuScreen"
+    Exit to Menu   → transitions to "MainMenuScreen"
+                     without saving (warn the player first)
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Player can pause, shop, save, and logout cleanly
+from any point in the game without losing progress.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 7: ShopScreen.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Screen.h, ShopSystem.h, GemSystem.h
+NEEDED BY    : PauseMenuScreen.h (shop transition target)
+
+WHAT IT IS:
+The in-game shop. Shows all purchasable items.
+Player can spend gems here between or during levels.
+
+WHAT IT DISPLAYS:
+    Current gem count at top (both players if multiplayer)
+    
+    Items listed with:
+        Item name
+        Effect description
+        Gem cost
+        Buy button (greyed out if cannot afford)
+
+ON PURCHASE:
+    Call ShopSystem.purchase(playerId, itemName)
+    Update gem count display immediately
+    Show brief confirmation message
+
+BACK BUTTON:
+    Transitions back to "PauseMenuScreen"
+    Game remains paused underneath
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Players can spend accumulated gems on useful items
+during the game without leaving the pause state.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 8: LeaderboardScreen.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Screen.h, LeaderboardRepository.h
+NEEDED BY    : MainMenuScreen.h, GameOverScreen.h
+
+WHAT IT IS:
+Displays the top 10 scores. Accessible from main menu
+and shown after game over.
+
+WHAT IT DISPLAYS:
+    Title: "Top 10 Scores" in Orbitron font
+    
+    Table with columns:
+        Rank | Player Name | Score | Level Reached | Date
+    
+    Current player's entry highlighted if they are in top 10
+
+BACK BUTTON:
+    Transitions back to "MainMenuScreen"
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Players can see the top scores. Their own score is
+highlighted if they made it to the top 10.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 9: GameOverScreen.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Screen.h, ScoreSystem.h, LeaderboardSystem.h
+NEEDED BY    : GameScreen.h (game over transition target)
+
+WHAT IT IS:
+Shown when all player lives are gone.
+Shows final score and options.
+
+WHAT IT DISPLAYS:
+    "GAME OVER" title
+    Final score
+    Level reached
+    Personal best comparison ("New High Score!" if applicable)
+    
+    Buttons:
+        Retry   → resets game, transitions to "CharacterSelectScreen"
+        Menu    → transitions to "MainMenuScreen"
+        Leaderboard → transitions to "LeaderboardScreen"
+
+ON LOAD:
+    Automatically fires score to LeaderboardSystem so
+    leaderboard updates without player doing anything manually.
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Clean game over experience. Score saved to leaderboard
+automatically. Player can retry or return to menu easily.
+
+================================================================
+
+----------------------------------------------------------------
+FILE 10: LevelCompleteScreen.h
+----------------------------------------------------------------
+OWNER        : Student B
+DEPENDS ON   : Screen.h, ScoreSystem.h, LevelManager.h
+NEEDED BY    : GameScreen.h (level complete transition target)
+
+WHAT IT IS:
+Brief screen shown between levels. Shows level summary
+then moves on to the next level automatically.
+
+WHAT IT DISPLAYS:
+    "Level X Complete!"
+    Score earned this level
+    Gems collected this level
+    Time taken to clear level
+    
+    On boss levels:
+        Special currency reward animation
+        "200 gems earned!" or "500 gems earned!"
+    
+    "Next Level" button OR auto-advances after 3 seconds
+
+WHAT IT DELIVERS AFTER IMPLEMENTATION:
+Clear feedback between levels. Boss rewards shown
+dramatically. Smooth transition to the next level.
+
+================================================================
+
+WRITE ORDER SUMMARY FOR STUDENT B:
+    1. Screen.h              — foundation, all screens depend on it
+    2. GameUI.h              — needed by GameScreen
+    3. MainMenuScreen.h      — first screen shown
+    4. CharacterSelectScreen.h
+    5. GameScreen.h          — main gameplay wrapper
+    6. PauseMenuScreen.h     — depends on GameScreen existing
+    7. ShopScreen.h          — depends on PauseMenuScreen
+    8. LeaderboardScreen.h
+    9. GameOverScreen.h
+    10. LevelCompleteScreen.h
+
+WHAT THIS FOLDER DELIVERS WHEN COMPLETE:
+    - Complete UI flow from login to game over
+    - HUD showing live score, lives, gems, level
+    - Boss health bar on correct levels only
+    - Working shop accessible from pause menu
+    - Persistent leaderboard displayed correctly
+    - All screen transitions working cleanly
+    - Game logic stays OUT of all screen classes
+
+================================================================
+Last updated: April 20, 2026
+Place this file at: include/ui/GUIDE.txt
+================================================================
