@@ -111,5 +111,5 @@ sf::FloatRect Enemy::getHitbox() const {
 
 
 // Need implementation (To be done by Z)
-	 void onEncased() {} //same here
+	// void onEncased() {} //same here
 	// void addSnow(float amount) {}
