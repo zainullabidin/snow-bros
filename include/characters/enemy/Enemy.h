@@ -86,7 +86,7 @@ public:
 
 
 	// rolling action need to define here in base class 
-	virtual void onEncased() ; 
+	//virtual void onEncased() ; to be dep[loyed by Z
 	void addSnow(float amount) ;
 
 
