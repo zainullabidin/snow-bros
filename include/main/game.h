@@ -16,8 +16,6 @@ private:
     bool endgame;
 
     sf::Font font;
-    
-    sf::Text titleText;
 
     sf::Clock trailer_timer;
 
@@ -32,6 +30,22 @@ private:
 
     sf::RectangleShape B_Exit;
     sf::Text txtExit;
+
+    //bg
+
+    sf::Texture bgTexture;//for hlolding
+    sf::Sprite bgSprite;//forloading
+
+    //main mb MZ
+    sf::Text MZ_Text;
+
+    //trailer bg
+    sf::Texture tariler_bg_Textture;
+    sf::Sprite trailer_sprite;
+
+    //trailer logo
+    sf::Texture trailer_logo_textture;
+    sf::Sprite trailer_logo_sprote;
 
 public:
 

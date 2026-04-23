@@ -4,21 +4,24 @@
  
         game::game(){
 
-            window.create(sf::VideoMode(800, 600), "SNOW BROS-By MZ");//screens saz and apna mark
-
-
-            //title font
             font.loadFromFile("assets/fonts/PressStart2P-Regular.ttf");
+            window.create(sf::VideoMode(1280, 720), "SNOW BROS-By MZ");//screens saz and apna mark
+            
+            //logo
+            trailer_logo_textture.loadFromFile("assets/images/title+logo.png");
+            trailer_logo_sprote.setTexture(trailer_logo_textture);
+            trailer_logo_sprote.setScale(0.8f, 0.8f);
+            trailer_logo_sprote.setPosition(300, 150);
 
-            titleText.setFont(font);
 
-            titleText.setString("SNOW BROS");
+            tariler_bg_Textture.loadFromFile("assets/images/trailer_bg.png");
+            trailer_sprite.setTexture(tariler_bg_Textture);
+            trailer_sprite.setScale(1280.0f / tariler_bg_Textture.getSize().x,720.0f / tariler_bg_Textture.getSize().y
+);
+            //bg load
+            bgTexture.loadFromFile("assets/images/background.png");
 
-            titleText.setCharacterSize(48);
 
-            titleText.setFillColor(sf::Color::White);
-
-            titleText.setPosition(200, 250);
             
             current_state=GameState::TRAILER;
 
@@ -56,7 +59,16 @@
             txtExit.setString("EXIT");
             txtExit.setPosition(270, 455);
 
+            bgSprite.setTexture(bgTexture);
+            //scaling acc to size
+            bgSprite.setScale(1280.0f / bgTexture.getSize().x,720.0f / bgTexture.getSize().y);
 
+
+            MZ_Text.setFont(font);
+            MZ_Text.setString("Made by Minahil & Zain");
+            MZ_Text.setCharacterSize(16);
+            MZ_Text.setFillColor(sf::Color(10, 10, 80));
+            MZ_Text.setPosition(400, 500);
 
 
 
@@ -68,7 +80,7 @@
         
             if (current_state == GameState::TRAILER) {
    
-                if (trailer_timer.getElapsedTime().asSeconds() >= 3.0f) {
+                if (trailer_timer.getElapsedTime().asSeconds() >= 5.0f) {
     
                     current_state = GameState::MAIN_MENU;
    
@@ -82,16 +94,21 @@
     
             window.clear(sf::Color::Black);
     
-  
+            
+
             if (current_state == GameState::TRAILER) {
    
     
-                window.draw(titleText);
+                
+                window.draw(trailer_sprite);
+                window.draw(trailer_logo_sprote);
+                window.draw(MZ_Text);
+
   
             }
             if(current_state == GameState::MAIN_MENU){
                 if (current_state == GameState::MAIN_MENU) {
-
+                    window.draw(bgSprite);
                     window.draw(B_NewGAME);
                     window.draw(txtNewGame);
                     window.draw(B_LOGIN);
