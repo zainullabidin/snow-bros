@@ -6,7 +6,37 @@
 
             font.loadFromFile("assets/fonts/PressStart2P-Regular.ttf");
             window.create(sf::VideoMode(1280, 720), "SNOW BROS-By MZ");//screens saz and apna mark
-            
+            //maim menu content loacer
+            B_Frame_texture.loadFromFile("assets/images/frame.png");
+            B_NewGameTexture.loadFromFile("assets/images/frame_snowbro.png");
+
+            float B_NewGame_Scale_X = 420.0f / 818.0f;
+            float B_NewGame_Scale_Y = 110.0f / 305.0f;
+            B_NewGameSprite.setScale(B_NewGame_Scale_X, B_NewGame_Scale_Y);
+            B_NewGameSprite.setTexture(B_NewGameTexture);
+            B_NewGameSprite.setPosition(280, 195);
+            txtNewGame.setPosition(420, 245);
+
+            float B_Scale_X = 380.0f / 1234.0f;
+            float B_Scale_Y = 80.0f / 202.0f;
+            //adding sprites for main menu 
+
+
+
+            B_LoginSprite.setTexture(B_Frame_texture);
+            B_LoginSprite.setScale(B_Scale_X, B_Scale_Y);
+            B_LoginSprite.setPosition(300, 320);
+
+
+            B_LeaderboardSprite.setTexture(B_Frame_texture);
+            B_LeaderboardSprite.setScale(B_Scale_X, B_Scale_Y);
+            B_LeaderboardSprite.setPosition(300, 420);
+
+
+            B_ExitSprite.setTexture(B_Frame_texture);
+            B_ExitSprite.setScale(B_Scale_X, B_Scale_Y);
+            B_ExitSprite.setPosition(300, 520);
+
             //logo
             trailer_logo_textture.loadFromFile("assets/images/title+logo.png");
             trailer_logo_sprote.setTexture(trailer_logo_textture);
@@ -26,38 +56,33 @@
             current_state=GameState::TRAILER;
 
             //clcik button-1
-            B_NewGAME.setSize(sf::Vector2f(300, 50));
-            B_NewGAME.setPosition(250, 200);
-            B_NewGAME.setFillColor(sf::Color(50, 50, 200));
+
+
             txtNewGame.setFont(font);
             txtNewGame.setString("NEW GAME");
-            txtNewGame.setCharacterSize(20);
-            txtNewGame.setPosition(270, 215);
+            txtNewGame.setCharacterSize(22);
+   \
 
             //btn-2
-            B_LOGIN.setSize(sf::Vector2f(300, 50));
-            B_LOGIN.setPosition(250, 280);
-            B_LOGIN.setFillColor(sf::Color(50, 50, 200));
+
             txtLogin.setFont(font);
             txtLogin.setString("LOGIN");
-            txtLogin.setCharacterSize(20);
-            txtLogin.setPosition(270, 295);
+            txtLogin.setCharacterSize(22);
+            txtLogin.setPosition(430, 345);
 
             //bten-3
-            B_Leaderboard.setSize(sf::Vector2f(300,50));
-            B_Leaderboard.setPosition(250,360);
-            B_Leaderboard.setFillColor(sf::Color(50, 50, 200));
+
             txtLeaderboard.setFont(font);
+            txtLeaderboard.setCharacterSize(22);
             txtLeaderboard.setString("LEADERBOARD");
-            txtLeaderboard.setPosition(270, 375);
+            txtLeaderboard.setPosition(390, 445);
 
             //btn-4
-            B_Exit.setSize(sf::Vector2f(300,50));
-            B_Exit.setPosition(250,440);
-            B_Exit.setFillColor(sf::Color(50, 50, 200));
+
             txtExit.setFont(font);
             txtExit.setString("EXIT");
-            txtExit.setPosition(270, 455);
+            txtExit.setCharacterSize(22);
+            txtExit.setPosition(430, 545);
 
             bgSprite.setTexture(bgTexture);
             //scaling acc to size
@@ -69,6 +94,8 @@
             MZ_Text.setCharacterSize(16);
             MZ_Text.setFillColor(sf::Color(10, 10, 80));
             MZ_Text.setPosition(400, 500);
+
+
 
 
 
@@ -108,14 +135,22 @@
             }
             if(current_state == GameState::MAIN_MENU){
                 if (current_state == GameState::MAIN_MENU) {
+
+
+                    
                     window.draw(bgSprite);
-                    window.draw(B_NewGAME);
+
+                    trailer_logo_sprote.setScale(0.3f, 0.3f);
+                    trailer_logo_sprote.setPosition(900, 20);
+                    window.draw(trailer_logo_sprote);
+
+                    window.draw(B_NewGameSprite);
                     window.draw(txtNewGame);
-                    window.draw(B_LOGIN);
+                    window.draw(B_LoginSprite);
                     window.draw(txtLogin);
-                    window.draw(B_Leaderboard);
+                    window.draw(B_LeaderboardSprite);
                     window.draw(txtLeaderboard);
-                    window.draw(B_Exit);
+                    window.draw(B_ExitSprite);
                     window.draw(txtExit);
                 }
             }
@@ -148,13 +183,13 @@
                     {
                         sf::Vector2f mouse_click_position(event.mouseButton.x,event.mouseButton.y);
                         //now checkinh again each button
-                        if(B_NewGAME.getGlobalBounds().contains(mouse_click_position))
+                        if(B_NewGameSprite.getGlobalBounds().contains(mouse_click_position))
                         current_state=GameState::PLAYING;
-                        if(B_LOGIN.getGlobalBounds().contains(mouse_click_position))
+                        if(B_LoginSprite.getGlobalBounds().contains(mouse_click_position))
                         current_state=GameState::LOGIN;
-                        if(B_Leaderboard.getGlobalBounds().contains(mouse_click_position))
+                        if(B_LeaderboardSprite.getGlobalBounds().contains(mouse_click_position))
                         current_state=GameState::LEADERBOARD;
-                        if(B_Exit.getGlobalBounds().contains(mouse_click_position))
+                        if(B_ExitSprite.getGlobalBounds().contains(mouse_click_position))
                         window.close();
                     }
                 }

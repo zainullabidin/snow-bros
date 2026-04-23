@@ -19,16 +19,16 @@ private:
 
     sf::Clock trailer_timer;
 
-    sf::RectangleShape B_NewGAME;
+
     sf::Text txtNewGame;
 
-    sf::RectangleShape B_LOGIN;
+
     sf::Text txtLogin;
 
-    sf::RectangleShape B_Leaderboard;
+
     sf::Text txtLeaderboard;
 
-    sf::RectangleShape B_Exit;
+
     sf::Text txtExit;
 
     //bg
@@ -46,6 +46,17 @@ private:
     //trailer logo
     sf::Texture trailer_logo_textture;
     sf::Sprite trailer_logo_sprote;
+
+    //main mwnu frames 
+    sf::Texture B_Frame_texture;
+    sf::Texture B_NewGameTexture;
+
+    //sprites for each button
+    sf::Sprite B_NewGameSprite;
+    sf::Sprite B_LoginSprite;
+    sf::Sprite B_LeaderboardSprite;
+    sf::Sprite B_ExitSprite;
+
 
 public:
 
