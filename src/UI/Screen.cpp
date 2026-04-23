@@ -1,11 +1,10 @@
 #include"../../include/UI/Screen.h"
 
-#include "UI/Screen.h"
 #include <iostream>
 
 
 Screen::~Screen() {
-	if (backgroundMusic.getStatus() == sf::Music::Playing) {
+	if (backgroundMusic.getStatus() == sf::Music::Status::Playing) {
 		backgroundMusic.stop();
 	}
 }
@@ -52,7 +51,7 @@ void Screen::loadBackground(const std::string& texturePath) {
 }
 
 void Screen::setBackgroundScale(float scaleX, float scaleY) {
-    backgroundSprite.setScale(scaleX, scaleY);
+   backgroundSprite.setScale(sf::Vector2f(scaleX, scaleY));
 }
 
 void Screen::loadFont(const std::string& fontPath) {
