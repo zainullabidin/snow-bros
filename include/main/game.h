@@ -1,7 +1,9 @@
 #pragma once
+#include "Input_manager.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include"Game_state.h"
+#include "../characters/player/Player.h"
 
 using namespace std;
 
@@ -56,6 +58,14 @@ private:
     sf::Sprite B_LoginSprite;
     sf::Sprite B_LeaderboardSprite;
     sf::Sprite B_ExitSprite;
+
+    //
+    input_Manager obj_for_input;
+
+    //plsyers
+    
+     player player1;
+     player player2;
 
 
 public:

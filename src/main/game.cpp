@@ -96,6 +96,11 @@
             MZ_Text.setPosition(400, 500);
 
 
+             player1.set_ID(1);
+             player2.set_ID(2);
+            
+
+
 
 
 
@@ -134,13 +139,11 @@
   
             }
             if(current_state == GameState::MAIN_MENU){
-                if (current_state == GameState::MAIN_MENU) {
-
 
                     
                     window.draw(bgSprite);
 
-                    trailer_logo_sprote.setScale(0.3f, 0.3f);
+                    trailer_logo_sprote.setScale(0.3f, 0.3f);//chane later
                     trailer_logo_sprote.setPosition(900, 20);
                     window.draw(trailer_logo_sprote);
 
@@ -152,7 +155,7 @@
                     window.draw(txtLeaderboard);
                     window.draw(B_ExitSprite);
                     window.draw(txtExit);
-                }
+                
             }
     
    
