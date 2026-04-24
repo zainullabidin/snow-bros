@@ -1,5 +1,6 @@
 #pragma once
 #include "Input_manager.h"
+#include"../levels/dimensioner.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include"Game_state.h"
@@ -74,6 +75,11 @@ private:
 
      sf::Texture level1_bg_texture;
         sf::Sprite level1_bg_sprite;
+
+        //now the jumping bars
+        dimension_er* platforms[10];
+
+        int platform_count;
 
 
 public:

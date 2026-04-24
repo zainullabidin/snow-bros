@@ -10,37 +10,50 @@
        {
             position.x+= 200.0f * delta_T;
        }
-       if(in_obj.player_is_jumping(player_id)&&position.y>=620)
+       if(in_obj.player_is_jumping(player_id)&&velocity.y==0)
        {
-             velocity.y=-450.0f;
+             velocity.y=-350.0f;
        }
 
        //gravity acting
             velocity.y += 500.0f * delta_T;
              position.y += velocity.y * delta_T;
            
+     for(int i=0;i<DIMEN_SIZE;i++)
+     {
+        sf::FloatRect pos=DIMEN_ptr[i]->get_boundaries();
 
+        float bottom_nick=position.y+90;
+        float right_of_nick=position.x+96;
+        float left_of_nick=position.x;
+
+        if(bottom_nick>=pos.top&&bottom_nick<=pos.top+15&&right_of_nick>pos.left&&left_of_nick<pos.left+pos.width-30&&velocity.y>0)
+        {
+             position.y = pos.top - 90;
+             velocity.y=0;
+        }
+     }
 
       
 
        //boundary checks for screen 
 
-       if(position.x<0)
+       if(position.x<130)
        {
-          position.x=0;
+          position.x=130;
        }
        if(position.y<0)
        {
           position.y=0;
        }
 
-       if(position.x>1280-90)
+       if(position.x>1150-96)
        {
-         position.x=1190;
+         position.x=1054;
        }
-       if(position.y>720-90)
+       if(position.y+90>680)
        {
-          position.y=630;
+          position.y=590;
           velocity.y = 0;
        }
 
@@ -81,4 +94,11 @@
         }
     }
 
+
+    void player::set_Dimension(dimension_er **arr, int n)
+    {
+        DIMEN_ptr=arr;
+        DIMEN_SIZE=n;
+
+    }
 

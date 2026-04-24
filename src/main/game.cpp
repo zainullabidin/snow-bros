@@ -19,6 +19,8 @@
 
             float B_Scale_X = 380.0f / 1234.0f;
             float B_Scale_Y = 80.0f / 202.0f;
+
+
             //adding sprites for main menu 
 
 
@@ -111,6 +113,23 @@
              level1_bg_sprite.setScale(1280.0f / level1_bg_texture.getSize().x, 720.0f / level1_bg_texture.getSize().y);
 
 
+             //the jumping bars thingy
+             platform_count=7;
+
+
+             ///each bar dimensions
+
+             platform_count = 7;
+
+            platforms[0] = new dimension_er(130, 693, 1020, 30);  // ground
+            platforms[1] = new dimension_er(135, 580, 230, 30);   //brtonm left one
+            platforms[2] = new dimension_er(920, 580, 230, 30);  // right_(BOTTOM)
+            platforms[3] = new dimension_er(320, 475, 640, 30);   //  THE CENTER ONE
+            platforms[4] = new dimension_er(130, 370, 425, 30); // up -left opne
+            platforms[5] = new dimension_er(720, 370, 425, 30); ///up_right one
+            platforms[6] = new dimension_er(525, 585, 245, 30);  //bootom middle
+            player1.set_Dimension(platforms,platform_count);
+
 
         }
         
@@ -119,7 +138,7 @@
         
             if (current_state == GameState::TRAILER) {
    
-                if (trailer_timer.getElapsedTime().asSeconds() >= 5.0f) {
+                if (trailer_timer.getElapsedTime().asSeconds() >= 1.0f) {
     
                     current_state = GameState::MAIN_MENU;
    
@@ -131,6 +150,7 @@
                 player1.update_sprite_position(change_in_time);
             }
              
+
         }//(tam change in kitne sec)
 
         void game::display(){
@@ -149,6 +169,7 @@
 
   
             }
+    
             if(current_state == GameState::MAIN_MENU){
 
                     
@@ -168,11 +189,17 @@
                     window.draw(txtExit);
                 
             }
+    
             if(current_state==GameState::PLAYING)
             {
                 
                 window.draw(level1_bg_sprite);
                 player1.draw(window);
+
+                for (int i=0;i<platform_count;i++)
+                {
+                    platforms[i]->draw(window);
+                }
                 
             }
             
