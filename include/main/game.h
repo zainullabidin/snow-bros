@@ -68,6 +68,9 @@ private:
      player player2;
 
 
+     sf::Clock game_timer;
+
+
 public:
 
         game();

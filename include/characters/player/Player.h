@@ -2,6 +2,7 @@
 
 #include"../character_base.h"
 #include"../HitBox.h"
+#include"../../main/Input_manager.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
@@ -19,11 +20,16 @@ private:
 
     int lives;
 
+    input_Manager in_obj;
+
+    static float gravity;
+
 public:
 
     player(){
         player_id=0;
         lives=0;
+        float gravity = 500.0f;
     }
 
     void set_ID(int id);
@@ -32,6 +38,7 @@ public:
 
     void draw(sf::RenderWindow &) override;
 
+    void texture_setter(int player_id);
 
 
 

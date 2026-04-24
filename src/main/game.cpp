@@ -97,6 +97,7 @@
 
 
              player1.set_ID(1);
+             
              player2.set_ID(2);
             
 
@@ -118,6 +119,10 @@
    
                 }
 
+            }
+            if(current_state==GameState::PLAYING)
+            {
+                player1.update_sprite_position(change_in_time);
             }
              
         }//(tam change in kitne sec)
@@ -157,6 +162,12 @@
                     window.draw(txtExit);
                 
             }
+            if(current_state==GameState::PLAYING)
+            {
+                player1.draw(window);
+                
+            }
+            
     
    
             window.display();
@@ -206,8 +217,10 @@
             while (window.isOpen()) {
        
                 check_event();
+
+                float delta_T = game_timer.restart().asSeconds();
        
-                update(0.0f);
+                update(delta_T);
        
                 display();
     }
