@@ -70,9 +70,9 @@
     void player::texture_setter(int player_id){
         if(player_id==1)
         {
-            Player_texture.loadFromFile("assets/images/Nick.png");
+            Player_texture.loadFromFile("assets/Images/Nick.png");
             player_sprite.setTexture(Player_texture);
-            player_sprite.setTextureRect(sf::IntRect(0, 0, 322, 300));//got these numbers with the help of AI
+            player_sprite.setTextureRect(sf::IntRect(0, 0, 322, 350));//got these numbers with the help of AI
             player_sprite.setPosition(100, 500);
             player_sprite.setScale(0.3f, 0.3f);
             

@@ -103,6 +103,12 @@
 
 
 
+             //level 01
+             level1_bg_texture.loadFromFile("assets/Images/level1.png");
+             level1_bg_sprite.setTexture(level1_bg_texture);
+
+             //scale on level1 
+             level1_bg_sprite.setScale(1280.0f / level1_bg_texture.getSize().x, 720.0f / level1_bg_texture.getSize().y);
 
 
 
@@ -164,6 +170,8 @@
             }
             if(current_state==GameState::PLAYING)
             {
+                
+                window.draw(level1_bg_sprite);
                 player1.draw(window);
                 
             }

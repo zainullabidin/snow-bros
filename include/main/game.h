@@ -70,6 +70,11 @@ private:
 
      sf::Clock game_timer;
 
+     //level1
+
+     sf::Texture level1_bg_texture;
+        sf::Sprite level1_bg_sprite;
+
 
 public:
 
