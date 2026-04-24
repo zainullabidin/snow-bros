@@ -4,7 +4,7 @@
 class hitbox{
 
 public:
-    sf::FloatRect hitbox;
+    sf::FloatRect hit_box_shape;
 
     bool toggle;
 };

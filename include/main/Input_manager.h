@@ -1,4 +1,5 @@
 #pragma once
+
 #include<SFML/Window.hpp>
 
 class input_Manager{
