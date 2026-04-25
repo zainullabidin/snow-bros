@@ -27,6 +27,10 @@ private:
     dimension_er ** DIMEN_ptr;
     
     int DIMEN_SIZE;
+    bool left,right;
+    
+    sf::Clock runner;
+    int running_sprites_count;
 
 
 public:
@@ -34,6 +38,8 @@ public:
     player(){
         player_id=0;
         lives=0;
+        left=true,right=false;
+        running_sprites_count=0;
     }
 
     void set_ID(int id);

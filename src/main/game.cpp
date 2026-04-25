@@ -201,10 +201,10 @@
                 window.draw(level1_bg_sprite);
                 player1.draw(window);
 
-                for (int i=0;i<platform_count;i++)
-                {
-                    platforms[i]->draw(window);
-                }
+                // for (int i=0;i<platform_count;i++)
+                // {
+                //     platforms[i]->draw(window);
+                // }
 
                 BOTTOM->draw(window);
                 
@@ -234,7 +234,7 @@
                     window.close();
         
                 }
-                if(event.type==sf::Event::MouseButtonPressed){
+                if(event.type==sf::Event::MouseButtonPressed&&current_state==GameState::MAIN_MENU){
                     if(event.mouseButton.button==sf::Mouse::Left)
                     {
                         sf::Vector2f mouse_click_position(event.mouseButton.x,event.mouseButton.y);

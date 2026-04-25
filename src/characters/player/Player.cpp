@@ -1,19 +1,68 @@
 #include"../../../include/characters/player/Player.h"
 
-    void player::update_sprite_position(float delta_T) {
+    void player::update_sprite_position(float delta_T) {//movemenys
 
        if(in_obj.player_is_going_left(player_id))
        {
            position.x-= 200.0f * delta_T;
+            right=false;
+            left=true;
+ 
        }
        if(in_obj.player_is_going_right(player_id))
        {
             position.x+= 200.0f * delta_T;
+            left=false;
+            right=true;
+
        }
        if(in_obj.player_is_jumping(player_id)&&velocity.y==0)
        {
              velocity.y=-350.0f;
        }
+
+
+       int width_proceeder=0;
+
+       if(in_obj.player_is_going_left(player_id)||in_obj.player_is_going_right(player_id))
+       {
+
+            if(runner.getElapsedTime().asSeconds()>0.15f)
+            {
+                running_sprites_count=((running_sprites_count)%3)+1;
+                runner.restart ();
+            }
+
+                 width_proceeder=running_sprites_count*328;
+
+                 if(right)
+            player_sprite.setTextureRect(sf::IntRect(width_proceeder+322, 0, -322, 350));
+
+        else if(left)
+            
+            player_sprite.setTextureRect(sf::IntRect(width_proceeder, 0, 322, 350));
+
+
+       }
+       else
+       {
+        if(right)
+            player_sprite.setTextureRect(sf::IntRect(322, 0, -322, 350));
+
+            else if(left)
+            
+            player_sprite.setTextureRect(sf::IntRect(0, 0, 322, 350));
+
+       }
+
+       
+
+
+        
+
+  
+
+
 
        //gravity acting
             velocity.y += 500.0f * delta_T;
@@ -23,15 +72,16 @@
      {
         sf::FloatRect pos=DIMEN_ptr[i]->get_boundaries();
 
-        float bottom_nick=position.y+90;
-        float right_of_nick=position.x+96;
-        float left_of_nick=position.x;
-
-        if(bottom_nick>=pos.top&&bottom_nick<=pos.top+15&&right_of_nick>pos.left&&left_of_nick<pos.left+pos.width-30&&velocity.y>0)
+              float nick_left = position.x;
+             float nick_right = position.x + 77;
+             float bottom_nick = position.y + 105;
+  
+        if(bottom_nick>=pos.top&&bottom_nick<=pos.top+15&&nick_right>pos.left&&nick_left<pos.left+pos.width&&velocity.y>0)
         {
-             position.y = pos.top - 90;
+             position.y = pos.top - 100;
              velocity.y=0;
         }
+
      }
 
       
@@ -47,9 +97,9 @@
           position.y=0;
        }
 
-       if(position.x>1150-96)
+       if(position.x>1150-77)
        {
-         position.x=1054;
+         position.x=1073;
        }
        if(position.y+90>680)
        {
@@ -87,6 +137,7 @@
             player_sprite.setTexture(Player_texture);
             player_sprite.setTextureRect(sf::IntRect(0, 0, 322, 350));//got these numbers with the help of AI
             player_sprite.setPosition(100, 500);
+            
             player_sprite.setScale(0.3f, 0.3f);
         
         }
