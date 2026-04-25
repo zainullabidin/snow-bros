@@ -15,7 +15,7 @@
             B_NewGameSprite.setScale(B_NewGame_Scale_X, B_NewGame_Scale_Y);
             B_NewGameSprite.setTexture(B_NewGameTexture);
             B_NewGameSprite.setPosition(280, 195);
-            txtNewGame.setPosition(420, 245);
+            txtNewGame.setPosition(420, 237);
 
             float B_Scale_X = 380.0f / 1234.0f;
             float B_Scale_Y = 80.0f / 202.0f;
@@ -130,6 +130,10 @@
             platforms[6] = new dimension_er(525, 585, 245, 30);  //bootom middle
             player1.set_Dimension(platforms,platform_count);
 
+            //bottom
+            BOTTOM = new enemy_bottom(130, 100);
+            BOTTOM->set_Dimension(platforms,platform_count);
+
 
         }
         
@@ -148,6 +152,7 @@
             if(current_state==GameState::PLAYING)
             {
                 player1.update_sprite_position(change_in_time);
+                BOTTOM->update_sprite_position(change_in_time);
             }
              
 
@@ -200,6 +205,8 @@
                 {
                     platforms[i]->draw(window);
                 }
+
+                BOTTOM->draw(window);
                 
             }
             

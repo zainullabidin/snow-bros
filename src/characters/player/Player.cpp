@@ -88,9 +88,7 @@
             player_sprite.setTextureRect(sf::IntRect(0, 0, 322, 350));//got these numbers with the help of AI
             player_sprite.setPosition(100, 500);
             player_sprite.setScale(0.3f, 0.3f);
-            
-            position.x = 100;
-            position.y = 500;
+        
         }
     }
 

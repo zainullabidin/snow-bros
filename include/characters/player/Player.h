@@ -25,6 +25,7 @@ private:
     input_Manager in_obj;
 
     dimension_er ** DIMEN_ptr;
+    
     int DIMEN_SIZE;
 
 

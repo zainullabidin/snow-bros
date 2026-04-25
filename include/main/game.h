@@ -1,5 +1,6 @@
 #pragma once
 #include "Input_manager.h"
+#include "../characters/enemy/Botom.h"
 #include"../levels/dimensioner.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -80,6 +81,9 @@ private:
         dimension_er* platforms[10];
 
         int platform_count;
+
+        //bottom
+        enemy_bottom *BOTTOM;
 
 
 public:
