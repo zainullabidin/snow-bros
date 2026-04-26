@@ -34,3 +34,12 @@ Student B Comments:
 - Need to work on Boss.h + cpp
 - Need to work on EnemyFactory.h + cpp
 - Need to work on EventBus.h + cpp
+
+
+----------------------------
+24th April
+----------------------------
+- trying to apply database system
+1. diff to figure out which funtions to include where
+2. need to tackle inheritence / composition problem (aaaaaaaaaaaaaaaaaaaaaagh)
+- wasted so much of my time

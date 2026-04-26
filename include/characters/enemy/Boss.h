@@ -18,7 +18,7 @@ public:
     virtual ~Boss() {};
 
 	virtual void onPhaseChange() = 0;
-	// virtual void drawHealthBar(sf::RenderWindow& w);
+	// virtual void drawHealthBar(RenderWindow& w);
 
 	phaseStage getPhase ();
 	bool isBoss() override;

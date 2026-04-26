@@ -4,6 +4,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 using namespace std;
+using namespace sf;
 
 
 enum class PowerUpType { SNOWBALL_BOOST, SPEED_BOOST, BALLOON_MODE, DISTANCE_INCREASE, EXTRA_LIFE };
@@ -12,12 +13,12 @@ class PowerUp
 {
 protected:
 	
-	sf::Texture puTexture;
-	sf::Sprite puSprite;
+	Texture puTexture;
+	Sprite puSprite;
 
     int Volume;
-	sf::SoundBuffer soundEffect;
-	sf::Sound claimSound;
+	SoundBuffer soundEffect;
+	Sound claimSound;
 
 	bool fromShop; 
 
@@ -71,9 +72,9 @@ public:
 	// pure virtuals (Must override)
 	
 	virtual PowerUpType getPowerUpType() = 0; 
-	virtual const sf::Sound& getClaimSound() = 0;	
+	virtual const Sound& getClaimSound() = 0;	
 
-	virtual void draw(sf::RenderWindow& w) = 0; 
+	virtual void draw(RenderWindow& w) = 0; 
 	virtual void Apply() = 0; 
 	virtual void Remove() = 0; //  for temporary
 
@@ -86,6 +87,6 @@ public:
 	bool isTemporary();
 
 	void updateTimer();  
-	sf::FloatRect getHitbox();
+	FloatRect getHitbox();
 
 };

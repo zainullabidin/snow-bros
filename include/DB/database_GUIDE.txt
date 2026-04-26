@@ -47,7 +47,7 @@ WHAT IT IS:
 The base layer. Handles raw file operations so that
 repositories never write fstream code directly.
 One place for all file handling logic.
-
+    
 KEY METHODS:
 
     readAllLines(filename) : vector<string>
@@ -73,6 +73,11 @@ KEY METHODS:
     createFileIfMissing(filename)
         — creates an empty file if it does not exist
         — call this at game startup for all three .txt files
+
+FREE FUNCTION:
+    splitString -> need to use in alll the db files + auth 
+    - so used as a free function
+    - if we use as a member function, it gets complicated by a lot
 
 HOW TO IMPLEMENT readAllLines SAFELY:
 
@@ -116,7 +121,7 @@ RULES:
 ================================================================
 
 ----------------------------------------------------------------
-FILE 2: UserRepository.h
+FILE 2: User_data.h
 ----------------------------------------------------------------
 OWNER        : Student B
 DEPENDS ON   : Database.h
@@ -181,9 +186,6 @@ Split by the | character:
     // parts[2] = "8765432109876"
     // parts[3] = "zain@email.com"
 
-Write a private splitString helper method.
-It is used by all repository classes.
-
 WHAT IT DELIVERS AFTER IMPLEMENTATION:
 AuthManager can find users and create accounts
 without writing a single line of file reading code.
@@ -195,6 +197,7 @@ how to look them up. AuthManager just asks
 "does this person work here?" and gets an answer.
 
 RULES:
+- Hashing needs to be implemented in auth AuthManager.h, not here
 - Never store plain text passwords here. Only hashes.
   Receiving a hash and storing it is fine.
   Receiving a plain password and storing it is not.
@@ -333,15 +336,34 @@ HELPER STRUCT:
     };
 
 KEY METHODS:
+private methods:
+    sort() : void
+        — uses bubble sort algorithm
+        — sorts parallel arrays (score, username, levelReached, date, rank)
+        — compares adjacent scores using descending order (higher scores first)
+        — swaps all corresponding array elements when scores are out of order
+        — performs multiple passes until entire array is sorted
+        — modifies the arrays in-place (no return value)
+        — should be followed by reassignRanks() to update position numbers
 
-    getTopTen() : vector<LeaderboardEntry>
-        — reads leaderboard.txt
-        — parses all lines into LeaderboardEntry objects
-        — returns them sorted by score descending
-        — returns empty vector if file is empty or missing
+    reassignRanks() : void
+        — called after sorting to update rank numbers
+        — loops through all entries from index 0 to entryCount-1
+        — assigns rank 1 to highest score (index 0), rank 2 to second highest (index 1), etc.
+        — handles duplicate scores by assigning same rank to equal scores
+        — skips incrementing rank number when scores are equal (optional logic)
+        — ensures rank numbers reflect correct leaderboard positions
+        — modifies rank array in-place (no return value)
 
-    insertScore(username, score, levelReached, date)
-        — reads all current entries
+public methods:
+        getTopTen() : vector<LeaderboardEntry>
+            — reads leaderboard.txt
+            — parses all lines into LeaderboardEntry objects
+            — returns them sorted by score descending
+            — returns empty vector if file is empty or missing
+
+        insertScore(username, score, levelReached, date)
+            — reads all current entries
         — adds the new entry
         — sorts all entries by score descending
         — trims to maximum 10 entries

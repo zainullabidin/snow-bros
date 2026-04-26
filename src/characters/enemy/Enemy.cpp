@@ -6,6 +6,7 @@ using namespace std;
 // need inplementation by Z on bottom + add sound effect
 //===================================================================
 
+// constructors 
 Enemy::Enemy() : Volume(0),
     state(EnemyState::MOVING),
     health(0), maxHealth(0), minScore(0), maxScore(0),
@@ -20,6 +21,7 @@ Enemy::Enemy() : Volume(0),
         cout << "Failed to load Enemy hit sound" << endl;
 }
 
+// sfml setting
 void Enemy::setVolume(int vol) {
     Volume = vol;
     hitSound.setVolume(Volume);
@@ -28,10 +30,8 @@ int Enemy::getVolume() const {
     return Volume;
 }
 
-
-
 void Enemy::playSound() {
-    if (hitSound.getStatus() != sf::Sound::Playing)
+    if (hitSound.getStatus() != Sound::Playing)
         hitSound.play();
 }
 
@@ -39,9 +39,10 @@ void Enemy::stopSound() {
     hitSound.stop();
 }
 
-
 Enemy::~Enemy() {}
 
+
+// getters - setters
 float Enemy::getX() {
     return x;
 }
@@ -84,6 +85,8 @@ EnemyState Enemy::getState() {
     return state;
 }
 
+
+// methods
 bool Enemy::canFly() {
     return false;
 }
@@ -105,8 +108,8 @@ bool Enemy::isDead() {
 bool Enemy::isRolling() {
     return state == EnemyState::ROLLING;
 }
-sf::FloatRect Enemy::getHitbox() const {
-    return sf::FloatRect(x, y, hitboxWidth, hitboxHeight);
+FloatRect Enemy::getHitbox() const {
+    return FloatRect(x, y, hitboxWidth, hitboxHeight);
 }
 
 
