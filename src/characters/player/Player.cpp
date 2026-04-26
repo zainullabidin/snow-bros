@@ -22,10 +22,40 @@
        }
 
 
-       int width_proceeder=0;
 
-       if(in_obj.player_is_going_left(player_id)||in_obj.player_is_going_right(player_id))
+
+        if(throw_SNOWBALL)
        {
+
+        if(throw_timer.getElapsedTime().asSeconds()>0.1f)
+        {
+            throw_SNOWBALL=false;
+            
+        }
+        else
+        {
+            if(throw_timer.getElapsedTime().asSeconds()>0.05f)
+            {
+                snow_sprites_count=(snow_sprites_count+1)%2;
+                
+                
+            }
+               int x=409+snow_sprites_count*257;
+            if(right)
+                
+                player_sprite.setTextureRect(sf::IntRect(x + 220, 1580, -257, 310));
+            else
+                player_sprite.setTextureRect(sf::IntRect(x, 1580, 257, 310));
+        }
+
+       }
+
+
+       
+
+      else  if(in_obj.player_is_going_left(player_id)||in_obj.player_is_going_right(player_id))
+       {
+        int width_proceeder=0;
 
             if(runner.getElapsedTime().asSeconds()>0.15f)
             {
@@ -59,6 +89,9 @@
 
 
         
+
+       
+
 
   
 
@@ -120,7 +153,6 @@
 
     }
 
-
     void player::set_ID(int id){
 
         player_id=id;
@@ -143,7 +175,6 @@
         }
     }
 
-
     void player::set_Dimension(dimension_er **arr, int n)
     {
         DIMEN_ptr=arr;
@@ -151,3 +182,25 @@
 
     }
 
+    bool player::left_chcker(){
+
+        return left;
+
+    }
+
+    bool player::right_chcker(){
+
+        return right;
+    }
+
+    sf::Vector2f player::get_positionof_player(){
+        return position;
+    }
+
+    void player::activate_SNOWBALL(){
+        
+        throw_SNOWBALL=true;
+
+        throw_timer.restart();
+
+    }

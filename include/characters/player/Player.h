@@ -33,6 +33,13 @@ private:
     int running_sprites_count;
 
 
+    ///snow ball thrower
+    sf::Clock throw_timer;
+    bool throw_SNOWBALL;
+
+    int snow_sprites_count;
+
+
 public:
 
     player(){
@@ -40,6 +47,10 @@ public:
         lives=0;
         left=true,right=false;
         running_sprites_count=0;
+
+        snow_sprites_count=0;
+
+        throw_SNOWBALL=false;
     }
 
     void set_ID(int id);
@@ -51,6 +62,15 @@ public:
     void texture_setter(int player_id);
 
     void set_Dimension(dimension_er ** arr, int n);
+
+    bool left_chcker();
+
+    bool right_chcker();
+
+    sf::Vector2f get_positionof_player();
+
+    void activate_SNOWBALL();
+
 
 
 

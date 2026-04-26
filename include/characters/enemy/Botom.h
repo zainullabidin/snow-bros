@@ -23,6 +23,11 @@ private:
     
     int DIMEN_SIZE;
 
+    sf::Clock walker_bottom;
+    int walkingsprite;
+
+    bool left,right;
+
 public:
 
     enemy_bottom(float x, float y);

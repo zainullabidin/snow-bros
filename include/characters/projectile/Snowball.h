@@ -7,8 +7,10 @@ class snow_ball:public character_base{
 
 private:
 
-    sf::Texture ball_texture;
-    sf::Sprite ball_sprite;
+  //  sf::Texture ball_texture;
+   // sf::Sprite ball_sprite;
+
+   sf::CircleShape ball_sprite;
 
     bool checker;
 

@@ -4,6 +4,9 @@
  
         game::game(){
 
+            snowBALL_PTR=NULL;
+            snow_checker=false;
+
             font.loadFromFile("assets/fonts/PressStart2P-Regular.ttf");
             window.create(sf::VideoMode(1280, 720), "SNOW BROS-By MZ");//screens saz and apna mark
             //maim menu content loacer
@@ -153,7 +156,13 @@
             {
                 player1.update_sprite_position(change_in_time);
                 BOTTOM->update_sprite_position(change_in_time);
+            
+                if(!(snowBALL_PTR==NULL)&&snow_checker)
+            {
+                snowBALL_PTR->update_sprite_position(change_in_time);
             }
+            }
+ 
              
 
         }//(tam change in kitne sec)
@@ -207,8 +216,21 @@
                 // }
 
                 BOTTOM->draw(window);
-                
+
+            if(!(snowBALL_PTR==NULL)&&snow_checker)
+            {
+                snowBALL_PTR->draw(window);
             }
+
+            if(snowBALL_PTR != NULL && snowBALL_PTR->snowbal_checker()==false)
+                {
+                    delete snowBALL_PTR;
+                    snowBALL_PTR = NULL;
+                    snow_checker=false;
+                }
+            }
+
+
             
     
    
@@ -248,6 +270,26 @@
                         if(B_ExitSprite.getGlobalBounds().contains(mouse_click_position))
                         window.close();
                     }
+                }
+                if(event.type==sf::Event::KeyPressed&&event.key.code==sf::Keyboard::Space)
+                {
+                    if(snowBALL_PTR != NULL&&snowBALL_PTR->snowbal_checker()==false) {
+                        delete snowBALL_PTR;
+                        snowBALL_PTR = NULL;
+                        snow_checker=false;
+                    }
+                    if(snow_checker==false&&player1.left_chcker())
+                    {
+                        snowBALL_PTR= new snow_ball(player1.get_positionof_player().x,(player1.get_positionof_player().y+50),true);
+                        snow_checker=true;
+                    }
+                    else if(snow_checker==false&&player1.right_chcker())
+                    {
+                         snowBALL_PTR= new snow_ball(player1.get_positionof_player().x+96,(player1.get_positionof_player().y+50),false);
+                        snow_checker=true;
+                    }
+                    player1.activate_SNOWBALL();
+
                 }
   
             }

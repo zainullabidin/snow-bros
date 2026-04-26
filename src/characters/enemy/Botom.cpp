@@ -5,6 +5,7 @@
     enemy_bottom::enemy_bottom(float x, float y){
 
 
+        left=false,right=true;
         bottom_texture.loadFromFile("assets/Images/Botom_Blue.png");
         bottom_sprite.setTexture(bottom_texture);
         bottom_sprite.setTextureRect(sf::IntRect(0, 133, 120, 95));
@@ -15,11 +16,14 @@
 
         position.x=x;
         position.y=y;
+
+        walkingsprite=0;
                 
     }
 
      void enemy_bottom::update_sprite_position(float delta_T){
 
+        
 
              velocity.y += 500.0f * delta_T;
              position.x += velocity.x * delta_T;  
@@ -40,15 +44,47 @@
                     velocity.y=0;
                 }
             }
+
+
+
+
             if(position.x<130)
             {
                 velocity.x = 100.0f;
+                left=false,right=true;
             }
 
             if(position.x>1150-72)
             {
                 velocity.x = -100.0f;
+                left=true,right=false;
             }
+
+             if(walker_bottom.getElapsedTime().asSeconds()>0.3f)
+            {
+                walkingsprite=0;
+            }
+
+                if(walker_bottom.getElapsedTime().asSeconds()>0.15f)
+                {
+                    walkingsprite=(walkingsprite%2)+1;
+                    walker_bottom.restart();
+                }
+                
+            
+             int x=walkingsprite*94;
+             if(right)
+                
+                bottom_sprite.setTextureRect(sf::IntRect(x+94, 366, -94, 88));
+             else
+                bottom_sprite.setTextureRect(sf::IntRect(x, 366, 94, 88));
+            
+            
+
+
+
+
+
             
             bottom_sprite.setPosition(position);
 

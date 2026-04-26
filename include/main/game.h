@@ -1,5 +1,6 @@
 #pragma once
 #include "Input_manager.h"
+#include "../characters/projectile/Snowball.h"
 #include "../characters/enemy/Botom.h"
 #include"../levels/dimensioner.h"
 #include <SFML/Graphics.hpp>
@@ -84,6 +85,11 @@ private:
 
         //bottom
         enemy_bottom *BOTTOM;
+
+
+        //snowball
+        snow_ball *snowBALL_PTR;
+        bool snow_checker;
 
 
 public:
