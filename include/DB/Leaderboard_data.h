@@ -13,21 +13,16 @@ private:
     int score[10];
     int levelReached[10];
     string date[10];
-    int entryCount; // how many enteries currently loaded
 
     // private so can only be used by the methods of this class
     void sort();
-    void reassignRanks();
 
 public:
     Leaderboard();
     ~Leaderboard();
 
-
     void getTopTen();
     void insertScore(const string& uname, int s, int level, const string& d);
-    bool isTopTen(int score);
-    int getLowestScore() const;
 
     // getters
     int getRank(int i) const;
@@ -35,7 +30,6 @@ public:
     int getScore(int i) const;
     int getLevelReached(int i) const;
     string getDate(int i) const;
-    int getEntryCount() const;
 
 };
 

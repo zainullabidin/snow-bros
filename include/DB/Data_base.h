@@ -15,10 +15,10 @@ class Data_base
 {
 private:
     string *lines;
-    int count;
-    int capacity;
+    int count;          // no of lines in file
+    int capacity;       // no of lines a file can hold
 
-    void resize(); // doubles capacity, reallocates lines array
+    
 
 public:
     Data_base(int cap);
@@ -40,6 +40,7 @@ public:
     void createFileIfMissing(const string& filename);
     void clear();
 
+    void resize(); // doubles capacity, reallocates lines array
 };
 
 

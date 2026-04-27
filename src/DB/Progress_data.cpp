@@ -11,7 +11,7 @@ Progress_data::Progress_data() : db(10)
     currentLevel = 1;
     livesRemaining = 2; 
     gemCount = 0;
-    highScore = 0; 
+    highScore = 0;
     lastUpdated = ""; 
 }
 

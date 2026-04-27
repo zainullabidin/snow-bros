@@ -44,7 +44,7 @@ void Data_base::setCapacity(int Capacity) {
 
 // replaces lines or sets lines at index
 void Data_base::setLine(int index, const string& line) {
-    if (index < 0 || index >= count) 
+    if (index < 0 || index >= capacity)  // check capacity, not count
         return;
     lines[index] = line;
 }
@@ -83,7 +83,6 @@ void Data_base::readAllLines(const string& filename) {
 
         lines[count++] = line;
     }
-
     file.close();
 }
 
@@ -168,5 +167,4 @@ void splitstring(string line, char delimeter, string parts[], int &partCount){
     // to add last val also 
     if(!current.empty())
         parts[partCount++] = current;
-
 }

@@ -1,163 +1,264 @@
-#include"../../include/DB/Leaderboard_data.h"
+#include "../../include/DB/Leaderboard_data.h"
 
 // constructor + destructor
-Leaderboard::Leaderboard() : db(10) 
+Leaderboard::Leaderboard() : db(10)
 {
     db.createFileIfMissing(LEADERBOARD_FILE);
-    entryCount = 0;
+    db.setCount(0);
 }
-Leaderboard::~Leaderboard() {
+Leaderboard::~Leaderboard()
+{
     db.clear();
 }
-
 
 // ------- private methods --------
 
 // simply sort descending
 void Leaderboard::sort()
 {
-    for(int i = 0 ; i < entryCount - 1 ; i++)
+    db.readAllLines(LEADERBOARD_FILE);
+
+    int allCount = db.getCount();
+    // allocate based on actual file line count
+    int *s = new int[allCount];
+    int *l = new int[allCount];
+    string *u = new string[allCount];
+    string *d = new string[allCount];
+    int *r = new int[allCount];
+
+    string parts[5];
+    int partCount = 0;
+    int filled = 0;
+
+    // fill ALL arrays properly from the existing file
+    for (int i = 0; i < allCount; i++)
     {
-        // Compare adjacent elements, ignoring already-sorted elements at the end
-        for(int j = 0 ; j < entryCount - i - 1; j++)
+        splitstring(db.getLine(i), '|', parts, partCount);
+        if (partCount >= 5)
+        {
+            // no rank here, we'll set it after sorting at end 
+            u[filled] = parts[1];
+            s[filled] = stoi(parts[2]);
+            l[filled] = stoi(parts[3]);
+            d[filled] = parts[4];
+            filled++;
+        }
+    }
+
+    //  sort in descending
+    for (int i = 0; i < filled - 1; i++)
+    {
+        // no need to check for already sorted part
+        for (int j = 0; j < filled - i - 1; j++)
         {
             bool shouldSwap = false;
 
-            if (score[j] < score[j+1]){
+            // scores based swap
+            if (s[j] < s[j + 1])
                 shouldSwap = true;
-            }
-            else if (score[j] == score[j+1]){
 
-                // same score, higher level wins
-                if (levelReached[j] < levelReached[j+1]) 
-                {
+            // if scores are equal, swap based on level reached
+            else if (s[j] == s[j + 1])
+                if (l[j] < l[j + 1])
                     shouldSwap = true;
-                }
-            }
 
             if (shouldSwap)
             {
                 // using helper functions
-                swap(score[j], score[j+1]);
-                swap(username[j], username[j+1]);
-                swap(levelReached[j], levelReached[j+1]);
-                swap(date[j], date[j+1]);
-                swap(rank[j], rank[j+1]);
+                swap(s[j], s[j + 1]);
+                swap(u[j], u[j + 1]);
+                swap(l[j], l[j + 1]);
+                swap(d[j], d[j + 1]);
             }
+        }
+    }
+
+    // in ascending simply assign ranks + update lines
+    for(int i = 0 ; i < filled ; i++)
+    {
+        r[i] = i + 1;
+        db.setLine(i, to_string(r[i]) + "|" + u[i] + "|" + 
+                to_string(s[i]) + "|" + to_string(l[i]) + "|" + d[i]);
+    }
+
+    // write updated data back to file
+    db.writeAllLines(LEADERBOARD_FILE);
+
+     
+    // clear up memory
+    delete[] s;
+    delete[] l;
+    delete[] u;
+    delete[] d;
+    s = nullptr;
+    l = nullptr;
+    u = nullptr;
+    d = nullptr;
+}
+
+
+
+
+// ------- public methods --------
+
+void Leaderboard::getTopTen()
+{
+    sort();          // sort the entries first
+    db.readAllLines(LEADERBOARD_FILE);
+
+    string parts[5];
+    int partCount = 0;
+    int filled = 0;
+
+    // fill ALL arrays properly from the existing file just the 1st top ten
+    for (int i = 0; i < 10; i++)
+    {
+        splitstring(db.getLine(i), '|', parts, partCount);
+        if (partCount >= 5)
+        {
+            rank[filled] = stoi(parts[0]);
+            username[filled] = parts[1];
+            score[filled] = stoi(parts[2]);
+            levelReached[filled] = stoi(parts[3]);
+            date[filled] = parts[4];
+            
+            filled++;
         }
     }
 }
 
-void Leaderboard::reassignRanks()
+
+
+void Leaderboard::insertScore(const string &uname, int s, int level, const string &d)
 {
-    for(int i = 0 ; i < entryCount ; i++)
-    {
-        rank[i] = i + 1;
-    }
-}
-
-// ------- public methods --------
-
-
-void Leaderboard::getTopTen() 
-{
+    // Read current data
     db.readAllLines(LEADERBOARD_FILE);
-
-    entryCount = 0;
+    
+    // Check if user already exists
     string parts[5];
     int partCount = 0;
+    bool userExists = false;
 
+    // find location
+    int existingScore = 0;
+    int existingLevel = 0;
+    int existingLineIndex = -1;
+    
     for (int i = 0; i < db.getCount(); i++) 
     {
         splitstring(db.getLine(i), '|', parts, partCount);
 
-        if (partCount >= 5 && entryCount < 10) 
+        // finding the user and collecting data from it
+        if (partCount >= 5 && parts[1] == uname) 
         {
-            rank[entryCount]         = stoi(parts[0]);
-            username[entryCount]     = parts[1];
-            score[entryCount]        = stoi(parts[2]);
-            levelReached[entryCount] = stoi(parts[3]);
-            date[entryCount]         = parts[4];
-            entryCount++;
+            userExists = true;
+            existingScore = stoi(parts[2]);
+            existingLevel = stoi(parts[3]);
+            existingLineIndex = i;
+            break;
         }
     }
-    sort();         // sort ALL of them after loading
-    reassignRanks();// then reassign ranks
-}
-
-int Leaderboard::getLowestScore() const {
-    if (entryCount == 0)
-        return 0;
     
-    return score[entryCount - 1];
-}
 
-bool Leaderboard::isTopTen(int score){
-    if (entryCount < 10) return true;  // Less than 10 entries? Always top 10
-    return score > getLowestScore();    // Exactly 10 entries? Compare with last
-}
+    if (userExists) {
+        // If new score is higher, update the entry
+        if (s > existingScore) 
+        {
+            // Remove the old line from db so if originally 14 now 13
+            string *newLines = new string[db.getCount() - 1];  // 13 lines
+            int newIdx = 0; 
 
-void Leaderboard::insertScore(const string& uname, int s, int level, const string& d)
-{
-    getTopTen(); // get current top ten scores
+            for (int i = 0; i < db.getCount(); i++) 
+            {
+                if (i != existingLineIndex)     // skip only the line we want to remove
+                {
+                    // others to new array
+                    newLines[newIdx++] = db.getLine(i);
+                }
+            }
+            
+            db.clear();
+            db.setCount(0);
 
-    username[entryCount] = uname;
-    score[entryCount] = s;
-    levelReached[entryCount] = level;
-    date[entryCount] = d;
-    entryCount++;
+            // reload the data back into original db obj 
+            for (int i = 0; i < newIdx; i++) 
+            {
+                if (db.getCount() >= db.getCapacity()) 
+                    db.resize();
 
-    sort();
-    reassignRanks();
+                db.setLine(db.getCount(), newLines[i]);
+                db.setCount(db.getCount() + 1);
+            }
 
-    if (entryCount > 10) entryCount = 10;
-    
-    db.clear();
-    for (int i = 0; i < entryCount; i++)
-    {
-        string line = to_string(rank[i]) + "|" + username[i] 
-                        + "|" + to_string(score[i]) + "|" + 
-                        to_string(levelReached[i]) + "|" + date[i];
+            delete[] newLines;
+            newLines = nullptr;
+            
+            // Write the updated file without the old entry
+            db.writeAllLines(LEADERBOARD_FILE);
+            
+            // Now add the new entry
+            string line = to_string(db.getCount() + 1) + "|" + uname + "|" + to_string(s) + "|" + to_string(level) + "|" + d;
+            db.appendLine(LEADERBOARD_FILE, line);
+            
+            // Sort and update top 10
+            sort();
+            getTopTen();
+            return; // Exit here to prevent duplicate
+        } 
         
-        db.appendLine(LEADERBOARD_FILE,line);
+        // New score is not higher, just keep existing line, no need to add new line
+        else {
+            sort();
+            getTopTen();
+            return; // Exit here too
+        }
     }
-    db.writeAllLines(LEADERBOARD_FILE);
     
+    // User doesn't exist - add new entry normally
+    if (db.getCount() >= db.getCapacity()) {
+        db.resize();
+    }
+    
+    string line = to_string(db.getCount() + 1) + "|" + uname + "|" + to_string(s) + "|" + to_string(level) + "|" + d;
+    db.appendLine(LEADERBOARD_FILE, line);
+    
+    sort();
+    getTopTen();
 }
 
 // ------- getters --------
-int Leaderboard::getRank(int i) const {
-    return rank[i] ;
+int Leaderboard::getRank(int i) const
+{
+    return rank[i];
 }
-string Leaderboard::getUsername(int i) const {
+string Leaderboard::getUsername(int i) const
+{
     return username[i];
 }
-int Leaderboard::getScore(int i) const {
+int Leaderboard::getScore(int i) const
+{
     return score[i];
 }
-int Leaderboard::getLevelReached(int i) const {
+int Leaderboard::getLevelReached(int i) const
+{
     return levelReached[i];
 }
-string Leaderboard::getDate(int i) const {
+string Leaderboard::getDate(int i) const
+{
     return date[i];
 }
-int Leaderboard::getEntryCount() const {
-    return entryCount;
-}
-
-
-
-
 
 // helper func
 // function overloading
-void swap(string & a, string & b){
+void swap(string &a, string &b)
+{
     string temp = a;
     a = b;
     b = temp;
 }
 
-void swap(int & a, int & b){
+void swap(int &a, int &b)
+{
     int temp = a;
     a = b;
     b = temp;
