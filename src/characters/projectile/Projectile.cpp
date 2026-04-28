@@ -6,6 +6,8 @@ using namespace std;
 // need to correct file path
 //===================================================================
 
+
+//constructor
 Projectile::Projectile() : Volume(0),
 	x(0), y(0), Vx(0), Vy(0), hitboxWidth(0), hitboxHeight(0),
 	damage(0), duration(0), isActive(true), isPlayerProjectile(true) {
@@ -19,6 +21,7 @@ Projectile::Projectile() : Volume(0),
 	
 }
 
+// sfml setting
 void Projectile::setVolume(int vol) {
     Volume = vol;
     launchSound.setVolume(vol);
@@ -32,7 +35,7 @@ int Projectile::getVolume() const {
 Projectile::~Projectile() {}
 
 void Projectile::playSound() {
-    if (launchSound.getStatus() != sf::Sound::Playing)
+    if (launchSound.getStatus() != Sound::Playing)
         launchSound.play();
 }
 
@@ -40,6 +43,8 @@ void Projectile::stopSound() {
     launchSound.stop();
 }
 
+
+// getters 
 float Projectile::getX() {
     return x;
 }
@@ -80,6 +85,8 @@ bool Projectile::getIsPlayerProjectile() {
     return isPlayerProjectile;
 }
 
+
+// setters
 void Projectile::setPosition(float newX, float newY) {
     x = newX;
     y = newY;
@@ -111,8 +118,8 @@ void Projectile::setIsPlayerProjectile(bool value) {
     isPlayerProjectile = value;
 }
 
-sf::FloatRect Projectile::getHitbox() const {
-    return sf::FloatRect(x, y, hitboxWidth, hitboxHeight);
+FloatRect Projectile::getHitbox() const {
+    return FloatRect(x, y, hitboxWidth, hitboxHeight);
 }
 
 void Projectile::deactivate() {

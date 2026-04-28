@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include<SFML/Audio.hpp>
 using namespace std;
+using namespace sf;
 
 
 enum class EnemyType { BOTOM, FOOGA, TORNADO,MOGERA, GAMAKICHI };
@@ -12,12 +13,12 @@ class Enemy
 {
 protected:
     
-	sf::Texture enTexture; 
-	sf::Sprite enSprite;	
+	Texture enTexture; 
+	Sprite enSprite;	
 
 	int Volume;
-	sf::SoundBuffer hitBuffer;
-	sf::Sound hitSound;
+	SoundBuffer hitBuffer;
+	Sound hitSound;
 
 	EnemyState state;  // from enum
 
@@ -64,11 +65,11 @@ public:
 
 	// pure virtuals (must override) 
 
-	virtual sf::Sprite getSprite() = 0;  
+	virtual Sprite getSprite() = 0;  
 	virtual EnemyType getEnemyType() = 0;
 
 	virtual void update(float deltatime) = 0; 
-	virtual void draw(sf::RenderWindow& w) = 0; 
+	virtual void draw(RenderWindow& w) = 0; 
 	virtual void TakeDamage(int amt) = 0; 
 	virtual double getSpeed() = 0; 
 
@@ -90,5 +91,5 @@ public:
 	void addSnow(float amount) ;
 
 
-	sf::FloatRect getHitbox() const;
+	FloatRect getHitbox() const;
 };

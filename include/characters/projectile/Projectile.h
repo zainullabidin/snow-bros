@@ -3,6 +3,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 using namespace std;
+using namespace sf;
 
 
 enum class ProjectileType { SNOWBALL, KNIFE, ROCKET};
@@ -11,12 +12,12 @@ class Projectile
 {
 protected:
 	
-	sf::Texture tp; 
-	sf::Sprite projectile; 
+	Texture tp; 
+	Sprite projectile; 
 
     int Volume;
-	sf::SoundBuffer soundEffect; 
-	sf::Sound launchSound; 
+	SoundBuffer soundEffect; 
+	Sound launchSound; 
 
 	float x, y; 
 	float Vx, Vy;
@@ -69,11 +70,11 @@ public:
 
 	virtual ProjectileType getType() const = 0; 
 
-	virtual sf::Sprite getSprite() = 0; 
-	virtual sf::Sound getLaunchSound() = 0; 
+	virtual Sprite getSprite() = 0; 
+	virtual Sound getLaunchSound() = 0; 
 
 	virtual void update(float deltaTime) = 0;	
-	virtual void draw(sf::RenderWindow& w) = 0;	
+	virtual void draw(RenderWindow& w) = 0;	
 
     // decision needed for argument
 	virtual void onHit() = 0;		// collision
@@ -81,7 +82,7 @@ public:
 	
     // Common functions
 		
-	sf::FloatRect getHitbox() const;
+	FloatRect getHitbox() const;
 	void deactivate();
 
 

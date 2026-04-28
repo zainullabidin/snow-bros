@@ -5,7 +5,7 @@
 //====================================================================
 
 
-// void Boss::drawHealthBar(sf::RenderWindow& w) {
+// void Boss::drawHealthBar(RenderWindow& w) {
 //     // Implementation for drawing the health bar will go here
 // }
 
