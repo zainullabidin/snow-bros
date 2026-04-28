@@ -13,8 +13,6 @@ private:
 
     hitbox Bottom_hitbox;
 
-    float speed;
-
     sf::Texture bottom_texture;
 
     sf::Sprite bottom_sprite;
@@ -65,8 +63,6 @@ public:
     bool check_alive();
 
     void set_rooling(bool nick_face_side);
-
-    void remove_rooling();
 
     bool get_rooling();
 

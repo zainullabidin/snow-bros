@@ -4,7 +4,10 @@
 
     enemy_bottom::enemy_bottom(float x, float y){
 
-
+        // ball_casing=NULL;
+        DIMEN_ptr=nullptr;
+        DIMEN_SIZE=0;
+        
         alive=true;
         roll=false;
 
@@ -207,8 +210,7 @@
         {
             ball_casing=new sf::Texture;
         }
-        else
-        ball_casing=NULL;
+   
 
         ball_casing=&ptr;
         anow_ball_casing.setTexture(*ball_casing);
@@ -232,11 +234,6 @@
                velocity.x=400.0f;
 
               roll=true;
-     }
-
-     void enemy_bottom::remove_rooling(){
-
-        roll=false;
      }
 
      bool enemy_bottom::get_rooling(){

@@ -4,6 +4,7 @@
  
         game::game(){
 
+            level=0;
             snowBALL_PTR=NULL;
             snow_checker=false;
 
@@ -66,7 +67,7 @@
             txtNewGame.setFont(font);
             txtNewGame.setString("NEW GAME");
             txtNewGame.setCharacterSize(22);
-   \
+   
 
             //btn-2
 
@@ -116,9 +117,7 @@
              level1_bg_sprite.setScale(1280.0f / level1_bg_texture.getSize().x, 720.0f / level1_bg_texture.getSize().y);
 
 
-             //the jumping bars thingy
-             platform_count=7;
-
+             //the jumping bars thingy&
 
              ///each bar dimensions
 
@@ -200,9 +199,9 @@
             for(int i=0;i<3;i++)
             if(BOTTOM[i]->get_rooling())
         {
-            for(int j=i+1;j<3;j++)
+            for(int j=0;j<3;j++)
             if(collision_detector.rollingSnowball_HitsEnemy(BOTTOM[i]->getHIT_box(),BOTTOM[j]->getHIT_box()))
-            {
+            {if(i!=j)
                 BOTTOM[j]->set_dead();
             }
 
@@ -218,7 +217,11 @@
         }
 
          if(check_level_complete)
-            current_state=GameState::LEVEL_COMPLETE;
+         {
+                current_state=GameState::LEVEL_COMPLETE;
+                level_complete_timer.restart();
+         }
+            
 
 
 
@@ -242,13 +245,25 @@
             }
             if(!player1.is_life())
             {
-                //endgame
+                //endgame 
             }
   
 
 
+            } 
+        
+            if(current_state==GameState::LEVEL_COMPLETE)
+            {
+                if(level_complete_timer.getElapsedTime().asSeconds()>2.0f)
+                {
+
+                    current_state=GameState::PLAYING;
+                    level++;
+                    level_complete_timer.restart();
+
+                }
+
             }
-   
 
         }//(tam change in kitne sec)
 
@@ -332,15 +347,10 @@
                 txt.setPosition(400, 300);
                 window.draw(txt);
             }
- 
-          
 
 
-            
-    
    
             window.display();
-
 
         } //all the screen shtuff goes here 
 

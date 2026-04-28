@@ -9,17 +9,19 @@
 #include "../characters/player/Player.h"
 #include"Collision_detector.h"
 
-using namespace std;
+
 
 class game{
 
 private:
 
+
+sf::Clock level_complete_timer;
+/// add sf::Clock level_complete_timer, add int current_level
+
     sf::RenderWindow window;
 
     GameState current_state;//always importing from the enum library
-
-    bool endgame;
 
     sf::Font font;
 
@@ -95,6 +97,8 @@ private:
         //col_detect
 
         Collision_DET collision_detector;
+
+        int level;
 
 
 

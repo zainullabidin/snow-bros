@@ -170,8 +170,11 @@
         {
             Player_texture.loadFromFile("assets/Images/Nick.png");
             player_sprite.setTexture(Player_texture);
-            player_sprite.setTextureRect(sf::IntRect(0, 0, 322, 350));//got these numbers with the help of AI
+            player_sprite.setTextureRect(sf::IntRect(0, 0, 322, 350));
             player_sprite.setPosition(100, 500);
+            
+            position.x = 100;
+            position.y = 500;
             
             player_sprite.setScale(0.3f, 0.3f);
         
