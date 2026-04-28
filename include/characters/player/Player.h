@@ -39,16 +39,24 @@ private:
 
     int snow_sprites_count;
 
+    sf::Clock die_timer;
+    bool dec;
+
+
+
 
 public:
 
     player(){
         player_id=0;
         lives=0;
+        dec=false;
         left=true,right=false;
         running_sprites_count=0;
 
         snow_sprites_count=0;
+
+       
 
         throw_SNOWBALL=false;
     }
@@ -70,6 +78,15 @@ public:
     sf::Vector2f get_positionof_player();
 
     void activate_SNOWBALL();
+
+    sf::Texture& get_texture();
+
+    hitbox& getHitbox();
+
+     void decrease_life();
+
+      bool is_life();
+
 
 
 

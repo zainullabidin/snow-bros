@@ -7,6 +7,7 @@
 #include <SFML/Window.hpp>
 #include"Game_state.h"
 #include "../characters/player/Player.h"
+#include"Collision_detector.h"
 
 using namespace std;
 
@@ -84,12 +85,18 @@ private:
         int platform_count;
 
         //bottom
-        enemy_bottom *BOTTOM;
+        enemy_bottom* BOTTOM[3];
 
 
         //snowball
         snow_ball *snowBALL_PTR;
         bool snow_checker;
+
+        //col_detect
+
+        Collision_DET collision_detector;
+
+
 
 
 public:

@@ -134,8 +134,18 @@
             player1.set_Dimension(platforms,platform_count);
 
             //bottom
-            BOTTOM = new enemy_bottom(130, 100);
-            BOTTOM->set_Dimension(platforms,platform_count);
+
+        
+            BOTTOM[0] =new enemy_bottom(130, 300);   // top_left
+            BOTTOM[1] = new enemy_bottom(1000, 300);  // top-iRght
+            BOTTOM[2] = new enemy_bottom(130, 600);
+
+            BOTTOM[0]->set_Dimension(platforms, platform_count);
+            BOTTOM[1]->set_Dimension(platforms, platform_count);
+            BOTTOM[2]->set_Dimension(platforms, platform_count);
+            BOTTOM[0]->set_nick_texture(player1.get_texture());
+            BOTTOM[1]->set_nick_texture(player1.get_texture());
+            BOTTOM[2]->set_nick_texture(player1.get_texture());
 
 
         }
@@ -145,25 +155,100 @@
         
             if (current_state == GameState::TRAILER) {
    
-                if (trailer_timer.getElapsedTime().asSeconds() >= 1.0f) {
+                if (trailer_timer.getElapsedTime().asSeconds() >= 5.0f) {
     
                     current_state = GameState::MAIN_MENU;
    
                 }
 
             }
+
             if(current_state==GameState::PLAYING)
             {
                 player1.update_sprite_position(change_in_time);
-                BOTTOM->update_sprite_position(change_in_time);
+                for(int I=0;I<3;I++)
+                {
+                    {
+                        if(BOTTOM[I]->check_alive())
+                        BOTTOM[I]->update_sprite_position(change_in_time);
+                    }
+                }
+
             
                 if(!(snowBALL_PTR==NULL)&&snow_checker)
             {
                 snowBALL_PTR->update_sprite_position(change_in_time);
             }
+
+            for(int i=0;i<3;i++)
+            if(snowBALL_PTR!=NULL)
+            {
+
+            if(collision_detector.snowball_HitsEnemy(snowBALL_PTR->getHit_box(),BOTTOM[i]->getHIT_box()))
+            {
+                //we encase bottom and for the moment we do
+
+                if(snow_checker)
+                {
+                    BOTTOM[i]->get_hit();
+                }
+               
+               snow_checker=false;
+
             }
- 
-             
+            }
+            for(int i=0;i<3;i++)
+            if(BOTTOM[i]->get_rooling())
+        {
+            for(int j=i+1;j<3;j++)
+            if(collision_detector.rollingSnowball_HitsEnemy(BOTTOM[i]->getHIT_box(),BOTTOM[j]->getHIT_box()))
+            {
+                BOTTOM[j]->set_dead();
+            }
+
+        }
+
+        bool check_level_complete=true;
+        for(int i=0;i<3;i++)
+        {
+            if(BOTTOM[i]->check_alive())
+            check_level_complete=false;
+
+          
+        }
+
+         if(check_level_complete)
+            current_state=GameState::LEVEL_COMPLETE;
+
+
+
+             for(int i=0;i<3;i++)
+            if(collision_detector.player_HitsEnemy(player1.getHitbox() ,BOTTOM[i]->getHIT_box()))
+            {
+               
+                if (BOTTOM[i]->get_snow_ball_counter()>=4)
+                {
+                    BOTTOM[i]->set_rooling(player1.left_chcker());
+                    
+
+                    // if(collision_detector.player_HitsEnemy(BOTTOM->getHIT_box(),))
+                }
+                else if(BOTTOM[i]->get_snow_ball_counter()==0)
+                {
+                    player1.decrease_life();
+                }
+                  
+                
+            }
+            if(!player1.is_life())
+            {
+                //endgame
+            }
+  
+
+
+            }
+   
 
         }//(tam change in kitne sec)
 
@@ -171,8 +256,6 @@
     
             window.clear(sf::Color::Black);
     
-            
-
             if (current_state == GameState::TRAILER) {
    
     
@@ -206,8 +289,11 @@
     
             if(current_state==GameState::PLAYING)
             {
+
+
                 
                 window.draw(level1_bg_sprite);
+                if(player1.is_life())
                 player1.draw(window);
 
                 // for (int i=0;i<platform_count;i++)
@@ -215,7 +301,9 @@
                 //     platforms[i]->draw(window);
                 // }
 
-                BOTTOM->draw(window);
+                for(int i=0;i<3;i++)
+                if(BOTTOM[i]->check_alive())
+                BOTTOM[i]->draw(window);
 
             if(!(snowBALL_PTR==NULL)&&snow_checker)
             {
@@ -228,7 +316,24 @@
                     snowBALL_PTR = NULL;
                     snow_checker=false;
                 }
+
+            
             }
+
+
+            if(current_state == GameState::LEVEL_COMPLETE)
+            {
+                window.draw(level1_bg_sprite);
+                sf::Text txt;
+                txt.setFont(font);
+                txt.setString("LEVEL COMPLETE!");
+                txt.setCharacterSize(40);
+                txt.setFillColor(sf::Color::Yellow);
+                txt.setPosition(400, 300);
+                window.draw(txt);
+            }
+ 
+          
 
 
             
@@ -289,9 +394,8 @@
                         snow_checker=true;
                     }
                     player1.activate_SNOWBALL();
-
                 }
-  
+
             }
 
         }//updates current_state

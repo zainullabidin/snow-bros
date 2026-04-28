@@ -136,12 +136,15 @@
        }
        if(position.y+90>680)
        {
+
           position.y=590;
           velocity.y = 0;
+          
        }
 
 
         player_sprite.setPosition(position);
+        hi_box.hit_box_shape = sf::FloatRect(position.x, position.y, 77, 105);
 
 
 
@@ -203,4 +206,36 @@
 
         throw_timer.restart();
 
+    }
+
+    sf::Texture& player::get_texture(){
+
+        return Player_texture;
+    }
+
+    hitbox& player::getHitbox(){
+
+        return hi_box;
+
+    }
+
+    void player::decrease_life(){
+
+        if(die_timer.getElapsedTime().asSeconds()>=2.0f)
+        {
+                    lives--;
+
+
+                    position.x = 100;
+                    position.y = 500;
+                    velocity.y = 0;
+
+                  die_timer.restart();
+        }
+
+
+    }
+
+    bool player::is_life(){
+        return lives;
     }

@@ -13,6 +13,7 @@
         position.y=y;
         checker=true;
         Direction_left=check;
+
     }
 
     void snow_ball::update_sprite_position(float delta_T){
@@ -34,7 +35,7 @@
         checker=false;
 
         ball_sprite.setPosition(position);
-
+        snow_ball_Hitbox.hit_box_shape=sf::FloatRect(position.x,position.y,20,20);
 
 
     }
@@ -53,4 +54,8 @@
     
     void snow_ball::ball_vanisher(){
         checker=false;
+    }
+
+        hitbox& snow_ball::getHit_box(){
+        return  snow_ball_Hitbox;
     }
