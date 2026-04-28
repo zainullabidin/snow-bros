@@ -1,1 +1,23 @@
 #pragma once
+
+enum class GameState {
+
+
+        MAIN_MENU,CHARACTER_SELECT,PLAYING,PAUSED,GAME_OVER,LEVEL_COMPLETE,BOSS_DEFEATED,SHOP,LOGIN,LEADERBOARD,TRAILER,
+     
+
+    
+    };
+    
+    //1-MAIN_MENU
+    //2-CHARACTER_SELECT
+    //3-PLAYING
+    //4-PAUSED
+    //5-GAME_OVER
+    //6-LEVEL_COMPLETE
+    //7-BOSS_DEFEATED
+    //8-SHOP
+    //9-LOGIN
+    //10-LEADERBOARD
+    //11-TRAILER
+    //12-LEVEL_UP
