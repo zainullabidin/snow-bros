@@ -33,6 +33,9 @@ GameState GameOverScreen::Update(float deltaTime, RenderWindow& window)
     return GameState::GAME_OVER;  
 }
 
+void GameOverScreen::OnActivate() {
+    playMusic();
+}
 
 
 
