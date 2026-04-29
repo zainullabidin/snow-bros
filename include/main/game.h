@@ -21,6 +21,12 @@ private:
 
 
 
+int score_total;
+
+sf::Text score;
+sf::Text life;
+sf::Text level_number;
+
 
 sf::Clock level_complete_timer;
 /// add sf::Clock level_complete_timer, add int current_level

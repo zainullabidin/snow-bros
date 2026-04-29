@@ -242,3 +242,7 @@
     bool player::is_life(){
         return lives;
     }
+
+    int  player::get_lives(){
+        return lives;
+    }

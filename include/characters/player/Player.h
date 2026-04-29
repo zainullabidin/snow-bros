@@ -87,6 +87,8 @@ public:
 
       bool is_life();
 
+     int  get_lives();
+
 
 
 

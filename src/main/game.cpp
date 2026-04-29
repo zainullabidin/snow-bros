@@ -4,6 +4,29 @@
  
         game::game(){
 
+            score_total=0;
+
+
+             score.setFont(font);
+             score.setCharacterSize(20);
+             score.setFillColor(sf::Color::Yellow);
+
+             score.setPosition(20, 20);
+
+
+            life.setFont(font);
+             life.setCharacterSize(20);
+             life.setFillColor(sf::Color::Yellow);
+
+             life.setPosition(20, 50);
+
+            level_number.setFont(font);
+             level_number.setCharacterSize(20);
+             level_number.setFillColor(sf::Color::Yellow);
+
+             level_number.setPosition(20, 80);
+
+
 
             for(int i=0;i<2;i++)
             {
@@ -198,6 +221,7 @@
             if(collision_detector.rollingSnowball_HitsEnemy(BOTTOM[i]->getHIT_box(),BOTTOM[j]->getHIT_box()))
             {if(i!=j)
                 BOTTOM[j]->set_dead();
+                score_total+=100;
             }
 
         }
@@ -240,7 +264,7 @@
             }
             if(!player1.is_life())
             {
-                //endgame 
+                current_state=GameState::GAME_OVER;
             }
   
 
@@ -261,6 +285,10 @@
 
             }
 
+            if(current_state==GameState::GAME_OVER)
+            {
+                //to be implemented on the basisi of GUi we add a clcik here
+            }
         }//(tam change in kitne sec)
 
         void game::display(){
@@ -294,6 +322,7 @@
                     window.draw(B_LeaderboardSprite);
                     window.draw(txtLeaderboard);
                     window.draw(B_ExitSprite);
+                    window.draw(txtExit);
 
 
 
@@ -331,6 +360,16 @@
                     snow_checker=false;
                 }
 
+
+            score.setString("SCORE: "+to_string(score_total));
+            life.setString("LIVES: "+to_string(player1.get_lives()));
+            level_number.setString("LEVEL: "+to_string(level+1));
+
+            window.draw(score);
+            window.draw(life);
+            window.draw(level_number);
+
+
             
             }
 
@@ -346,6 +385,10 @@
                 window.draw(txt);
             }
 
+            if(current_state==GameState::GAME_OVER)
+            {
+                //display functions call;
+            }
             window.display();
 
         } //all the screen shtuff goes here 
