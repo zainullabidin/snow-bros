@@ -38,7 +38,6 @@ void GameOverScreen::OnActivate() {
 }
 
 
-
 void GameOverScreen::draw(RenderWindow& window) {
     window.draw(backgroundSprite);
 }
