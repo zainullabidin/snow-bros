@@ -4,7 +4,8 @@
 #include"../character_base.h"
 #include "../../levels/dimensioner.h"
 #include <SFML/Window.hpp>
-
+#include<iostream>
+using namespace std;
 
 class enemy_bottom:public character_base{
 
@@ -37,14 +38,12 @@ private:
     bool alive;
 
     bool roll;
+    float speed;
 
 
 
 public:
-    enemy_bottom():enemy_bottom(0,0){}
-    
-
-    enemy_bottom(float x, float y);
+    enemy_bottom(float x, float y, float spd=100.0f,string path="");
 
      void update_sprite_position(float delta_T)  override;
 

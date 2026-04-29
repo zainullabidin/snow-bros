@@ -1,4 +1,6 @@
 #pragma once
+#include<iostream>
+using namespace std;
 #include "Input_manager.h"
 #include "../characters/projectile/Snowball.h"
 #include "../characters/enemy/Botom.h"
@@ -8,12 +10,16 @@
 #include"Game_state.h"
 #include "../characters/player/Player.h"
 #include"Collision_detector.h"
+#include "../levels/Level_Maker.h"
+
 
 
 
 class game{
 
 private:
+
+
 
 
 sf::Clock level_complete_timer;
@@ -78,8 +84,8 @@ sf::Clock level_complete_timer;
 
      //level1
 
-     sf::Texture level1_bg_texture;
-        sf::Sprite level1_bg_sprite;
+     sf::Texture level1_bg_texture[2];
+        sf::Sprite level1_bg_sprite[2];
 
         //now the jumping bars
         dimension_er* platforms[10];
@@ -87,7 +93,8 @@ sf::Clock level_complete_timer;
         int platform_count;
 
         //bottom
-        enemy_bottom* BOTTOM[3];
+        enemy_bottom** BOTTOM;
+        int enemy_count;
 
 
         //snowball
@@ -105,6 +112,8 @@ sf::Clock level_complete_timer;
 
 public:
 
+        //ßßlevel_maker l;
+
         game();
         
         void update(float change_in_time);//(tam change in kitne sec)
@@ -114,6 +123,8 @@ public:
         void check_event();//updates current_state
 
         void run();
+
+        void gAme_load(int level_number);
 
 };
 

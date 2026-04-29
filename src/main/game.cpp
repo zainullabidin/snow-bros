@@ -4,7 +4,21 @@
  
         game::game(){
 
+
+            for(int i=0;i<2;i++)
+            {
+                string bg_name;
+                bg_name="assets/Images/level"+to_string(i+1)+ ".png";
+                level1_bg_texture[i].loadFromFile(bg_name);
+                level1_bg_sprite[i].setTexture(level1_bg_texture[i]);
+                level1_bg_sprite[i].setScale(1280.0f / level1_bg_texture[i].getSize().x, 720.0f / level1_bg_texture[i].getSize().y);
+
+
+            }
+
+            BOTTOM = NULL;
             level=0;
+            enemy_count = 0;
             snowBALL_PTR=NULL;
             snow_checker=false;
 
@@ -105,16 +119,7 @@
              player1.set_ID(1);
              
              player2.set_ID(2);
-            
 
-
-
-             //level 01
-             level1_bg_texture.loadFromFile("assets/Images/level1.png");
-             level1_bg_sprite.setTexture(level1_bg_texture);
-
-             //scale on level1 
-             level1_bg_sprite.setScale(1280.0f / level1_bg_texture.getSize().x, 720.0f / level1_bg_texture.getSize().y);
 
 
              //the jumping bars thingy&
@@ -134,17 +139,7 @@
 
             //bottom
 
-        
-            BOTTOM[0] =new enemy_bottom(130, 300);   // top_left
-            BOTTOM[1] = new enemy_bottom(1000, 300);  // top-iRght
-            BOTTOM[2] = new enemy_bottom(130, 600);
-
-            BOTTOM[0]->set_Dimension(platforms, platform_count);
-            BOTTOM[1]->set_Dimension(platforms, platform_count);
-            BOTTOM[2]->set_Dimension(platforms, platform_count);
-            BOTTOM[0]->set_nick_texture(player1.get_texture());
-            BOTTOM[1]->set_nick_texture(player1.get_texture());
-            BOTTOM[2]->set_nick_texture(player1.get_texture());
+            gAme_load(level);
 
 
         }
@@ -165,7 +160,7 @@
             if(current_state==GameState::PLAYING)
             {
                 player1.update_sprite_position(change_in_time);
-                for(int I=0;I<3;I++)
+                for(int I=0;I<enemy_count;I++)
                 {
                     {
                         if(BOTTOM[I]->check_alive())
@@ -179,7 +174,7 @@
                 snowBALL_PTR->update_sprite_position(change_in_time);
             }
 
-            for(int i=0;i<3;i++)
+            for(int i=0;i<enemy_count;i++)
             if(snowBALL_PTR!=NULL)
             {
 
@@ -196,10 +191,10 @@
 
             }
             }
-            for(int i=0;i<3;i++)
+            for(int i=0;i<enemy_count;i++)
             if(BOTTOM[i]->get_rooling())
         {
-            for(int j=0;j<3;j++)
+            for(int j=0;j<enemy_count;j++)
             if(collision_detector.rollingSnowball_HitsEnemy(BOTTOM[i]->getHIT_box(),BOTTOM[j]->getHIT_box()))
             {if(i!=j)
                 BOTTOM[j]->set_dead();
@@ -208,7 +203,7 @@
         }
 
         bool check_level_complete=true;
-        for(int i=0;i<3;i++)
+        for(int i=0;i<enemy_count;i++)
         {
             if(BOTTOM[i]->check_alive())
             check_level_complete=false;
@@ -225,7 +220,7 @@
 
 
 
-             for(int i=0;i<3;i++)
+             for(int i=0;i<enemy_count;i++)
             if(collision_detector.player_HitsEnemy(player1.getHitbox() ,BOTTOM[i]->getHIT_box()))
             {
                
@@ -259,6 +254,7 @@
 
                     current_state=GameState::PLAYING;
                     level++;
+                    gAme_load(level);
                     level_complete_timer.restart();
 
                 }
@@ -298,7 +294,9 @@
                     window.draw(B_LeaderboardSprite);
                     window.draw(txtLeaderboard);
                     window.draw(B_ExitSprite);
-                    window.draw(txtExit);
+
+
+
                 
             }
     
@@ -306,8 +304,9 @@
             {
 
 
-                
-                window.draw(level1_bg_sprite);
+                if(level < 2)
+                 window.draw(level1_bg_sprite[level]);
+
                 if(player1.is_life())
                 player1.draw(window);
 
@@ -316,7 +315,7 @@
                 //     platforms[i]->draw(window);
                 // }
 
-                for(int i=0;i<3;i++)
+                for(int i=0;i<enemy_count;i++)
                 if(BOTTOM[i]->check_alive())
                 BOTTOM[i]->draw(window);
 
@@ -335,10 +334,9 @@
             
             }
 
-
             if(current_state == GameState::LEVEL_COMPLETE)
             {
-                window.draw(level1_bg_sprite);
+                window.draw(level1_bg_sprite[level]);
                 sf::Text txt;
                 txt.setFont(font);
                 txt.setString("LEVEL COMPLETE!");
@@ -348,8 +346,6 @@
                 window.draw(txt);
             }
 
-
-   
             window.display();
 
         } //all the screen shtuff goes here 
@@ -423,3 +419,29 @@
                 display();
     }
 }
+            
+        void game::gAme_load(int level_number){
+            if(BOTTOM!=NULL)
+            {
+                for(int i=0;i<enemy_count;i++)
+                {
+                    delete BOTTOM[i];
+                }
+                delete [] BOTTOM;
+
+            }
+
+            enemy_count=arr_main_levels[level_number].T_enemies;
+
+            BOTTOM=new enemy_bottom*[enemy_count];
+
+            for(int i=0;i<enemy_count;i++)
+            {
+                  BOTTOM[i] = new enemy_bottom(arr_main_levels[level_number].enemy_x[i],arr_main_levels[level_number].enemy_y[i],arr_main_levels[level_number].enemy_speed,arr_main_levels[level_number].BOTTOM_TEXTURE);
+            
+
+            BOTTOM[i]->set_Dimension(platforms, platform_count);
+            BOTTOM[i]->set_nick_texture(player1.get_texture());
+            }
+
+        }
