@@ -1,21 +1,31 @@
 #include"../../include/auth/Session_holder.h"
 
-Session_holder::~Session_holder() {}
+Session::~Session() {}
 
-bool Session_holder::isLoggedIn() {
+bool Session::isLoggedIn() {
     return loggedIn;
 }
 
-std::string Session_holder::getUsername() {
+std::string Session::getUsername() {
     return username;
 }
 
-int Session_holder::getUserId() {
+int Session::getUserId() {
     return user_id;
 }
 
-void Session_holder::clear() {
+void Session::clear() {
     loggedIn = false;
     username = "";
     user_id = 0;
+}
+
+
+string Session::setUsername(string username) {
+    this->username = username;
+    return username;
+}
+
+void Session::setUserId(int user_id) {
+    this->user_id = user_id;
 }

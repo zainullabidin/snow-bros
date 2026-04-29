@@ -82,7 +82,7 @@ RULES:
 FILE 2: AuthManager.h
 ----------------------------------------------------------------
 OWNER        : Student B
-DEPENDS ON   : Session.h, UserRepository.h
+DEPENDS ON   : Session.h, UserRepository.h, progress.h
 NEEDED BY    : MainMenuScreen.h, PauseMenuScreen.h, Game.h
 
 WHAT IT IS:

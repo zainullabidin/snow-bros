@@ -9,7 +9,9 @@
 #include "../characters/player/Player.h"
 #include"Collision_detector.h"
 
+#include "../UI/GameOverScreen.h"
 
+#include"../UI/Screen.h"
 
 class game{
 
@@ -101,6 +103,10 @@ sf::Clock level_complete_timer;
         int level;
 
 
+
+
+        // screens objects 
+        GameOverScreen game_over_screen;
 
 
 public:

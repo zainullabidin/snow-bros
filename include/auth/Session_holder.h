@@ -3,7 +3,7 @@
 using namespace std;
 
 
-class Session_holder {
+class Session {
 
 protected:
     string username;
@@ -11,12 +11,17 @@ protected:
     bool loggedIn;
 
     public:
-    Session_holder() : loggedIn(false), username(""), user_id(0) {};
-    ~Session_holder();
+    Session() : loggedIn(false), username(""), user_id(0) {};
+    ~Session();
 
     // basic methids
-    bool isLoggedIn();
     string getUsername();
     int getUserId();
+
+    string setUsername(string username);
+    void setUserId(int user_id);
+
+
+    bool isLoggedIn();
     void clear();
 };

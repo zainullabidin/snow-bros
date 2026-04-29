@@ -1,37 +1,14 @@
 #include"../../include/UI/Screen.h"
-
 #include <iostream>
 
 
 Screen::~Screen() {
-	if (backgroundMusic.getStatus() == sf::Music::Status::Playing) {
+	if (backgroundMusic.getStatus() == Music::Status::Playing) {
 		backgroundMusic.stop();
 	}
 }
 
-void Screen::Pause() {
-    isActive = false;
-}
 
-void Screen::Resume() {
-    isActive = true;
-}
-
-bool Screen::isActiveScreen() const {
-    return isActive;
-}
-
-bool Screen::isFinished() const {
-    return finished;
-}
-
-ScreenStatus Screen::getNextScreen() const {
-    return nextScreen;
-}
-
-void Screen::setActive(bool active) {
-    isActive = active;
-}
 
 void Screen::setVolume(int vol) {
     Volume = vol;
@@ -51,7 +28,7 @@ void Screen::loadBackground(const std::string& texturePath) {
 }
 
 void Screen::setBackgroundScale(float scaleX, float scaleY) {
-   backgroundSprite.setScale(sf::Vector2f(scaleX, scaleY));
+   backgroundSprite.setScale(Vector2f(scaleX, scaleY));
 }
 
 void Screen::loadFont(const std::string& fontPath) {
@@ -78,6 +55,20 @@ void Screen::stopMusic() {
     backgroundMusic.stop();
 }
 
-void Screen::drawBackground(sf::RenderWindow& window) {
+void Screen::draw(RenderWindow& window) {
     window.draw(backgroundSprite);
+}
+
+
+void Screen::setWindow(RenderWindow& window) {
+    this->window = &window;
+}
+
+
+void Screen::setBackgroundSize(float targetWidth, float targetHeight) 
+{
+    sf::Vector2u texSize = backgroundTexture.getSize();
+    float scaleX = targetWidth / texSize.x;
+    float scaleY = targetHeight / texSize.y;
+    setBackgroundScale(scaleX, scaleY);
 }

@@ -38,14 +38,14 @@ bool User_data::findByUsername(const string& name) {
     return false;
 }
 
-bool User_data::create(const string& uname, const string& hash, const string& mail) {
+bool User_data::create(const string& uname, const string& hash) {
     if (usernameExists(uname)) {
         return false; // already occupied
     }
 
     int newId = getNextId();
 
-    string line = to_string(newId) + "|" + uname + "|" + hash + "|" + mail;
+    string line = to_string(newId) + "|" + uname + "|" + hash + "|" ;
     db.appendLine(USERS_FILE , line);  // add line at the end of file
     return true;
 }
