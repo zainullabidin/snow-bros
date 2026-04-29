@@ -21,8 +21,8 @@ GameState GameOverScreen::Update(float deltaTime, RenderWindow& window)
         Vector2i mousePos = Mouse::getPosition(window);
         
         // Check if click is within button bounds
-        if (mousePos.x >= 364 && mousePos.x <= 664 &&  // 364 + 300
-            mousePos.y >= 347 && mousePos.y <= 407)     // 347 + 60
+        if (mousePos.x >= 350 && mousePos.x <= 830 &&  // 364 + 300
+            mousePos.y >= 430 && mousePos.y <= 515)     // 347 + 60
         {  
             OnExit();
             return GameState::MAIN_MENU;

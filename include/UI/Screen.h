@@ -42,6 +42,7 @@ public:
 	void setVolume(int vol);
 	int getVolume() const;
 	void setWindow(RenderWindow& window);
+	
 	// SFML components
 	void loadBackground(const string& texturePath);
 	void setBackgroundScale(float scaleX, float scaleY);

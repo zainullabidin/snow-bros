@@ -148,6 +148,21 @@ void game::update(float change_in_time)
         }
     }
 
+    if (current_state == GameState::LEADERBOARD)
+    {
+        current_state = leaderboard_screen.Update(change_in_time, window);
+    }
+
+    if (current_state == GameState::LOGIN)
+    {
+        current_state = login_screen.Update(change_in_time, window);
+    }
+
+    if (current_state == GameState::PAUSED)
+    {
+        current_state = pause_menu_screen.Update(change_in_time, window);
+    }
+
     if (current_state == GameState::PLAYING)
     {
         player1.update_sprite_position(change_in_time);
@@ -225,6 +240,7 @@ void game::update(float change_in_time)
         }
     }
 
+
     if (current_state == GameState::GAME_OVER)
     {
         current_state = game_over_screen.Update(change_in_time, window);
@@ -276,6 +292,22 @@ void game::display()
         window.draw(txtExit);
     }
 
+    if (current_state == GameState::LOGIN)
+    {
+        // login_screen.OnActivate();
+        login_screen.draw(window);
+    }
+
+    if (current_state == GameState::LEADERBOARD){
+        leaderboard_screen.OnActivate();
+        leaderboard_screen.draw(window);
+    }
+
+    if (current_state == GameState::PAUSED){
+        // pause_menu_screen.OnActivate();
+        pause_menu_screen.draw(window);
+    }
+
     if (current_state == GameState::PLAYING)
     {
 
@@ -307,6 +339,7 @@ void game::display()
 
     if (current_state == GameState::GAME_OVER)
     {
+        // game_over_screen.OnActivate();   activate on adding sound
         game_over_screen.draw(window);
     }
 

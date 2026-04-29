@@ -7,7 +7,7 @@ using namespace std;
 using namespace sf;
 
 
-enum class PowerUpType { SNOWBALL_BOOST, SPEED_BOOST, BALLOON_MODE, DISTANCE_INCREASE, EXTRA_LIFE };
+enum class PowerUpType { NONE, SNOWBALL_BOOST, SPEED_BOOST, BALLOON_MODE, DISTANCE_INCREASE, EXTRA_LIFE };
 
 class PowerUp
 {
