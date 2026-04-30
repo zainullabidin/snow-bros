@@ -4,6 +4,8 @@
  
         game::game(){
 
+
+            font.loadFromFile("assets/fonts/PressStart2P-Regular.ttf");
             score_total=0;
 
 
@@ -27,17 +29,26 @@
              level_number.setPosition(20, 80);
 
 
+             level1_bg_texture[0].loadFromFile("assets/Images/level1.png");
+            level1_bg_texture[1].loadFromFile("assets/Images/level2.png");
 
-            for(int i=0;i<2;i++)
-            {
-                string bg_name;
-                bg_name="assets/Images/level"+to_string(i+1)+ ".png";
-                level1_bg_texture[i].loadFromFile(bg_name);
-                level1_bg_sprite[i].setTexture(level1_bg_texture[i]);
-                level1_bg_sprite[i].setScale(1280.0f / level1_bg_texture[i].getSize().x, 720.0f / level1_bg_texture[i].getSize().y);
+            level1_bg_sprite[0].setTexture(level1_bg_texture[0]);
+            level1_bg_sprite[1].setTexture(level1_bg_texture[1]);
+
+            level1_bg_sprite[0].setScale(1280.0f / level1_bg_texture[0].getSize().x, 720.0f / level1_bg_texture[0].getSize().y);
+level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f / level1_bg_texture[1].getSize().y);
 
 
-            }
+            // for(int i=0;i<10;i++)
+            // {
+            //     string bg_name;
+            //     bg_name="assets/Images/level"+to_string(i+1)+ ".png";
+            //     level1_bg_texture[i].loadFromFile(bg_name);
+            //     level1_bg_sprite[i].setTexture(level1_bg_texture[i]);
+            //     level1_bg_sprite[i].setScale(1280.0f / level1_bg_texture[i].getSize().x, 720.0f / level1_bg_texture[i].getSize().y);
+
+
+            // }
 
             BOTTOM = NULL;
             level=0;
@@ -45,7 +56,7 @@
             snowBALL_PTR=NULL;
             snow_checker=false;
 
-            font.loadFromFile("assets/fonts/PressStart2P-Regular.ttf");
+            
             window.create(sf::VideoMode(1280, 720), "SNOW BROS-By MZ");//screens saz and apna mark
             //maim menu content loacer
             B_Frame_texture.loadFromFile("assets/images/frame.png");
@@ -172,7 +183,7 @@
         
             if (current_state == GameState::TRAILER) {
    
-                if (trailer_timer.getElapsedTime().asSeconds() >= 5.0f) {
+                if (trailer_timer.getElapsedTime().asSeconds() >= 1.0f) {
     
                     current_state = GameState::MAIN_MENU;
    
@@ -183,11 +194,22 @@
             if(current_state==GameState::PLAYING)
             {
                 player1.update_sprite_position(change_in_time);
+
+
                 for(int I=0;I<enemy_count;I++)
                 {
                     {
                         if(BOTTOM[I]->check_alive())
-                        BOTTOM[I]->update_sprite_position(change_in_time);
+                        {
+                            FF* flying_ff=dynamic_cast<FF*>(BOTTOM[I]);
+                            if(flying_ff!=NULL)
+
+
+                                flying_ff->position_getter_player(player1.get_positionof_player());
+                                BOTTOM[I]->update_sprite_position(change_in_time);;
+                            
+                        }
+                        
                     }
                 }
 
@@ -235,11 +257,18 @@
           
         }
 
-         if(check_level_complete)
-         {
-                current_state=GameState::LEVEL_COMPLETE;
-                level_complete_timer.restart();
-         }
+        //  if(check_level_complete)
+        //  {
+        //         current_state=GameState::LEVEL_COMPLETE;
+        //         level_complete_timer.restart();
+        //  }
+
+        if(check_level_complete)
+{
+    std::cout << "Level complete! level=" << level << std::endl;
+    current_state=GameState::LEVEL_COMPLETE;
+    level_complete_timer.restart();
+}
             
 
 
@@ -247,6 +276,10 @@
              for(int i=0;i<enemy_count;i++)
             if(collision_detector.player_HitsEnemy(player1.getHitbox() ,BOTTOM[i]->getHIT_box()))
             {
+                FF *ff=dynamic_cast<FF*>(BOTTOM[i]);
+
+                if(ff!=NULL)
+                ff->reset_flight();
                
                 if (BOTTOM[i]->get_snow_ball_counter()>=4)
                 {
@@ -258,6 +291,7 @@
                 else if(BOTTOM[i]->get_snow_ball_counter()==0)
                 {
                     player1.decrease_life();
+                    
                 }
                   
                 
@@ -333,8 +367,7 @@
             {
 
 
-                if(level < 2)
-                 window.draw(level1_bg_sprite[level]);
+                window.draw(level1_bg_sprite[level % 2]);
 
                 if(player1.is_life())
                 player1.draw(window);
@@ -375,7 +408,7 @@
 
             if(current_state == GameState::LEVEL_COMPLETE)
             {
-                window.draw(level1_bg_sprite[level]);
+                window.draw(level1_bg_sprite[level%2]);
                 sf::Text txt;
                 txt.setFont(font);
                 txt.setString("LEVEL COMPLETE!");
@@ -478,13 +511,16 @@
 
             BOTTOM=new enemy_bottom*[enemy_count];
 
-            for(int i=0;i<enemy_count;i++)
-            {
-                  BOTTOM[i] = new enemy_bottom(arr_main_levels[level_number].enemy_x[i],arr_main_levels[level_number].enemy_y[i],arr_main_levels[level_number].enemy_speed,arr_main_levels[level_number].BOTTOM_TEXTURE);
-            
+            for(int i=0; i<enemy_count; i++)
+{
+    if(level_number == 0 && i == enemy_count-1)
+        BOTTOM[i] = new FF(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, "assets/Images/FlyingFoogaFoog_Orange.png");
+    else
+        BOTTOM[i] = new enemy_bottom(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, arr_main_levels[level_number].BOTTOM_TEXTURE);
 
-            BOTTOM[i]->set_Dimension(platforms, platform_count);
-            BOTTOM[i]->set_nick_texture(player1.get_texture());
-            }
+    BOTTOM[i]->set_Dimension(platforms, platform_count);
+    BOTTOM[i]->set_nick_texture(player1.get_texture());
+}
 
+                         std::cout << "Loading level " << level_number << " enemies=" << enemy_count << std::endl;
         }

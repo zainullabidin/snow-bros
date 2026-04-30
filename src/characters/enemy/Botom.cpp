@@ -7,7 +7,7 @@
 
         // ball_casing=NULL;
 
-        speed=spd;
+       this->speed=spd;
 
 
         DIMEN_ptr=nullptr;
@@ -29,11 +29,18 @@
         position.y=y;
 
         walkingsprite=0;
+        
         snow_ball_counter=0;
                 
     }
 
      void enemy_bottom::update_sprite_position(float delta_T){
+
+        if(snow_ball_counter==0 && velocity.x==0)
+            {
+            if(right) velocity.x = speed;
+            else velocity.x = -speed;
+            }
 
         if(snow_ball_counter==0&&velocity.x==0)
         {
@@ -134,6 +141,7 @@
             ball_break_timer.restart();
 
         }
+        
 
 
 

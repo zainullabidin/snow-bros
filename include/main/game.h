@@ -11,6 +11,7 @@ using namespace std;
 #include "../characters/player/Player.h"
 #include"Collision_detector.h"
 #include "../levels/Level_Maker.h"
+#include "../characters/enemy/FlyngFoogaFoog.h"
 
 
 
