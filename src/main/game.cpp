@@ -265,7 +265,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
         if(check_level_complete)
 {
-    std::cout << "Level complete! level=" << level << std::endl;
+
     current_state=GameState::LEVEL_COMPLETE;
     level_complete_timer.restart();
 }
@@ -522,5 +522,5 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
     BOTTOM[i]->set_nick_texture(player1.get_texture());
 }
 
-                         std::cout << "Loading level " << level_number << " enemies=" << enemy_count << std::endl;
+
         }
