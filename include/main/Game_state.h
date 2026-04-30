@@ -4,8 +4,6 @@ enum class GameState {
 
 
     MAIN_MENU,CHARACTER_SELECT,PLAYING,PAUSED,GAME_OVER,LEVEL_COMPLETE,BOSS_DEFEATED,SHOP,LOGIN,LEADERBOARD,TRAILER,
-     
-
     
     };
     
@@ -16,8 +14,11 @@ enum class GameState {
     //5-GAME_OVER   x
     //6-LEVEL_COMPLETE
     //7-BOSS_DEFEATED
-    //8-SHOP
+    //8-SHOP        x
     //9-LOGIN       
     //10-LEADERBOARD x  
     //11-TRAILER
     //12-LEVEL_UP
+
+    //13-STAR_EVENT
+    //14-RAIN_EVENT
