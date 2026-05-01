@@ -15,6 +15,11 @@
 
 
 
+#include "../UI/GameOverScreen.h"
+#include "../UI/LeaderboardScreen.h"
+#include "../UI/LoginScreen.h"
+#include "../UI/PauseMenuScreen.h"
+
 
 class game{
 
@@ -132,6 +137,13 @@ sf::Clock level_complete_timer;
         int level;
 
 
+
+
+        // screens objects 
+        GameOverScreen game_over_screen;
+        LeaderboardScreen leaderboard_screen;
+        LoginScreen login_screen;
+        PauseMenuScreen pause_menu_screen;
 
 
 public:

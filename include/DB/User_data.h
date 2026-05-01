@@ -22,7 +22,7 @@ public:
     // fills the members above, returns true if found
     bool findByUsername(const string& name);
 
-    bool create(const string& uname, const string& hash, const string& mail);
+    bool create(const string& uname, const string& hash);
     bool usernameExists(const string& name);
 
     // could have just done db.getCount() + 1  but what if we delete a user in file, it wont work
