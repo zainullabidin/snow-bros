@@ -1,4 +1,5 @@
 #include"../../include/main/game.h"
+#include "../../include/UI/LeaderboardScreen.h"
 #include<iostream>
 
  
@@ -347,11 +348,20 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                 }
 
             }
+  
+            if(current_state==GameState::LEADERBOARD)
+                current_state = leaderboard_screen.Update(change_in_time, window);
+
+            if(current_state==GameState::LOGIN)
+                current_state = login_screen.Update(change_in_time, window);
+
+            if(current_state==GameState::PAUSED)
+                current_state = pause_menu_screen.Update(change_in_time, window);
 
             if(current_state==GameState::GAME_OVER)
-            {
-                //to be implemented on the basisi of GUi we add a clcik here
-            }
+                current_state = game_over_screen.Update(change_in_time, window);
+        
+        
         }//(tam change in kitne sec)
 
         void game::display(){
@@ -447,10 +457,18 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                 window.draw(txt);
             }
 
+            if(current_state==GameState::LOGIN)
+                login_screen.draw(window);
+
+            if(current_state==GameState::LEADERBOARD)
+                leaderboard_screen.draw(window);
+
+            if(current_state==GameState::PAUSED)
+                pause_menu_screen.draw(window);
+
             if(current_state==GameState::GAME_OVER)
-            {
-                //display functions call;
-            }
+                game_over_screen.draw(window);
+
             window.display();
 
         } //all the screen shtuff goes here 
