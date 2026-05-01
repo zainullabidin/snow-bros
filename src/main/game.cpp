@@ -1,21 +1,10 @@
-<<<<<<< minahil
-#include "../../include/main/game.h"
-#include "../../include/UI/LeaderboardScreen.h"
-
-=======
 #include"../../include/main/game.h"
-#include<iostream>
->>>>>>> main
+#include"../../include/UI/LeaderboardScreen.h"
 
 
-<<<<<<< minahil
-game::game() 
-{
+ 
+        game::game(){
 
-    level = 0;
-    snowBALL_PTR = NULL;
-    snow_checker = false;
-=======
             THROW_BALL.loadFromFile("assets/Sounds/throw.wav");
             THROW_SOUND.setBuffer(THROW_BALL);
             BOSSS_DIE.loadFromFile("assets/Sounds/die_BOSS.wav");
@@ -67,17 +56,6 @@ game::game()
 level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f / level1_bg_texture[1].getSize().y);
 
 
-            // for(int i=0;i<10;i++)
-            // {
-            //     string bg_name;
-            //     bg_name="assets/Images/level"+to_string(i+1)+ ".png";
-            //     level1_bg_texture[i].loadFromFile(bg_name);
-            //     level1_bg_sprite[i].setTexture(level1_bg_texture[i]);
-            //     level1_bg_sprite[i].setScale(1280.0f / level1_bg_texture[i].getSize().x, 720.0f / level1_bg_texture[i].getSize().y);
-
-
-            // }
-
             BOTTOM = NULL;
             level=0;
             enemy_count = 0;
@@ -85,8 +63,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
             snow_checker=false;
 
             
-            window.create(sf::VideoMode(1280, 720), "SNOW BROS-By MZ");//screens saz and apna mark
-            //maim menu content loacer
+            window.create(sf::VideoMode(1280, 720), "SNOW BROS-By MZ");
             B_Frame_texture.loadFromFile("assets/images/frame.png");
             B_NewGameTexture.loadFromFile("assets/images/frame_snowbro.png");
 
@@ -101,172 +78,91 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
             float B_Scale_Y = 80.0f / 202.0f;
 
 
-            //adding sprites for main menu 
-
-
-
             B_LoginSprite.setTexture(B_Frame_texture);
             B_LoginSprite.setScale(B_Scale_X, B_Scale_Y);
             B_LoginSprite.setPosition(300, 320);
->>>>>>> main
-
-    
-    window.create(sf::VideoMode(1280, 720), "SNOW BROS-By MZ"); // screens saz and apna mark
-    
 
 
-    font.loadFromFile("assets/fonts/PressStart2P-Regular.ttf");
-    // maim menu content loacer
-    B_Frame_texture.loadFromFile("assets/images/frame.png");
-    B_NewGameTexture.loadFromFile("assets/images/frame_snowbro.png");
+            B_LeaderboardSprite.setTexture(B_Frame_texture);
+            B_LeaderboardSprite.setScale(B_Scale_X, B_Scale_Y);
+            B_LeaderboardSprite.setPosition(300, 420);
 
-    float B_NewGame_Scale_X = 420.0f / 818.0f;
-    float B_NewGame_Scale_Y = 110.0f / 305.0f;
-    B_NewGameSprite.setScale(B_NewGame_Scale_X, B_NewGame_Scale_Y);
-    B_NewGameSprite.setTexture(B_NewGameTexture);
-    B_NewGameSprite.setPosition(280, 195);
-    txtNewGame.setPosition(420, 237);
 
-    float B_Scale_X = 380.0f / 1234.0f;
-    float B_Scale_Y = 80.0f / 202.0f;
+            B_ExitSprite.setTexture(B_Frame_texture);
+            B_ExitSprite.setScale(B_Scale_X, B_Scale_Y);
+            B_ExitSprite.setPosition(300, 520);
 
-    // adding sprites for main menu
+            trailer_logo_textture.loadFromFile("assets/images/title+logo.png");
+            trailer_logo_sprote.setTexture(trailer_logo_textture);
+            trailer_logo_sprote.setScale(0.8f, 0.8f);
+            trailer_logo_sprote.setPosition(300, 150);
 
-    B_LoginSprite.setTexture(B_Frame_texture);
-    B_LoginSprite.setScale(B_Scale_X, B_Scale_Y);
-    B_LoginSprite.setPosition(300, 320);
 
-    B_LeaderboardSprite.setTexture(B_Frame_texture);
-    B_LeaderboardSprite.setScale(B_Scale_X, B_Scale_Y);
-    B_LeaderboardSprite.setPosition(300, 420);
+            tariler_bg_Textture.loadFromFile("assets/images/trailer_bg.png");
+            trailer_sprite.setTexture(tariler_bg_Textture);
+            trailer_sprite.setScale(1280.0f / tariler_bg_Textture.getSize().x,720.0f / tariler_bg_Textture.getSize().y);
 
-    B_ExitSprite.setTexture(B_Frame_texture);
-    B_ExitSprite.setScale(B_Scale_X, B_Scale_Y);
-    B_ExitSprite.setPosition(300, 520);
+            bgTexture.loadFromFile("assets/images/background.png");
 
-    // logo
-    trailer_logo_textture.loadFromFile("assets/images/title+logo.png");
-    trailer_logo_sprote.setTexture(trailer_logo_textture);
-    trailer_logo_sprote.setScale(0.8f, 0.8f);
-    trailer_logo_sprote.setPosition(300, 150);
 
-    tariler_bg_Textture.loadFromFile("assets/images/trailer_bg.png");
-    trailer_sprite.setTexture(tariler_bg_Textture);
-    trailer_sprite.setScale(1280.0f / tariler_bg_Textture.getSize().x, 720.0f / tariler_bg_Textture.getSize().y);
-    // bg load
-    bgTexture.loadFromFile("assets/images/background.png");
+            
+            current_state=GameState::TRAILER;
 
-    current_state = GameState::TRAILER;
+            txtNewGame.setFont(font);
+            txtNewGame.setString("NEW GAME");
+            txtNewGame.setCharacterSize(22);
+   
 
-    // clcik button-1
+            txtLogin.setFont(font);
+            txtLogin.setString("LOGIN");
+            txtLogin.setCharacterSize(22);
+            txtLogin.setPosition(430, 345);
 
-    txtNewGame.setFont(font);
-    txtNewGame.setString("NEW GAME");
-    txtNewGame.setCharacterSize(22);
+            txtLeaderboard.setFont(font);
+            txtLeaderboard.setCharacterSize(22);
+            txtLeaderboard.setString("LEADERBOARD");
+            txtLeaderboard.setPosition(390, 445);
 
-    // btn-2
+            txtExit.setFont(font);
+            txtExit.setString("EXIT");
+            txtExit.setCharacterSize(22);
+            txtExit.setPosition(430, 545);
 
-    txtLogin.setFont(font);
-    txtLogin.setString("LOGIN");
-    txtLogin.setCharacterSize(22);
-    txtLogin.setPosition(430, 345);
+            bgSprite.setTexture(bgTexture);
+            bgSprite.setScale(1280.0f / bgTexture.getSize().x,720.0f / bgTexture.getSize().y);
 
-    // bten-3
 
-    txtLeaderboard.setFont(font);
-    txtLeaderboard.setCharacterSize(22);
-    txtLeaderboard.setString("LEADERBOARD");
-    txtLeaderboard.setPosition(390, 445);
+            MZ_Text.setFont(font);
+            MZ_Text.setString("Made by Minahil & Zain");
+            MZ_Text.setCharacterSize(16);
+            MZ_Text.setFillColor(sf::Color(10, 10, 80));
+            MZ_Text.setPosition(400, 500);
 
-    // btn-4
 
-    txtExit.setFont(font);
-    txtExit.setString("EXIT");
-    txtExit.setCharacterSize(22);
-    txtExit.setPosition(430, 545);
-
-    bgSprite.setTexture(bgTexture);
-    // scaling acc to size
-    bgSprite.setScale(1280.0f / bgTexture.getSize().x, 720.0f / bgTexture.getSize().y);
-
-    MZ_Text.setFont(font);
-    MZ_Text.setString("Made by Minahil & Zain");
-    MZ_Text.setCharacterSize(16);
-    MZ_Text.setFillColor(sf::Color(10, 10, 80));
-    MZ_Text.setPosition(400, 500);
-
-<<<<<<< minahil
-    player1.set_ID(1);
-
-    player2.set_ID(2);
-=======
              player1.set_ID(1);
              
              player2.set_ID(2);
->>>>>>> main
 
-    // level 01
-    level1_bg_texture.loadFromFile("assets/Images/level1.png");
-    level1_bg_sprite.setTexture(level1_bg_texture);
 
-<<<<<<< minahil
-    // scale on level1
-    level1_bg_sprite.setScale(1280.0f / level1_bg_texture.getSize().x, 720.0f / level1_bg_texture.getSize().y);
 
-    // the jumping bars thingy&
+             platform_count = 7;
 
-    /// each bar dimensions
-=======
->>>>>>> main
+            platforms[0] = new dimension_er(130, 693, 1020, 30);  // ground
+            platforms[1] = new dimension_er(135, 580, 230, 30);   //brtonm left one
+            platforms[2] = new dimension_er(920, 580, 230, 30);  // right_(BOTTOM)
+            platforms[3] = new dimension_er(320, 475, 640, 30);   //  THE CENTER ONE
+            platforms[4] = new dimension_er(130, 370, 425, 30); // up -left opne
+            platforms[5] = new dimension_er(720, 370, 425, 30); ///up_right one
+            platforms[6] = new dimension_er(525, 585, 245, 30);  //bootom middle
+            player1.set_Dimension(platforms,platform_count);
 
-    platform_count = 7;
-
-    platforms[0] = new dimension_er(130, 693, 1020, 30); // ground
-    platforms[1] = new dimension_er(135, 580, 230, 30);  // brtonm left one
-    platforms[2] = new dimension_er(920, 580, 230, 30);  // right_(BOTTOM)
-    platforms[3] = new dimension_er(320, 475, 640, 30);  //  THE CENTER ONE
-    platforms[4] = new dimension_er(130, 370, 425, 30);  // up -left opne
-    platforms[5] = new dimension_er(720, 370, 425, 30);  /// up_right one
-    platforms[6] = new dimension_er(525, 585, 245, 30);  // bootom middle
-    player1.set_Dimension(platforms, platform_count);
-
-    // bottom
-
-    BOTTOM[0] = new enemy_bottom(130, 300);  // top_left
-    BOTTOM[1] = new enemy_bottom(1000, 300); // top-iRght
-    BOTTOM[2] = new enemy_bottom(130, 600);
-
-    BOTTOM[0]->set_Dimension(platforms, platform_count);
-    BOTTOM[1]->set_Dimension(platforms, platform_count);
-    BOTTOM[2]->set_Dimension(platforms, platform_count);
-    BOTTOM[0]->set_nick_texture(player1.get_texture());
-    BOTTOM[1]->set_nick_texture(player1.get_texture());
-    BOTTOM[2]->set_nick_texture(player1.get_texture());
-}
-
-<<<<<<< minahil
-void game::update(float change_in_time)
-{
-
-    if (current_state == GameState::TRAILER)
-    {
-=======
             gAme_load(level);
->>>>>>> main
 
-        if (trailer_timer.getElapsedTime().asSeconds() >= 5.0f)
-        {
 
-            current_state = GameState::MAIN_MENU;
         }
-    }
+        
+        void game::update(float change_in_time){
 
-<<<<<<< minahil
-    if (current_state == GameState::LEADERBOARD)
-    {
-        current_state = leaderboard_screen.Update(change_in_time, window);
-    }
-=======
         
             if (current_state == GameState::TRAILER) {
    
@@ -275,19 +171,24 @@ void game::update(float change_in_time)
                     current_state = GameState::MAIN_MENU;
    
                 }
->>>>>>> main
 
-    if (current_state == GameState::LOGIN)
-    {
-        current_state = login_screen.Update(change_in_time, window);
-    }
+            }
 
-<<<<<<< minahil
-    if (current_state == GameState::PAUSED)
-    {
-        current_state = pause_menu_screen.Update(change_in_time, window);
-    }
-=======
+            if(current_state==GameState::LEADERBOARD)
+            {
+                current_state = leaderboard_screen.Update(change_in_time, window);
+            }
+
+            if(current_state==GameState::LOGIN)
+            {
+                current_state = login_screen.Update(change_in_time, window);
+            }
+
+            if(current_state==GameState::PAUSED)
+            {
+                current_state = pause_menu_screen.Update(change_in_time, window);
+            }
+
             if(current_state==GameState::PLAYING)
             {
 
@@ -321,65 +222,28 @@ void game::update(float change_in_time)
                         
                     }
                 }
->>>>>>> main
 
-    if (current_state == GameState::PLAYING)
-    {
-        player1.update_sprite_position(change_in_time);
-        for (int I = 0; I < 3; I++)
-        {
+            
+                if(!(snowBALL_PTR==NULL)&&snow_checker)
             {
-                if (BOTTOM[I]->check_alive())
-                    BOTTOM[I]->update_sprite_position(change_in_time);
+                snowBALL_PTR->update_sprite_position(change_in_time);
             }
-        }
 
-<<<<<<< minahil
-        if (!(snowBALL_PTR == NULL) && snow_checker)
-        {
-            snowBALL_PTR->update_sprite_position(change_in_time);
-        }
-=======
             for(int i=0;i<enemy_count;i++)
             if(snowBALL_PTR!=NULL)
             {
->>>>>>> main
 
-        for (int i = 0; i < 3; i++)
-            if (snowBALL_PTR != NULL)
+            if(collision_detector.snowball_HitsEnemy(snowBALL_PTR->getHit_box(),BOTTOM[i]->getHIT_box()))
             {
-
-                if (collision_detector.snowball_HitsEnemy(snowBALL_PTR->getHit_box(), BOTTOM[i]->getHIT_box()))
+                if(snow_checker)
                 {
-<<<<<<< minahil
-                    // we encase bottom and for the moment we do
-=======
                     Hit_sound.play();
                     BOTTOM[i]->get_hit();
                 }
                
                snow_checker=false;
->>>>>>> main
 
-                    if (snow_checker)
-                    {
-                        BOTTOM[i]->get_hit();
-                    }
-
-                    snow_checker = false;
-                }
             }
-<<<<<<< minahil
-        for (int i = 0; i < 3; i++)
-            if (BOTTOM[i]->get_rooling())
-            {
-                for (int j = 0; j < 3; j++)
-                    if (collision_detector.rollingSnowball_HitsEnemy(BOTTOM[i]->getHIT_box(), BOTTOM[j]->getHIT_box()))
-                    {
-                        if (i != j)
-                            BOTTOM[j]->set_dead();
-                    }
-=======
             }
             for(int i=0;i<enemy_count;i++)
             if(BOTTOM[i]->get_rooling())
@@ -389,39 +253,18 @@ void game::update(float change_in_time)
             {if(i!=j)
                 BOTTOM[j]->set_dead();
                 score_total+=100;
->>>>>>> main
             }
 
-        bool check_level_complete = true;
-        for (int i = 0; i < 3; i++)
-        {
-            if (BOTTOM[i]->check_alive())
-                check_level_complete = false;
         }
 
-<<<<<<< minahil
-        if (check_level_complete)
-=======
         bool check_level_complete=true;
         for(int i=0;i<enemy_count;i++)
->>>>>>> main
         {
-            current_state = GameState::LEVEL_COMPLETE;
-            level_complete_timer.restart();
+            if(BOTTOM[i]->check_alive())
+            check_level_complete=false;
+
+          
         }
-
-<<<<<<< minahil
-        for (int i = 0; i < 3; i++)
-            if (collision_detector.player_HitsEnemy(player1.getHitbox(), BOTTOM[i]->getHIT_box()))
-            {
-
-                if (BOTTOM[i]->get_snow_ball_counter() >= 4)
-=======
-        //  if(check_level_complete)
-        //  {
-        //         current_state=GameState::LEVEL_COMPLETE;
-        //         level_complete_timer.restart();
-        //  }
 
         if(check_level_complete)
 {
@@ -442,75 +285,58 @@ void game::update(float change_in_time)
                 ff->reset_flight();
                
                 if (BOTTOM[i]->get_snow_ball_counter()>=4)
->>>>>>> main
                 {
                     BOTTOM[i]->set_rooling(player1.left_chcker());
+                    
 
-                    // if(collision_detector.player_HitsEnemy(BOTTOM->getHIT_box(),))
                 }
-                else if (BOTTOM[i]->get_snow_ball_counter() == 0)
+                else if(BOTTOM[i]->get_snow_ball_counter()==0)
                 {
                     player1.decrease_life();
                     
                 }
-<<<<<<< minahil
-=======
                   
                 
             }
             if(!player1.is_life())
             {
                 current_state=GameState::GAME_OVER;
->>>>>>> main
             }
-        if (!player1.is_life())
-        {
-            current_state = GameState::GAME_OVER;
-        }
-    }
+  
 
 
-    if (current_state == GameState::GAME_OVER)
-    {
-        current_state = game_over_screen.Update(change_in_time, window);
-    }
+            } 
+        
+            if(current_state==GameState::LEVEL_COMPLETE)
+            {
+                if(level_complete_timer.getElapsedTime().asSeconds()>2.0f)
+                {
 
-<<<<<<< minahil
-=======
                     current_state=GameState::PLAYING;
                     level++;
                     gAme_load(level);
                     level_complete_timer.restart();
->>>>>>> main
 
-    if (current_state == GameState::LEVEL_COMPLETE)
-    {
-        if (level_complete_timer.getElapsedTime().asSeconds() > 2.0f)
-        {
+                }
 
-            current_state = GameState::PLAYING;
-            level++;
-            level_complete_timer.restart();
-        }
-    }
+            }
 
-<<<<<<< minahil
-} //(tam change in kitne sec)
-=======
             if(current_state==GameState::GAME_OVER)
             {
-                //to be implemented on the basisi of GUi we add a clcik here
+                current_state = game_over_screen.Update(change_in_time, window);
             }
-        }//(tam change in kitne sec)
->>>>>>> main
+        }
 
-void game::display()
-{
+        void game::display(){
+    
+            window.clear(sf::Color::Black);
+    
+            if (current_state == GameState::TRAILER) {
+   
+                window.draw(trailer_sprite);
+                window.draw(trailer_logo_sprote);
+                window.draw(MZ_Text);
 
-<<<<<<< minahil
-    window.clear(sf::Color::Black);
-=======
-  
             }
     
             if(current_state == GameState::MAIN_MENU){
@@ -518,7 +344,7 @@ void game::display()
                     
                     window.draw(bgSprite);
 
-                    trailer_logo_sprote.setScale(0.3f, 0.3f);//chane later
+                    trailer_logo_sprote.setScale(0.3f, 0.3f);
                     trailer_logo_sprote.setPosition(900, 20);
                     window.draw(trailer_logo_sprote);
 
@@ -532,124 +358,50 @@ void game::display()
                     window.draw(txtExit);
 
 
-
                 
+            }
+
+            if(current_state==GameState::LOGIN)
+            {
+                login_screen.draw(window);
+            }
+
+            if(current_state==GameState::LEADERBOARD)
+            {
+                leaderboard_screen.OnActivate();
+                leaderboard_screen.draw(window);
+            }
+
+            if(current_state==GameState::PAUSED)
+            {
+                pause_menu_screen.draw(window);
             }
     
             if(current_state==GameState::PLAYING)
             {
->>>>>>> main
 
-    if (current_state == GameState::TRAILER)
-    {
 
-<<<<<<< minahil
-        window.draw(trailer_sprite);
-        window.draw(trailer_logo_sprote);
-        window.draw(MZ_Text);
-    }
-
-    if (current_state == GameState::MAIN_MENU)
-    {
-
-        window.draw(bgSprite);
-=======
                 window.draw(level1_bg_sprite[level % 2]);
 
                 if(player1.is_life())
                 player1.draw(window);
->>>>>>> main
 
-        trailer_logo_sprote.setScale(0.3f, 0.3f); // chane later
-        trailer_logo_sprote.setPosition(900, 20);
-        window.draw(trailer_logo_sprote);
-
-        window.draw(B_NewGameSprite);
-        window.draw(txtNewGame);
-        window.draw(B_LoginSprite);
-        window.draw(txtLogin);
-        window.draw(B_LeaderboardSprite);
-        window.draw(txtLeaderboard);
-        window.draw(B_ExitSprite);
-        window.draw(txtExit);
-    }
-
-    if (current_state == GameState::LOGIN)
-    {
-        // login_screen.OnActivate();
-        login_screen.draw(window);
-    }
-
-    if (current_state == GameState::LEADERBOARD){
-        leaderboard_screen.OnActivate();
-        leaderboard_screen.draw(window);
-    }
-
-<<<<<<< minahil
-    if (current_state == GameState::PAUSED){
-        // pause_menu_screen.OnActivate();
-        pause_menu_screen.draw(window);
-    }
-
-    if (current_state == GameState::PLAYING)
-    {
-
-        window.draw(level1_bg_sprite);
-        if (player1.is_life())
-            player1.draw(window);
-
-        // for (int i=0;i<platform_count;i++)
-        // {
-        //     platforms[i]->draw(window);
-        // }
-
-        for (int i = 0; i < 3; i++)
-            if (BOTTOM[i]->check_alive())
-=======
                 for(int i=0;i<enemy_count;i++)
                 if(BOTTOM[i]->check_alive())
->>>>>>> main
                 BOTTOM[i]->draw(window);
 
-        if (!(snowBALL_PTR == NULL) && snow_checker)
-        {
-            snowBALL_PTR->draw(window);
-        }
+            if(!(snowBALL_PTR==NULL)&&snow_checker)
+            {
+                snowBALL_PTR->draw(window);
+            }
 
-        if (snowBALL_PTR != NULL && snowBALL_PTR->snowbal_checker() == false)
-        {
-            delete snowBALL_PTR;
-            snowBALL_PTR = NULL;
-            snow_checker = false;
-        }
-    }
+            if(snowBALL_PTR != NULL && snowBALL_PTR->snowbal_checker()==false)
+                {
+                    delete snowBALL_PTR;
+                    snowBALL_PTR = NULL;
+                    snow_checker=false;
+                }
 
-<<<<<<< minahil
-    if (current_state == GameState::GAME_OVER)
-    {
-        // game_over_screen.OnActivate();   activate on adding sound
-        game_over_screen.draw(window);
-    }
-
-    if (current_state == GameState::LEVEL_COMPLETE)
-    {
-        window.draw(level1_bg_sprite);
-        sf::Text txt;
-        txt.setFont(font);
-        txt.setString("LEVEL COMPLETE!");
-        txt.setCharacterSize(40);
-        txt.setFillColor(sf::Color::Yellow);
-        txt.setPosition(400, 300);
-        window.draw(txt);
-    }
-
-    window.display();
-
-} // all the screen shtuff goes here
-
-void game::check_event()
-{
-=======
 
             score.setString("SCORE: "+to_string(score_total));
             life.setString("LIVES: "+to_string(player1.get_lives()));
@@ -677,23 +429,15 @@ void game::check_event()
 
             if(current_state==GameState::GAME_OVER)
             {
-                //display functions call;
+                game_over_screen.draw(window);
             }
+
             window.display();
->>>>>>> main
 
-    sf::Event event;
-
-    while (window.pollEvent(event))
-    {
-
-<<<<<<< minahil
-        if (event.type == sf::Event::Closed)
-        {
-
-            window.close();
         }
-=======
+
+        void game::check_event(){
+
             sf::Event event;
             
             while (window.pollEvent(event)) {
@@ -713,7 +457,6 @@ void game::check_event()
                     if(event.mouseButton.button==sf::Mouse::Left)
                     {
                         sf::Vector2f mouse_click_position(event.mouseButton.x,event.mouseButton.y);
-                        //now checkinh again each button
                         if(B_NewGameSprite.getGlobalBounds().contains(mouse_click_position))
                         current_state=GameState::PLAYING;
                         if(B_LoginSprite.getGlobalBounds().contains(mouse_click_position))
@@ -744,66 +487,22 @@ void game::check_event()
                     }
                     player1.activate_SNOWBALL();
                 }
->>>>>>> main
 
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-        {
+            }
 
-            window.close();
         }
-        if (event.type == sf::Event::MouseButtonPressed && current_state == GameState::MAIN_MENU)
-        {
-            if (event.mouseButton.button == sf::Mouse::Left)
-            {
-                sf::Vector2f mouse_click_position(event.mouseButton.x, event.mouseButton.y);
-                // now checkinh again each button
-                if (B_NewGameSprite.getGlobalBounds().contains(mouse_click_position))
-                    current_state = GameState::PLAYING;
-                if (B_LoginSprite.getGlobalBounds().contains(mouse_click_position))
-                    current_state = GameState::LOGIN;
-                if (B_LeaderboardSprite.getGlobalBounds().contains(mouse_click_position))
-                    current_state = GameState::LEADERBOARD;
-                if (B_ExitSprite.getGlobalBounds().contains(mouse_click_position))
-                    window.close();
-            }
-        }
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
-        {
-            if (snowBALL_PTR != NULL && snowBALL_PTR->snowbal_checker() == false)
-            {
-                delete snowBALL_PTR;
-                snowBALL_PTR = NULL;
-                snow_checker = false;
-            }
-            if (snow_checker == false && player1.left_chcker())
-            {
-                snowBALL_PTR = new snow_ball(player1.get_positionof_player().x, (player1.get_positionof_player().y + 50), true);
-                snow_checker = true;
-            }
-            else if (snow_checker == false && player1.right_chcker())
-            {
-                snowBALL_PTR = new snow_ball(player1.get_positionof_player().x + 96, (player1.get_positionof_player().y + 50), false);
-                snow_checker = true;
-            }
-            player1.activate_SNOWBALL();
-        }
-    }
 
-} // updates current_state
+        void game::run() {
+        
+            while (window.isOpen()) {
+       
+                check_event();
 
-void game::run()
-{
-
-    while (window.isOpen())
-    {
-
-        check_event();
-
-        float delta_T = game_timer.restart().asSeconds();
-
-        update(delta_T);
-
-        display();
+                float delta_T = game_timer.restart().asSeconds();
+       
+                update(delta_T);
+       
+                display();
     }
 }
             
