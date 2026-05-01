@@ -5,9 +5,14 @@
 #include"../levels/dimensioner.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 #include"Game_state.h"
 #include "../characters/player/Player.h"
 #include"Collision_detector.h"
+#include "../levels/Level_Maker.h"
+#include "../characters/enemy/FlyngFoogaFoog.h"
+
+
 
 
 #include "../UI/GameOverScreen.h"
@@ -21,8 +26,33 @@ class game{
 private:
 
 
+sf::Music menu_music;
+
+sf::SoundBuffer hit;
+
+sf::Sound Hit_sound;
+
+sf::Music level_music;
+
+
+sf::SoundBuffer THROW_BALL;
+
+
+sf::Sound THROW_SOUND;
+
+sf::SoundBuffer BOSSS_DIE;
+
+sf::Sound DIE_SOUND;
+
+int score_total;
+
+sf::Text score;
+sf::Text life;
+sf::Text level_number;
+
+
 sf::Clock level_complete_timer;
-/// add sf::Clock level_complete_timer, add int current_level
+
 
     sf::RenderWindow window;
 
@@ -83,8 +113,8 @@ sf::Clock level_complete_timer;
 
      //level1
 
-     sf::Texture level1_bg_texture;
-        sf::Sprite level1_bg_sprite;
+     sf::Texture level1_bg_texture[2];
+        sf::Sprite level1_bg_sprite[2];
 
         //now the jumping bars
         dimension_er* platforms[10];
@@ -92,7 +122,8 @@ sf::Clock level_complete_timer;
         int platform_count;
 
         //bottom
-        enemy_bottom* BOTTOM[3];
+        enemy_bottom** BOTTOM;
+        int enemy_count;
 
 
         //snowball
@@ -117,6 +148,8 @@ sf::Clock level_complete_timer;
 
 public:
 
+        //ßßlevel_maker l;
+
         game();
         
         void update(float change_in_time);//(tam change in kitne sec)
@@ -126,6 +159,8 @@ public:
         void check_event();//updates current_state
 
         void run();
+
+        void gAme_load(int level_number);
 
 };
 

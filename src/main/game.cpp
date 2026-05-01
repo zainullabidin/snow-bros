@@ -1,14 +1,114 @@
+<<<<<<< minahil
 #include "../../include/main/game.h"
 #include "../../include/UI/LeaderboardScreen.h"
 
+=======
+#include"../../include/main/game.h"
+#include<iostream>
+>>>>>>> main
 
 
+<<<<<<< minahil
 game::game() 
 {
 
     level = 0;
     snowBALL_PTR = NULL;
     snow_checker = false;
+=======
+            THROW_BALL.loadFromFile("assets/Sounds/throw.wav");
+            THROW_SOUND.setBuffer(THROW_BALL);
+            BOSSS_DIE.loadFromFile("assets/Sounds/die_BOSS.wav");
+            DIE_SOUND.setBuffer(BOSSS_DIE);
+
+            hit.loadFromFile("assets/Sounds/hit.wav");
+            Hit_sound.setBuffer(hit);
+
+            menu_music.openFromFile("assets/Sounds/snow_bros_theme_01.ogg");
+            menu_music.setLoop(true);
+            menu_music.play();
+
+            level_music.openFromFile("assets/Sounds/snow_bros_level.ogg");
+            level_music.setLoop(true);
+
+
+
+            font.loadFromFile("assets/fonts/PressStart2P-Regular.ttf");
+            score_total=0;
+
+
+             score.setFont(font);
+             score.setCharacterSize(20);
+             score.setFillColor(sf::Color::Yellow);
+
+             score.setPosition(20, 20);
+
+
+            life.setFont(font);
+             life.setCharacterSize(20);
+             life.setFillColor(sf::Color::Yellow);
+
+             life.setPosition(20, 50);
+
+            level_number.setFont(font);
+             level_number.setCharacterSize(20);
+             level_number.setFillColor(sf::Color::Yellow);
+
+             level_number.setPosition(20, 80);
+
+
+             level1_bg_texture[0].loadFromFile("assets/Images/level1.png");
+            level1_bg_texture[1].loadFromFile("assets/Images/level2.png");
+
+            level1_bg_sprite[0].setTexture(level1_bg_texture[0]);
+            level1_bg_sprite[1].setTexture(level1_bg_texture[1]);
+
+            level1_bg_sprite[0].setScale(1280.0f / level1_bg_texture[0].getSize().x, 720.0f / level1_bg_texture[0].getSize().y);
+level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f / level1_bg_texture[1].getSize().y);
+
+
+            // for(int i=0;i<10;i++)
+            // {
+            //     string bg_name;
+            //     bg_name="assets/Images/level"+to_string(i+1)+ ".png";
+            //     level1_bg_texture[i].loadFromFile(bg_name);
+            //     level1_bg_sprite[i].setTexture(level1_bg_texture[i]);
+            //     level1_bg_sprite[i].setScale(1280.0f / level1_bg_texture[i].getSize().x, 720.0f / level1_bg_texture[i].getSize().y);
+
+
+            // }
+
+            BOTTOM = NULL;
+            level=0;
+            enemy_count = 0;
+            snowBALL_PTR=NULL;
+            snow_checker=false;
+
+            
+            window.create(sf::VideoMode(1280, 720), "SNOW BROS-By MZ");//screens saz and apna mark
+            //maim menu content loacer
+            B_Frame_texture.loadFromFile("assets/images/frame.png");
+            B_NewGameTexture.loadFromFile("assets/images/frame_snowbro.png");
+
+            float B_NewGame_Scale_X = 420.0f / 818.0f;
+            float B_NewGame_Scale_Y = 110.0f / 305.0f;
+            B_NewGameSprite.setScale(B_NewGame_Scale_X, B_NewGame_Scale_Y);
+            B_NewGameSprite.setTexture(B_NewGameTexture);
+            B_NewGameSprite.setPosition(280, 195);
+            txtNewGame.setPosition(420, 237);
+
+            float B_Scale_X = 380.0f / 1234.0f;
+            float B_Scale_Y = 80.0f / 202.0f;
+
+
+            //adding sprites for main menu 
+
+
+
+            B_LoginSprite.setTexture(B_Frame_texture);
+            B_LoginSprite.setScale(B_Scale_X, B_Scale_Y);
+            B_LoginSprite.setPosition(300, 320);
+>>>>>>> main
 
     
     window.create(sf::VideoMode(1280, 720), "SNOW BROS-By MZ"); // screens saz and apna mark
@@ -95,20 +195,29 @@ game::game()
     MZ_Text.setFillColor(sf::Color(10, 10, 80));
     MZ_Text.setPosition(400, 500);
 
+<<<<<<< minahil
     player1.set_ID(1);
 
     player2.set_ID(2);
+=======
+             player1.set_ID(1);
+             
+             player2.set_ID(2);
+>>>>>>> main
 
     // level 01
     level1_bg_texture.loadFromFile("assets/Images/level1.png");
     level1_bg_sprite.setTexture(level1_bg_texture);
 
+<<<<<<< minahil
     // scale on level1
     level1_bg_sprite.setScale(1280.0f / level1_bg_texture.getSize().x, 720.0f / level1_bg_texture.getSize().y);
 
     // the jumping bars thingy&
 
     /// each bar dimensions
+=======
+>>>>>>> main
 
     platform_count = 7;
 
@@ -135,11 +244,15 @@ game::game()
     BOTTOM[2]->set_nick_texture(player1.get_texture());
 }
 
+<<<<<<< minahil
 void game::update(float change_in_time)
 {
 
     if (current_state == GameState::TRAILER)
     {
+=======
+            gAme_load(level);
+>>>>>>> main
 
         if (trailer_timer.getElapsedTime().asSeconds() >= 5.0f)
         {
@@ -148,20 +261,67 @@ void game::update(float change_in_time)
         }
     }
 
+<<<<<<< minahil
     if (current_state == GameState::LEADERBOARD)
     {
         current_state = leaderboard_screen.Update(change_in_time, window);
     }
+=======
+        
+            if (current_state == GameState::TRAILER) {
+   
+                if (trailer_timer.getElapsedTime().asSeconds() >= 3.5f) {
+    
+                    current_state = GameState::MAIN_MENU;
+   
+                }
+>>>>>>> main
 
     if (current_state == GameState::LOGIN)
     {
         current_state = login_screen.Update(change_in_time, window);
     }
 
+<<<<<<< minahil
     if (current_state == GameState::PAUSED)
     {
         current_state = pause_menu_screen.Update(change_in_time, window);
     }
+=======
+            if(current_state==GameState::PLAYING)
+            {
+
+                if(level_music.getStatus() != sf::Music::Playing)
+                    {
+                        menu_music.stop();
+                        level_music.play();
+                    }
+
+                player1.update_sprite_position(change_in_time);
+
+
+                for(int I=0;I<enemy_count;I++)
+                {
+                    {
+                        if(BOTTOM[I]->check_alive())
+                        {
+                            FF* flying_ff=dynamic_cast<FF*>(BOTTOM[I]);
+                            if(flying_ff!=NULL)
+                            {
+                                flying_ff->position_getter_player(player1.get_positionof_player());
+                            }
+                                BOTTOM[I]->update_sprite_position(change_in_time);;
+
+                            
+
+
+                                
+                            
+                        }
+                        
+                    }
+                }
+>>>>>>> main
 
     if (current_state == GameState::PLAYING)
     {
@@ -174,10 +334,16 @@ void game::update(float change_in_time)
             }
         }
 
+<<<<<<< minahil
         if (!(snowBALL_PTR == NULL) && snow_checker)
         {
             snowBALL_PTR->update_sprite_position(change_in_time);
         }
+=======
+            for(int i=0;i<enemy_count;i++)
+            if(snowBALL_PTR!=NULL)
+            {
+>>>>>>> main
 
         for (int i = 0; i < 3; i++)
             if (snowBALL_PTR != NULL)
@@ -185,7 +351,15 @@ void game::update(float change_in_time)
 
                 if (collision_detector.snowball_HitsEnemy(snowBALL_PTR->getHit_box(), BOTTOM[i]->getHIT_box()))
                 {
+<<<<<<< minahil
                     // we encase bottom and for the moment we do
+=======
+                    Hit_sound.play();
+                    BOTTOM[i]->get_hit();
+                }
+               
+               snow_checker=false;
+>>>>>>> main
 
                     if (snow_checker)
                     {
@@ -195,6 +369,7 @@ void game::update(float change_in_time)
                     snow_checker = false;
                 }
             }
+<<<<<<< minahil
         for (int i = 0; i < 3; i++)
             if (BOTTOM[i]->get_rooling())
             {
@@ -204,6 +379,17 @@ void game::update(float change_in_time)
                         if (i != j)
                             BOTTOM[j]->set_dead();
                     }
+=======
+            }
+            for(int i=0;i<enemy_count;i++)
+            if(BOTTOM[i]->get_rooling())
+        {
+            for(int j=0;j<enemy_count;j++)
+            if(collision_detector.rollingSnowball_HitsEnemy(BOTTOM[i]->getHIT_box(),BOTTOM[j]->getHIT_box()))
+            {if(i!=j)
+                BOTTOM[j]->set_dead();
+                score_total+=100;
+>>>>>>> main
             }
 
         bool check_level_complete = true;
@@ -213,17 +399,50 @@ void game::update(float change_in_time)
                 check_level_complete = false;
         }
 
+<<<<<<< minahil
         if (check_level_complete)
+=======
+        bool check_level_complete=true;
+        for(int i=0;i<enemy_count;i++)
+>>>>>>> main
         {
             current_state = GameState::LEVEL_COMPLETE;
             level_complete_timer.restart();
         }
 
+<<<<<<< minahil
         for (int i = 0; i < 3; i++)
             if (collision_detector.player_HitsEnemy(player1.getHitbox(), BOTTOM[i]->getHIT_box()))
             {
 
                 if (BOTTOM[i]->get_snow_ball_counter() >= 4)
+=======
+        //  if(check_level_complete)
+        //  {
+        //         current_state=GameState::LEVEL_COMPLETE;
+        //         level_complete_timer.restart();
+        //  }
+
+        if(check_level_complete)
+{
+
+    current_state=GameState::LEVEL_COMPLETE;
+    level_complete_timer.restart();
+}
+            
+
+
+
+             for(int i=0;i<enemy_count;i++)
+            if(collision_detector.player_HitsEnemy(player1.getHitbox() ,BOTTOM[i]->getHIT_box()))
+            {
+                FF *ff=dynamic_cast<FF*>(BOTTOM[i]);
+
+                if(ff!=NULL)
+                ff->reset_flight();
+               
+                if (BOTTOM[i]->get_snow_ball_counter()>=4)
+>>>>>>> main
                 {
                     BOTTOM[i]->set_rooling(player1.left_chcker());
 
@@ -232,7 +451,17 @@ void game::update(float change_in_time)
                 else if (BOTTOM[i]->get_snow_ball_counter() == 0)
                 {
                     player1.decrease_life();
+                    
                 }
+<<<<<<< minahil
+=======
+                  
+                
+            }
+            if(!player1.is_life())
+            {
+                current_state=GameState::GAME_OVER;
+>>>>>>> main
             }
         if (!player1.is_life())
         {
@@ -246,6 +475,13 @@ void game::update(float change_in_time)
         current_state = game_over_screen.Update(change_in_time, window);
     }
 
+<<<<<<< minahil
+=======
+                    current_state=GameState::PLAYING;
+                    level++;
+                    gAme_load(level);
+                    level_complete_timer.restart();
+>>>>>>> main
 
     if (current_state == GameState::LEVEL_COMPLETE)
     {
@@ -258,16 +494,56 @@ void game::update(float change_in_time)
         }
     }
 
+<<<<<<< minahil
 } //(tam change in kitne sec)
+=======
+            if(current_state==GameState::GAME_OVER)
+            {
+                //to be implemented on the basisi of GUi we add a clcik here
+            }
+        }//(tam change in kitne sec)
+>>>>>>> main
 
 void game::display()
 {
 
+<<<<<<< minahil
     window.clear(sf::Color::Black);
+=======
+  
+            }
+    
+            if(current_state == GameState::MAIN_MENU){
+
+                    
+                    window.draw(bgSprite);
+
+                    trailer_logo_sprote.setScale(0.3f, 0.3f);//chane later
+                    trailer_logo_sprote.setPosition(900, 20);
+                    window.draw(trailer_logo_sprote);
+
+                    window.draw(B_NewGameSprite);
+                    window.draw(txtNewGame);
+                    window.draw(B_LoginSprite);
+                    window.draw(txtLogin);
+                    window.draw(B_LeaderboardSprite);
+                    window.draw(txtLeaderboard);
+                    window.draw(B_ExitSprite);
+                    window.draw(txtExit);
+
+
+
+                
+            }
+    
+            if(current_state==GameState::PLAYING)
+            {
+>>>>>>> main
 
     if (current_state == GameState::TRAILER)
     {
 
+<<<<<<< minahil
         window.draw(trailer_sprite);
         window.draw(trailer_logo_sprote);
         window.draw(MZ_Text);
@@ -277,6 +553,12 @@ void game::display()
     {
 
         window.draw(bgSprite);
+=======
+                window.draw(level1_bg_sprite[level % 2]);
+
+                if(player1.is_life())
+                player1.draw(window);
+>>>>>>> main
 
         trailer_logo_sprote.setScale(0.3f, 0.3f); // chane later
         trailer_logo_sprote.setPosition(900, 20);
@@ -303,6 +585,7 @@ void game::display()
         leaderboard_screen.draw(window);
     }
 
+<<<<<<< minahil
     if (current_state == GameState::PAUSED){
         // pause_menu_screen.OnActivate();
         pause_menu_screen.draw(window);
@@ -322,6 +605,10 @@ void game::display()
 
         for (int i = 0; i < 3; i++)
             if (BOTTOM[i]->check_alive())
+=======
+                for(int i=0;i<enemy_count;i++)
+                if(BOTTOM[i]->check_alive())
+>>>>>>> main
                 BOTTOM[i]->draw(window);
 
         if (!(snowBALL_PTR == NULL) && snow_checker)
@@ -337,6 +624,7 @@ void game::display()
         }
     }
 
+<<<<<<< minahil
     if (current_state == GameState::GAME_OVER)
     {
         // game_over_screen.OnActivate();   activate on adding sound
@@ -361,17 +649,102 @@ void game::display()
 
 void game::check_event()
 {
+=======
+
+            score.setString("SCORE: "+to_string(score_total));
+            life.setString("LIVES: "+to_string(player1.get_lives()));
+            level_number.setString("LEVEL: "+to_string(level+1));
+
+            window.draw(score);
+            window.draw(life);
+            window.draw(level_number);
+
+
+            
+            }
+
+            if(current_state == GameState::LEVEL_COMPLETE)
+            {
+                window.draw(level1_bg_sprite[level%2]);
+                sf::Text txt;
+                txt.setFont(font);
+                txt.setString("LEVEL COMPLETE!");
+                txt.setCharacterSize(40);
+                txt.setFillColor(sf::Color::Yellow);
+                txt.setPosition(400, 300);
+                window.draw(txt);
+            }
+
+            if(current_state==GameState::GAME_OVER)
+            {
+                //display functions call;
+            }
+            window.display();
+>>>>>>> main
 
     sf::Event event;
 
     while (window.pollEvent(event))
     {
 
+<<<<<<< minahil
         if (event.type == sf::Event::Closed)
         {
 
             window.close();
         }
+=======
+            sf::Event event;
+            
+            while (window.pollEvent(event)) {
+       
+                if (event.type == sf::Event::Closed) {
+         
+                    window.close();
+       
+                }
+       
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+            
+                    window.close();
+        
+                }
+                if(event.type==sf::Event::MouseButtonPressed&&current_state==GameState::MAIN_MENU){
+                    if(event.mouseButton.button==sf::Mouse::Left)
+                    {
+                        sf::Vector2f mouse_click_position(event.mouseButton.x,event.mouseButton.y);
+                        //now checkinh again each button
+                        if(B_NewGameSprite.getGlobalBounds().contains(mouse_click_position))
+                        current_state=GameState::PLAYING;
+                        if(B_LoginSprite.getGlobalBounds().contains(mouse_click_position))
+                        current_state=GameState::LOGIN;
+                        if(B_LeaderboardSprite.getGlobalBounds().contains(mouse_click_position))
+                        current_state=GameState::LEADERBOARD;
+                        if(B_ExitSprite.getGlobalBounds().contains(mouse_click_position))
+                        window.close();
+                    }
+                }
+                if(event.type==sf::Event::KeyPressed&&event.key.code==sf::Keyboard::Space)
+                {
+                    THROW_SOUND.play();
+                    if(snowBALL_PTR != NULL&&snowBALL_PTR->snowbal_checker()==false) {
+                        delete snowBALL_PTR;
+                        snowBALL_PTR = NULL;
+                        snow_checker=false;
+                    }
+                    if(snow_checker==false&&player1.left_chcker())
+                    {
+                        snowBALL_PTR= new snow_ball(player1.get_positionof_player().x,(player1.get_positionof_player().y+50),true);
+                        snow_checker=true;
+                    }
+                    else if(snow_checker==false&&player1.right_chcker())
+                    {
+                         snowBALL_PTR= new snow_ball(player1.get_positionof_player().x+96,(player1.get_positionof_player().y+50),false);
+                        snow_checker=true;
+                    }
+                    player1.activate_SNOWBALL();
+                }
+>>>>>>> main
 
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
         {
@@ -433,3 +806,32 @@ void game::run()
         display();
     }
 }
+            
+        void game::gAme_load(int level_number){
+            if(BOTTOM!=NULL)
+            {
+                for(int i=0;i<enemy_count;i++)
+                {
+                    delete BOTTOM[i];
+                }
+                delete [] BOTTOM;
+
+            }
+
+            enemy_count=arr_main_levels[level_number].T_enemies;
+
+            BOTTOM=new enemy_bottom*[enemy_count];
+
+            for(int i=0; i<enemy_count; i++)
+{
+    if(level_number == 3 && i == enemy_count-1)
+        BOTTOM[i] = new FF(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, "assets/Images/FlyingFoogaFoog_Orange.png");
+    else
+        BOTTOM[i] = new enemy_bottom(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, arr_main_levels[level_number].BOTTOM_TEXTURE);
+
+    BOTTOM[i]->set_Dimension(platforms, platform_count);
+    BOTTOM[i]->set_nick_texture(player1.get_texture());
+}
+
+
+        }

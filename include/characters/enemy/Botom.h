@@ -4,24 +4,23 @@
 #include"../character_base.h"
 #include "../../levels/dimensioner.h"
 #include <SFML/Window.hpp>
-
+#include<iostream>
+using namespace std;
 
 class enemy_bottom:public character_base{
 
 private:
 
 
-    hitbox Bottom_hitbox;
 
-    sf::Texture bottom_texture;
 
-    sf::Sprite bottom_sprite;
 
     dimension_er ** DIMEN_ptr;
     
     int DIMEN_SIZE;
 
     sf::Clock walker_bottom;
+
     int walkingsprite;
 
     bool left,right;
@@ -31,24 +30,37 @@ private:
     sf::Clock  ball_break_timer;
 
     sf::Texture *ball_casing;
+
     sf::Sprite anow_ball_casing;
 
 
     bool alive;
 
     bool roll;
+  
+
+
+protected:
+
+        hitbox Bottom_hitbox;
+
+
+    sf::Texture bottom_texture;
+        sf::Sprite bottom_sprite;
+
+          float speed;
 
 
 
 public:
-    enemy_bottom():enemy_bottom(0,0){}
-    
 
-    enemy_bottom(float x, float y);
+    enemy_bottom() : enemy_bottom(0, 0, 100.0f, "assets/Images/Botom_Blue.png") {}
 
-     void update_sprite_position(float delta_T)  override;
+    enemy_bottom(float x, float y, float spd=100.0f,string path="");
 
-     void draw(sf::RenderWindow &) override;
+    void update_sprite_position(float delta_T)  override;
+
+    void draw(sf::RenderWindow &) override;
 
     void set_Dimension(dimension_er ** arr, int n);
 
