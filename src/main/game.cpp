@@ -4,6 +4,13 @@
  
         game::game(){
 
+            THROW_BALL.loadFromFile("assets/Sounds/throw.wav");
+            THROW_SOUND.setBuffer(THROW_BALL);
+            BOSSS_DIE.loadFromFile("assets/Sounds/die_BOSS.wav");
+            DIE_SOUND.setBuffer(BOSSS_DIE);
+
+            hit.loadFromFile("assets/Sounds/hit.wav");
+            Hit_sound.setBuffer(hit);
 
             menu_music.openFromFile("assets/Sounds/snow_bros_theme_01.ogg");
             menu_music.setLoop(true);
@@ -192,7 +199,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
         
             if (current_state == GameState::TRAILER) {
    
-                if (trailer_timer.getElapsedTime().asSeconds() >= 1.0f) {
+                if (trailer_timer.getElapsedTime().asSeconds() >= 3.5f) {
     
                     current_state = GameState::MAIN_MENU;
    
@@ -202,6 +209,13 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
             if(current_state==GameState::PLAYING)
             {
+
+                if(level_music.getStatus() != sf::Music::Playing)
+                    {
+                        menu_music.stop();
+                        level_music.play();
+                    }
+
                 player1.update_sprite_position(change_in_time);
 
 
@@ -212,10 +226,15 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                         {
                             FF* flying_ff=dynamic_cast<FF*>(BOTTOM[I]);
                             if(flying_ff!=NULL)
-
-
+                            {
                                 flying_ff->position_getter_player(player1.get_positionof_player());
+                            }
                                 BOTTOM[I]->update_sprite_position(change_in_time);;
+
+                            
+
+
+                                
                             
                         }
                         
@@ -238,6 +257,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
                 if(snow_checker)
                 {
+                    Hit_sound.play();
                     BOTTOM[i]->get_hit();
                 }
                
@@ -469,6 +489,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                 }
                 if(event.type==sf::Event::KeyPressed&&event.key.code==sf::Keyboard::Space)
                 {
+                    THROW_SOUND.play();
                     if(snowBALL_PTR != NULL&&snowBALL_PTR->snowbal_checker()==false) {
                         delete snowBALL_PTR;
                         snowBALL_PTR = NULL;

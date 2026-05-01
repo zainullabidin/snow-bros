@@ -1,12 +1,11 @@
 #pragma once
-#include<iostream>
-using namespace std;
 #include "Input_manager.h"
 #include "../characters/projectile/Snowball.h"
 #include "../characters/enemy/Botom.h"
 #include"../levels/dimensioner.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 #include"Game_state.h"
 #include "../characters/player/Player.h"
 #include"Collision_detector.h"
@@ -16,11 +15,29 @@ using namespace std;
 
 
 
+
 class game{
 
 private:
 
 
+sf::Music menu_music;
+
+sf::SoundBuffer hit;
+
+sf::Sound Hit_sound;
+
+sf::Music level_music;
+
+
+sf::SoundBuffer THROW_BALL;
+
+
+sf::Sound THROW_SOUND;
+
+sf::SoundBuffer BOSSS_DIE;
+
+sf::Sound DIE_SOUND;
 
 int score_total;
 
@@ -30,7 +47,7 @@ sf::Text level_number;
 
 
 sf::Clock level_complete_timer;
-/// add sf::Clock level_complete_timer, add int current_level
+
 
     sf::RenderWindow window;
 

@@ -4,6 +4,7 @@
 
 
 
+        flight = false;
 
      bottom_texture.loadFromFile("assets/Images/FlyingFoogaFoog_Orange.png");
     bottom_sprite.setTexture(bottom_texture);
@@ -13,6 +14,8 @@
     }
 
     void FF::flight_mode(){
+
+
 
         if(!flight&&flight_time.getElapsedTime().asSeconds()>=5)//aftr every 5 sec it flies
         {
