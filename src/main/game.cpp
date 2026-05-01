@@ -1,6 +1,5 @@
 #include"../../include/main/game.h"
-#include"../../include/UI/LeaderboardScreen.h"
-
+#include<iostream>
 
  
         game::game(){
@@ -56,6 +55,17 @@
 level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f / level1_bg_texture[1].getSize().y);
 
 
+            // for(int i=0;i<10;i++)
+            // {
+            //     string bg_name;
+            //     bg_name="assets/Images/level"+to_string(i+1)+ ".png";
+            //     level1_bg_texture[i].loadFromFile(bg_name);
+            //     level1_bg_sprite[i].setTexture(level1_bg_texture[i]);
+            //     level1_bg_sprite[i].setScale(1280.0f / level1_bg_texture[i].getSize().x, 720.0f / level1_bg_texture[i].getSize().y);
+
+
+            // }
+
             BOTTOM = NULL;
             level=0;
             enemy_count = 0;
@@ -63,7 +73,8 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
             snow_checker=false;
 
             
-            window.create(sf::VideoMode(1280, 720), "SNOW BROS-By MZ");
+            window.create(sf::VideoMode(1280, 720), "SNOW BROS-By MZ");//screens saz and apna mark
+            //maim menu content loacer
             B_Frame_texture.loadFromFile("assets/images/frame.png");
             B_NewGameTexture.loadFromFile("assets/images/frame_snowbro.png");
 
@@ -76,6 +87,10 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
             float B_Scale_X = 380.0f / 1234.0f;
             float B_Scale_Y = 80.0f / 202.0f;
+
+
+            //adding sprites for main menu 
+
 
 
             B_LoginSprite.setTexture(B_Frame_texture);
@@ -92,6 +107,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
             B_ExitSprite.setScale(B_Scale_X, B_Scale_Y);
             B_ExitSprite.setPosition(300, 520);
 
+            //logo
             trailer_logo_textture.loadFromFile("assets/images/title+logo.png");
             trailer_logo_sprote.setTexture(trailer_logo_textture);
             trailer_logo_sprote.setScale(0.8f, 0.8f);
@@ -100,28 +116,38 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
             tariler_bg_Textture.loadFromFile("assets/images/trailer_bg.png");
             trailer_sprite.setTexture(tariler_bg_Textture);
-            trailer_sprite.setScale(1280.0f / tariler_bg_Textture.getSize().x,720.0f / tariler_bg_Textture.getSize().y);
-
+            trailer_sprite.setScale(1280.0f / tariler_bg_Textture.getSize().x,720.0f / tariler_bg_Textture.getSize().y
+);
+            //bg load
             bgTexture.loadFromFile("assets/images/background.png");
 
 
             
             current_state=GameState::TRAILER;
 
+            //clcik button-1
+
+
             txtNewGame.setFont(font);
             txtNewGame.setString("NEW GAME");
             txtNewGame.setCharacterSize(22);
    
+
+            //btn-2
 
             txtLogin.setFont(font);
             txtLogin.setString("LOGIN");
             txtLogin.setCharacterSize(22);
             txtLogin.setPosition(430, 345);
 
+            //bten-3
+
             txtLeaderboard.setFont(font);
             txtLeaderboard.setCharacterSize(22);
             txtLeaderboard.setString("LEADERBOARD");
             txtLeaderboard.setPosition(390, 445);
+
+            //btn-4
 
             txtExit.setFont(font);
             txtExit.setString("EXIT");
@@ -129,6 +155,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
             txtExit.setPosition(430, 545);
 
             bgSprite.setTexture(bgTexture);
+            //scaling acc to size
             bgSprite.setScale(1280.0f / bgTexture.getSize().x,720.0f / bgTexture.getSize().y);
 
 
@@ -145,6 +172,10 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
 
 
+             //the jumping bars thingy&
+
+             ///each bar dimensions
+
              platform_count = 7;
 
             platforms[0] = new dimension_er(130, 693, 1020, 30);  // ground
@@ -155,6 +186,8 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
             platforms[5] = new dimension_er(720, 370, 425, 30); ///up_right one
             platforms[6] = new dimension_er(525, 585, 245, 30);  //bootom middle
             player1.set_Dimension(platforms,platform_count);
+
+            //bottom
 
             gAme_load(level);
 
@@ -172,21 +205,6 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
    
                 }
 
-            }
-
-            if(current_state==GameState::LEADERBOARD)
-            {
-                current_state = leaderboard_screen.Update(change_in_time, window);
-            }
-
-            if(current_state==GameState::LOGIN)
-            {
-                current_state = login_screen.Update(change_in_time, window);
-            }
-
-            if(current_state==GameState::PAUSED)
-            {
-                current_state = pause_menu_screen.Update(change_in_time, window);
             }
 
             if(current_state==GameState::PLAYING)
@@ -235,6 +253,8 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
             if(collision_detector.snowball_HitsEnemy(snowBALL_PTR->getHit_box(),BOTTOM[i]->getHIT_box()))
             {
+                //we encase bottom and for the moment we do
+
                 if(snow_checker)
                 {
                     Hit_sound.play();
@@ -266,6 +286,12 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
           
         }
 
+        //  if(check_level_complete)
+        //  {
+        //         current_state=GameState::LEVEL_COMPLETE;
+        //         level_complete_timer.restart();
+        //  }
+
         if(check_level_complete)
 {
 
@@ -289,6 +315,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                     BOTTOM[i]->set_rooling(player1.left_chcker());
                     
 
+                    // if(collision_detector.player_HitsEnemy(BOTTOM->getHIT_box(),))
                 }
                 else if(BOTTOM[i]->get_snow_ball_counter()==0)
                 {
@@ -323,9 +350,9 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
             if(current_state==GameState::GAME_OVER)
             {
-                current_state = game_over_screen.Update(change_in_time, window);
+                //to be implemented on the basisi of GUi we add a clcik here
             }
-        }
+        }//(tam change in kitne sec)
 
         void game::display(){
     
@@ -333,10 +360,13 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
     
             if (current_state == GameState::TRAILER) {
    
+    
+                
                 window.draw(trailer_sprite);
                 window.draw(trailer_logo_sprote);
                 window.draw(MZ_Text);
 
+  
             }
     
             if(current_state == GameState::MAIN_MENU){
@@ -344,7 +374,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                     
                     window.draw(bgSprite);
 
-                    trailer_logo_sprote.setScale(0.3f, 0.3f);
+                    trailer_logo_sprote.setScale(0.3f, 0.3f);//chane later
                     trailer_logo_sprote.setPosition(900, 20);
                     window.draw(trailer_logo_sprote);
 
@@ -358,23 +388,8 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                     window.draw(txtExit);
 
 
+
                 
-            }
-
-            if(current_state==GameState::LOGIN)
-            {
-                login_screen.draw(window);
-            }
-
-            if(current_state==GameState::LEADERBOARD)
-            {
-                leaderboard_screen.OnActivate();
-                leaderboard_screen.draw(window);
-            }
-
-            if(current_state==GameState::PAUSED)
-            {
-                pause_menu_screen.draw(window);
             }
     
             if(current_state==GameState::PLAYING)
@@ -385,6 +400,11 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
                 if(player1.is_life())
                 player1.draw(window);
+
+                // for (int i=0;i<platform_count;i++)
+                // {
+                //     platforms[i]->draw(window);
+                // }
 
                 for(int i=0;i<enemy_count;i++)
                 if(BOTTOM[i]->check_alive())
@@ -429,12 +449,11 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
             if(current_state==GameState::GAME_OVER)
             {
-                game_over_screen.draw(window);
+                //display functions call;
             }
-
             window.display();
 
-        }
+        } //all the screen shtuff goes here 
 
         void game::check_event(){
 
@@ -457,6 +476,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                     if(event.mouseButton.button==sf::Mouse::Left)
                     {
                         sf::Vector2f mouse_click_position(event.mouseButton.x,event.mouseButton.y);
+                        //now checkinh again each button
                         if(B_NewGameSprite.getGlobalBounds().contains(mouse_click_position))
                         current_state=GameState::PLAYING;
                         if(B_LoginSprite.getGlobalBounds().contains(mouse_click_position))
@@ -490,7 +510,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
             }
 
-        }
+        }//updates current_state
 
         void game::run() {
         
