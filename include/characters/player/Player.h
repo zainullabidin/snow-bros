@@ -48,6 +48,7 @@ private:
 public:
 
     player(){
+
         player_id=0;
         lives=0;
         dec=false;
@@ -88,6 +89,8 @@ public:
       bool is_life();
 
      int  get_lives();
+
+     void reset_position(int n);
 
 
 

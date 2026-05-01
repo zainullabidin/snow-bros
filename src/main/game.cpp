@@ -53,7 +53,7 @@
             level1_bg_sprite[1].setTexture(level1_bg_texture[1]);
 
             level1_bg_sprite[0].setScale(1280.0f / level1_bg_texture[0].getSize().x, 720.0f / level1_bg_texture[0].getSize().y);
-level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f / level1_bg_texture[1].getSize().y);
+            level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f / level1_bg_texture[1].getSize().y);
 
 
             // for(int i=0;i<10;i++)
@@ -187,6 +187,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
             platforms[5] = new dimension_er(720, 370, 425, 30); ///up_right one
             platforms[6] = new dimension_er(525, 585, 245, 30);  //bootom middle
             player1.set_Dimension(platforms,platform_count);
+            player2.set_Dimension(platforms,platform_count);
 
             //bottom
 
@@ -217,7 +218,10 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                         level_music.play();
                     }
 
+                  if(player1.is_life())   
                 player1.update_sprite_position(change_in_time);
+                 if(player2.is_life())
+                player2.update_sprite_position(change_in_time);
 
 
                 for(int I=0;I<enemy_count;I++)
@@ -228,7 +232,11 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                             FF* flying_ff=dynamic_cast<FF*>(BOTTOM[I]);
                             if(flying_ff!=NULL)
                             {
+                                static int x=0;
+                                if(x%2==0&&player1.is_life())
                                 flying_ff->position_getter_player(player1.get_positionof_player());
+                                else if(x%2==1&&player2.is_life())
+                                flying_ff->position_getter_player(player2.get_positionof_player());
                             }
                                 BOTTOM[I]->update_sprite_position(change_in_time);;
 
@@ -304,7 +312,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
 
              for(int i=0;i<enemy_count;i++)
-            if(collision_detector.player_HitsEnemy(player1.getHitbox() ,BOTTOM[i]->getHIT_box()))
+            if(collision_detector.player_HitsEnemy(player1.getHitbox() ,BOTTOM[i]->getHIT_box())&& (player1.is_life()))
             {
                 FF *ff=dynamic_cast<FF*>(BOTTOM[i]);
 
@@ -320,13 +328,38 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                 }
                 else if(BOTTOM[i]->get_snow_ball_counter()==0)
                 {
+                    if(player1.is_life())
                     player1.decrease_life();
+                    player1.reset_position(1);
                     
-                }
-                  
+                }   
                 
             }
-            if(!player1.is_life())
+                for(int i=0;i<enemy_count;i++)
+            if(collision_detector.player_HitsEnemy(player2.getHitbox() ,BOTTOM[i]->getHIT_box())&& (player2.is_life()))
+            {
+                FF *ff=dynamic_cast<FF*>(BOTTOM[i]);
+
+                if(ff!=NULL)
+                ff->reset_flight();
+               
+                if (BOTTOM[i]->get_snow_ball_counter()>=4)
+                {
+                    BOTTOM[i]->set_rooling(player2.left_chcker());
+                    
+
+                    // if(collision_detector.player_HitsEnemy(BOTTOM->getHIT_box(),))
+                }
+                else if(BOTTOM[i]->get_snow_ball_counter()==0)
+                {
+                    if(player2.is_life())
+                    player2.decrease_life();
+                    player2.reset_position(2);
+                    
+                }
+            }
+
+            if(!player1.is_life()&&!player2.is_life())
             {
                 current_state=GameState::GAME_OVER;
             }
@@ -359,7 +392,17 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                 current_state = pause_menu_screen.Update(change_in_time, window);
 
             if(current_state==GameState::GAME_OVER)
+            {
+                BOTTOM = NULL;
+            level=0;
+            enemy_count = 0;
+            snowBALL_PTR=NULL;
+            snow_checker=false;
+                score_total=0;
                 current_state = game_over_screen.Update(change_in_time, window);
+                gAme_load(level);
+            }
+                
         
         
         }//(tam change in kitne sec)
@@ -410,6 +453,8 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
                 if(player1.is_life())
                 player1.draw(window);
+                if(player2.is_life())
+                player2.draw(window);
 
                 // for (int i=0;i<platform_count;i++)
                 // {
@@ -434,7 +479,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
 
 
             score.setString("SCORE: "+to_string(score_total));
-            life.setString("LIVES: "+to_string(player1.get_lives()));
+            life.setString("P1:"+to_string(player1.get_lives())+" P2:"+to_string(player2.get_lives()));
             level_number.setString("LEVEL: "+to_string(level+1));
 
             window.draw(score);
@@ -505,7 +550,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                         window.close();
                     }
                 }
-                if(event.type==sf::Event::KeyPressed&&event.key.code==sf::Keyboard::Space)
+                if(event.type==sf::Event::KeyPressed&&event.key.code==sf::Keyboard::Space&& (player1.is_life()))
                 {
                     THROW_SOUND.play();
                     if(snowBALL_PTR != NULL&&snowBALL_PTR->snowbal_checker()==false) {
@@ -524,7 +569,25 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
                         snow_checker=true;
                     }
                     player1.activate_SNOWBALL();
+                    
                 }
+
+                if(event.type==sf::Event::KeyPressed&&event.key.code==sf::Keyboard::Down &&(player2.is_life()))
+                {
+                    THROW_SOUND.play();
+                    if(snow_checker==false&&player2.left_chcker())
+                    {
+                        snowBALL_PTR= new snow_ball(player2.get_positionof_player().x,(player2.get_positionof_player().y+50),true);
+                        snow_checker=true;
+                    }
+                    else if(snow_checker==false&&player2.right_chcker())
+                    {
+                         snowBALL_PTR= new snow_ball(player2.get_positionof_player().x+96,(player2.get_positionof_player().y+50),false);
+                        snow_checker=true;
+                    }
+                    player2.activate_SNOWBALL();
+                }
+
 
             }
 
@@ -567,6 +630,7 @@ level1_bg_sprite[1].setScale(1280.0f / level1_bg_texture[1].getSize().x, 720.0f 
         BOTTOM[i] = new enemy_bottom(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, arr_main_levels[level_number].BOTTOM_TEXTURE);
 
     BOTTOM[i]->set_Dimension(platforms, platform_count);
+
     BOTTOM[i]->set_nick_texture(player1.get_texture());
 }
 

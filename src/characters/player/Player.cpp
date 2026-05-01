@@ -179,6 +179,20 @@
             player_sprite.setScale(0.3f, 0.3f);
         
         }
+
+                if(player_id==2)
+        {
+            Player_texture.loadFromFile("assets/Images/Nick.png");
+            player_sprite.setTexture(Player_texture);
+            player_sprite.setTextureRect(sf::IntRect(0, 0, 322, 350));
+            player_sprite.setPosition(1000, 500);
+            
+            position.x = 100;
+            position.y = 500;
+            
+            player_sprite.setScale(0.3f, 0.3f);
+        
+        }
     }
 
     void player::set_Dimension(dimension_er **arr, int n)
@@ -244,5 +258,14 @@
     }
 
     int  player::get_lives(){
+
         return lives;
     }
+
+
+     void player::reset_position(int n){
+        if(n==1)
+        player_sprite.setPosition(100, 500);
+        else if (n==2)
+        player_sprite.setPosition(1000, 500);
+     }
