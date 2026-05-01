@@ -180,14 +180,14 @@
         
         }
 
-                if(player_id==2)
+        if(player_id==2)
         {
             Player_texture.loadFromFile("assets/Images/Nick.png");
             player_sprite.setTexture(Player_texture);
             player_sprite.setTextureRect(sf::IntRect(0, 0, 322, 350));
             player_sprite.setPosition(1000, 500);
             
-            position.x = 100;
+            position.x = 1000;
             position.y = 500;
             
             player_sprite.setScale(0.3f, 0.3f);
@@ -243,7 +243,10 @@
                     lives--;
 
 
+                    if( player_id==1)
                     position.x = 100;
+                    else
+                    position.x = 1000;
                     position.y = 500;
                     velocity.y = 0;
 

@@ -5,6 +5,13 @@
  
         game::game(){
 
+
+            SHOP.loadFromFile("assets/Images/shopicon.png");
+            Shop_sprite.setTexture(SHOP);
+            Shop_sprite.setScale(97.0f / SHOP.getSize().x, 97.0f / SHOP.getSize().y);
+            Shop_sprite.setPosition(1150, 10);
+
+
             THROW_BALL.loadFromFile("assets/Sounds/throw.wav");
             THROW_SOUND.setBuffer(THROW_BALL);
             BOSSS_DIE.loadFromFile("assets/Sounds/die_BOSS.wav");
@@ -72,6 +79,7 @@
             enemy_count = 0;
             snowBALL_PTR=NULL;
             snow_checker=false;
+    
 
             
             window.create(sf::VideoMode(1280, 720), "SNOW BROS-By MZ");//screens saz and apna mark
@@ -393,17 +401,35 @@
 
             if(current_state==GameState::GAME_OVER)
             {
-                BOTTOM = NULL;
-            level=0;
-            enemy_count = 0;
-            snowBALL_PTR=NULL;
-            snow_checker=false;
-                score_total=0;
-                current_state = game_over_screen.Update(change_in_time, window);
-                gAme_load(level);
+
+            if( game_over_screen.Update(change_in_time, window)==GameState::MAIN_MENU)
+                {
+
+                    BOTTOM = NULL;
+                    level=0;
+                    enemy_count = 0;
+                    snowBALL_PTR=NULL;
+                    snow_checker=false;
+                    score_total=0;
+                                
+                    gAme_load(0);
+                    player1.set_ID(1);
+                    player2.set_ID(2);
+
+                }
+                current_state=game_over_screen.Update(change_in_time, window);
+                
+
             }
                 
+            if(current_state==GameState::SHOP)
+            {
+
+                current_state=scrreen_SHOP_obj.Update(change_in_time,window);
+
+            }
         
+          
         
         }//(tam change in kitne sec)
 
@@ -486,7 +512,7 @@
             window.draw(life);
             window.draw(level_number);
 
-
+            window.draw(Shop_sprite);
             
             }
 
@@ -514,7 +540,12 @@
             if(current_state==GameState::GAME_OVER)
                 game_over_screen.draw(window);
 
+                 if(current_state==GameState::SHOP)
+                 scrreen_SHOP_obj.draw(window);
+
             window.display();
+
+           
 
         } //all the screen shtuff goes here 
 
@@ -586,6 +617,26 @@
                         snow_checker=true;
                     }
                     player2.activate_SNOWBALL();
+                }
+                if(event.type==sf::Event::MouseButtonPressed&&current_state==GameState::PLAYING)
+                {
+                    if(event.mouseButton.button==sf::Mouse::Left)
+                    {
+                        sf::Vector2f position_of_click_for_shop;
+
+                        position_of_click_for_shop.x=event.mouseButton.x;
+                        position_of_click_for_shop.y=event.mouseButton.y;
+                        if(Shop_sprite.getGlobalBounds().contains(position_of_click_for_shop))
+                        {
+                            current_state=GameState::SHOP;
+                        }
+
+                    }
+                }
+                if(current_state==GameState::SHOP)
+                {
+                    
+                    
                 }
 
 

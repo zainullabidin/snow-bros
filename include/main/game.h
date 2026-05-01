@@ -19,11 +19,19 @@
 #include "../UI/LeaderboardScreen.h"
 #include "../UI/LoginScreen.h"
 #include "../UI/PauseMenuScreen.h"
+#include"../UI/ShopScreen.h"
 
 
 class game{
 
 private:
+
+ ShopScreen scrreen_SHOP_obj;
+
+
+    sf::Texture SHOP;
+    
+    sf::Sprite Shop_sprite;
 
 
 sf::Music menu_music;
@@ -128,7 +136,10 @@ sf::Clock level_complete_timer;
 
         //snowball
         snow_ball *snowBALL_PTR;
+
         bool snow_checker;
+
+
 
         //col_detect
 
