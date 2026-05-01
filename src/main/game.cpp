@@ -1,8 +1,17 @@
 #include"../../include/main/game.h"
-
+#include<iostream>
 
  
         game::game(){
+
+
+            menu_music.openFromFile("assets/Sounds/snow_bros_theme_01.ogg");
+            menu_music.setLoop(true);
+            menu_music.play();
+
+            level_music.openFromFile("assets/Sounds/snow_bros_level.ogg");
+            level_music.setLoop(true);
+
 
 
             font.loadFromFile("assets/fonts/PressStart2P-Regular.ttf");
