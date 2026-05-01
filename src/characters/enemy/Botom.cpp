@@ -2,9 +2,14 @@
 
 
 
-    enemy_bottom::enemy_bottom(float x, float y){
+    enemy_bottom::enemy_bottom(float x, float y, float spd, string path){
+
 
         // ball_casing=NULL;
+
+       this->speed=spd;
+
+
         DIMEN_ptr=nullptr;
         DIMEN_SIZE=0;
         
@@ -12,32 +17,39 @@
         roll=false;
 
         left=false,right=true;
-        bottom_texture.loadFromFile("assets/Images/Botom_Blue.png");
+        bottom_texture.loadFromFile(path);
         bottom_sprite.setTexture(bottom_texture);
         bottom_sprite.setTextureRect(sf::IntRect(0, 133, 120, 95));
         bottom_sprite.setPosition(x,y);
         bottom_sprite.setScale(0.6f, 0.6f);
 
-        velocity.x = 100.0f;
+        velocity.x = spd;
 
         position.x=x;
         position.y=y;
 
         walkingsprite=0;
+        
         snow_ball_counter=0;
                 
     }
 
      void enemy_bottom::update_sprite_position(float delta_T){
 
+        if(snow_ball_counter==0 && velocity.x==0)
+            {
+            if(right) velocity.x = speed;
+            else velocity.x = -speed;
+            }
+
         if(snow_ball_counter==0&&velocity.x==0)
         {
             if(right)
             {
-                velocity.x=100.0f;
+                velocity.x=speed;
             }
             else
-            velocity.x=-100.0f;
+            velocity.x=-speed;
         }
 
             
@@ -76,7 +88,7 @@
 
                 if(snow_ball_counter == 0)
                 {
-                 velocity.x = 100.0f;
+                 velocity.x = speed;
                 left=false,right=true;
 
                 }
@@ -90,7 +102,7 @@
                    set_dead();
                 if(snow_ball_counter == 0)
                 {
-                    velocity.x = -100.0f;
+                    velocity.x = -speed;
                    left=true,right=false;
                 }
                 
@@ -129,6 +141,7 @@
             ball_break_timer.restart();
 
         }
+        
 
 
 
@@ -140,13 +153,12 @@
 
      }
 
-         void enemy_bottom::set_Dimension(dimension_er **arr, int n)
+    void enemy_bottom::set_Dimension(dimension_er **arr, int n)
     {
         DIMEN_ptr=arr;
         DIMEN_SIZE=n;
 
     }
-
 
      void enemy_bottom::draw(sf::RenderWindow &window){
 
@@ -177,13 +189,13 @@
 
      }
 
-
     hitbox& enemy_bottom::getHIT_box(){
         return Bottom_hitbox;
     }
 
     void enemy_bottom::get_hit()
     {
+
             if(snow_ball_counter<=5)
             snow_ball_counter++;
             else
@@ -196,7 +208,6 @@
 
     }
 
-
     int enemy_bottom::get_snow_ball_counter() const{
 
         return snow_ball_counter;
@@ -205,12 +216,6 @@
     }
 
     void enemy_bottom::set_nick_texture(sf::Texture &ptr){
-
-        if(ball_casing==NULL)
-        {
-            ball_casing=new sf::Texture;
-        }
-   
 
         ball_casing=&ptr;
         anow_ball_casing.setTexture(*ball_casing);
