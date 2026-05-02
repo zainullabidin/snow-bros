@@ -5,6 +5,7 @@
  //2 places
         game::game(){
 
+            coins = 0;
 
             SHOP.loadFromFile("assets/Images/shopicon.png");
             Shop_sprite.setTexture(SHOP);
@@ -316,9 +317,15 @@
         {
             for(int j=0;j<enemy_count;j++)
             if(collision_detector.rollingSnowball_HitsEnemy(BOTTOM[i]->getHIT_box(),BOTTOM[j]->getHIT_box()))
-            {if(i!=j)
+            {if(i!=j )
                 BOTTOM[j]->set_dead();
-                score_total+=100;
+                if(!BOTTOM[j]->check_alive())
+                {
+                    score_total+=100;
+                coins++;
+
+                }
+                
             }
 
         }
@@ -459,8 +466,9 @@
                 
             if(current_state==GameState::SHOP)
             {
+                scrreen_SHOP_obj.set_coins(coins);
 
-     scrreen_SHOP_obj.draw(window);
+
                 PowerUpType P_obj=PowerUpType::NONE;
 
                GameState x=scrreen_SHOP_obj.Update(change_in_time,window,P_obj);
@@ -469,29 +477,33 @@
                {
 
                  cout << "P_obj value: " << (int)P_obj << endl;
-               if(P_obj==PowerUpType::BALLOON_MODE)
+               if(P_obj==PowerUpType::BALLOON_MODE&&coins>=2)
                {
+                coins-=2;
                 player1.set_powerUP("BALLOON_MODE");
                 player2.set_powerUP("BALLOON_MODE");
                }
                
 
-               if(P_obj==PowerUpType::SPEED_BOOST)
+               if(P_obj==PowerUpType::SPEED_BOOST&&coins>=3)
                {
+                coins-=3;
                 player1.set_powerUP("SPEED_BOOST");
                 player2.set_powerUP("SPEED_BOOST");
                }
                
 
-               if(P_obj==PowerUpType::DISTANCE_INCREASE)
+               if(P_obj==PowerUpType::DISTANCE_INCREASE&&coins>=4)
                {
+                coins-=4;
                 player1.set_powerUP("DISTANCE_INCREASE");
                 player2.set_powerUP("DISTANCE_INCREASE");
                }
                
 
-               if(P_obj==PowerUpType::SNOWBALL_BOOST)
+               if(P_obj==PowerUpType::SNOWBALL_BOOST&&coins>=2)
                {
+                coins-=2;
                 if(snowBALL_PTR != NULL)
                 {
 
@@ -513,12 +525,25 @@
                }
 
             }
-            // if(current_state==GameState::STAR_EVENT)
-            // {
 
-            // }
+
+            if(current_state==GameState::STAR_EVENT)
+{
+if(!star_event_started)
+    {
+        coins += 10;
+        star_event_timer.restart();
+        star_event_started=true;
+    }
+    if(star_event_timer.getElapsedTime().asSeconds()>4.0f)
+    {
+        star_event_started=false;
+        current_state=GameState::LEVEL_COMPLETE;
+        level_complete_timer.restart();
+    }
+}
         
-          
+           
         
         }//(tam change in kitne sec)
 
@@ -638,6 +663,19 @@
 
                  if(current_state==GameState::SHOP)
                  scrreen_SHOP_obj.draw(window);
+
+if(current_state==GameState::STAR_EVENT)
+{
+     window.draw(level1_bg_sprite[level%2]);
+    sf::Text bonusText;
+    bonusText.setFont(font);
+    bonusText.setString("BONUS LEVEL!\n+10 COINS!");
+    bonusText.setCharacterSize(50);
+    bonusText.setFillColor(sf::Color::Red);
+    bonusText.setPosition(350, 280);
+    window.draw(bonusText);
+
+}
 
             window.display();
 
@@ -792,7 +830,7 @@
 
                         for(int i=0; i<enemy_count; i++)
                         {
-                        if(level_number == 3 && i == enemy_count-1)
+                        if(level_number == 2 && i == enemy_count-1)
                         BOTTOM[i] = new FF(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, "assets/Images/FlyingFoogaFoog_Orange.png");
                         else
                         BOTTOM[i] = new enemy_bottom(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, arr_main_levels[level_number].BOTTOM_TEXTURE);

@@ -93,6 +93,16 @@ void ShopScreen::draw(RenderWindow &window)
 {
 
       window.draw(backgroundSprite);
+
+      sf::Font font;
+    font.loadFromFile("assets/fonts/PressStart2P-Regular.ttf");
+    sf::Text coinText;
+    coinText.setFont(font);
+    coinText.setString(to_string(coins));
+    coinText.setCharacterSize(25);
+    coinText.setFillColor(sf::Color::Yellow);
+    coinText.setPosition(1200, 80);
+    window.draw(coinText);
     
 
 }
@@ -102,5 +112,9 @@ void ShopScreen::OnExit()
     stopMusic();
 }
 
+void ShopScreen::set_coins(int c)
+{
+     coins = c; 
+ }
 
 

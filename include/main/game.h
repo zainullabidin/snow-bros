@@ -69,6 +69,10 @@ sf::Clock level_complete_timer;
 
     sf::Font font;
 
+    sf::Clock star_event_timer ;
+
+    bool star_event_started=false;
+
     sf::Clock trailer_timer;
 
 
@@ -142,6 +146,8 @@ sf::Clock level_complete_timer;
 
 
 
+
+
         //col_detect
 
         Collision_DET collision_detector;
@@ -159,6 +165,8 @@ sf::Clock level_complete_timer;
 
 
 public:
+
+        int coins;
 
         //ßßlevel_maker l;
 
