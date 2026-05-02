@@ -6,6 +6,7 @@
 
 class ShopScreen : public Screen
 {
+         int coins;
 
 public:
     ShopScreen();
@@ -21,5 +22,10 @@ public:
     void OnActivate() override;
     void draw(RenderWindow& window) override;
     void OnExit() override;
+
+
+void set_coins(int c);
+
+
     
 };

@@ -24,8 +24,11 @@ bool Collision_DET::snowball_HitsEnemy(hitbox &snow_ball_box, hitbox &Enemy_box)
     return false;
 
 }
-bool Collision_DET::projectile_HitsPlayer(hitbox &projectile_box, hitbox &Player_box)
+bool Collision_DET::projectile_HitsEnemy(hitbox &projectile_box, hitbox &Player_box)
 {
+    if(MAIN_OVERLAP_DETECTOR(projectile_box.hit_box_shape,Player_box.hit_box_shape))
+    return true;
+
     return false;
 }
 bool Collision_DET::sprite_On_Bars(hitbox &Sprite_box,hitbox &Bar_box )

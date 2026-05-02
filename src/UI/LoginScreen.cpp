@@ -60,6 +60,8 @@ GameState LoginScreen::Update(float deltaTime, RenderWindow& window)
             return GameState::PLAYING;
         }
     }
+
+
     
     // Return current state if no button clicked
     return GameState::LOGIN;  
