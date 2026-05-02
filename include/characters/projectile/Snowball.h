@@ -18,7 +18,14 @@ private:
 
     bool Direction_left;
 
+    bool P_UP;
+
 public:
+
+    bool get_P_UP();
+
+    void set_P_UP(bool a);
+
 
     snow_ball(float x, float y, bool check);
 

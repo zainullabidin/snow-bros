@@ -5,12 +5,27 @@
 #include"../../main/Input_manager.h"
 
 #include "../../levels/dimensioner.h"
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include<iostream>
+using namespace std;
 
 class player:public character_base{
 
 private:
+
+    string powerUP;
+
+    sf::Clock Power_UP_TIMER;
+
+    bool ballon_powerup;
+
+    bool Speed_poerup;
+
+    bool SNOW_PU;
+
+    bool ENCASE_POERUP;
 
     hitbox hi_box;
 
@@ -48,6 +63,7 @@ private:
 public:
 
     player(){
+
         player_id=0;
         lives=0;
         dec=false;
@@ -89,6 +105,21 @@ public:
 
      int  get_lives();
 
+     void reset_position(int n);
+
+     void PowerUP_activator();
+
+     string get_powerUP();
+     
+     void set_powerUP(string x);
+
+     bool is_ballon_active();
+
+     bool is_Speed_poerup();
+
+     bool is_SNOW_PU();
+
+     bool ENCASE_POERUP_GETTER();
 
 
 

@@ -121,6 +121,11 @@ void LoginScreen::handleTextInput(Event &event, string &output, bool isPassword)
             usernameText.setString(output + (isTypingUsername && showCursor ? "_" : ""));
         }
     }
+
+
+    
+    // Return current state if no button clicked
+    return GameState::LOGIN;  
 }
 
 void LoginScreen::updateDisplay()

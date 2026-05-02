@@ -7,18 +7,18 @@ enum class GameState {
     
     };
     
-    //1-MAIN_MENU   x
+    //1-MAIN_MENU   X
     //2-CHARACTER_SELECT
-    //3-PLAYING
+    //3-PLAYING.   X
     //4-PAUSED    x
     //5-GAME_OVER   x
     //6-LEVEL_COMPLETE
     //7-BOSS_DEFEATED
-    //8-SHOP        x
+    //8-SHOP        X
     //9-LOGIN       
     //10-LEADERBOARD x  
     //11-TRAILER
-    //12-LEVEL_UP
+    //12-LEVEL_UP   
 
-    //13-STAR_EVENT
+    //13-STAR_EVENT X
     //14-RAIN_EVENT

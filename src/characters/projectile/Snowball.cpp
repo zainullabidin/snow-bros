@@ -25,9 +25,15 @@
 
         if(Direction_left)
         {
+            if(P_UP)
+            position.x-=700.0f*delta_T;
+            else
              position.x-=500.0f*delta_T;
         }
         else{
+            if(P_UP)
+            position.x+=700.0f*delta_T;
+            else
             position.x+=500.0f*delta_T;
         }
 
@@ -58,4 +64,12 @@
 
         hitbox& snow_ball::getHit_box(){
         return  snow_ball_Hitbox;
+    }
+
+    bool snow_ball::get_P_UP(){
+        return P_UP;
+    }
+
+    void snow_ball::set_P_UP(bool a){
+        P_UP=a;
     }

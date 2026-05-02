@@ -43,5 +43,6 @@ void GameOverScreen::draw(RenderWindow& window) {
 }
 
 void GameOverScreen::OnExit() {
+    
     stopMusic();
 }

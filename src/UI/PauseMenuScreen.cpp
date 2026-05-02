@@ -48,15 +48,14 @@ void PauseMenuScreen::OnActivate() {
 
 void PauseMenuScreen::draw(RenderWindow& window) {
         if (backgroundSprite.getTexture() == nullptr) {
-        std::cout << "ERROR: No texture assigned to sprite!" << std::endl;
+
     } else {
         sf::Vector2u texSize = backgroundSprite.getTexture()->getSize();
-        std::cout << "Texture size: " << texSize.x << "x" << texSize.y << std::endl;
+
         
         sf::Vector2f pos = backgroundSprite.getPosition();
         sf::Vector2f scale = backgroundSprite.getScale();
-        std::cout << "Sprite at (" << pos.x << "," << pos.y << ") scale: " 
-                  << scale.x << "," << scale.y << std::endl;
+     
     }
     
     window.draw(backgroundSprite);

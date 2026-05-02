@@ -5,7 +5,7 @@
 //==================================================================================
 
 // constructor
-PowerUp::PowerUp() : Volume(0.5f), 
+PowerUp::PowerUp() : Volume(0), 
 fromShop(false), x(0), y(0), hitboxWidth(0), hitboxHeight(0),
     gemCost(0), duration(0), Collected(false), timeRemaining(0) 
 {

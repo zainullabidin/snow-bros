@@ -4,6 +4,9 @@
 
        if(in_obj.player_is_going_left(player_id))
        {
+        if(Speed_poerup)
+           position.x-= 300.0f * delta_T;
+           else
            position.x-= 200.0f * delta_T;
             right=false;
             left=true;
@@ -11,6 +14,9 @@
        }
        if(in_obj.player_is_going_right(player_id))
        {
+         if(Speed_poerup)
+           position.x+= 300.0f * delta_T;
+           else
             position.x+= 200.0f * delta_T;
             left=false;
             right=true;
@@ -98,8 +104,23 @@
 
 
        //gravity acting
+           if(!ballon_powerup)
+           {
+            
             velocity.y += 500.0f * delta_T;
              position.y += velocity.y * delta_T;
+
+           }
+           else
+           {
+            if(position.y>40)
+             position.y -= 100.0f * delta_T;
+             else if(position.y<40)
+             position.y += 100.0f * delta_T;
+            
+
+           }
+
            
      for(int i=0;i<DIMEN_SIZE;i++)
      {
@@ -125,7 +146,7 @@
        {
           position.x=130;
        }
-       if(position.y<0)
+       if(position.y<0&&!ballon_powerup)
        {
           position.y=0;
        }
@@ -174,6 +195,20 @@
             player_sprite.setPosition(100, 500);
             
             position.x = 100;
+            position.y = 500;
+            
+            player_sprite.setScale(0.3f, 0.3f);
+        
+        }
+
+        if(player_id==2)
+        {
+            Player_texture.loadFromFile("assets/Images/Nick.png");
+            player_sprite.setTexture(Player_texture);
+            player_sprite.setTextureRect(sf::IntRect(0, 0, 322, 350));
+            player_sprite.setPosition(1000, 500);
+            
+            position.x = 1000;
             position.y = 500;
             
             player_sprite.setScale(0.3f, 0.3f);
@@ -229,7 +264,10 @@
                     lives--;
 
 
+                    if( player_id==1)
                     position.x = 100;
+                    else
+                    position.x = 1000;
                     position.y = 500;
                     velocity.y = 0;
 
@@ -244,5 +282,114 @@
     }
 
     int  player::get_lives(){
+
         return lives;
     }
+
+     void player::reset_position(int n){
+
+        if(n==1)
+        player_sprite.setPosition(100, 500);
+        else if (n==2)
+        player_sprite.setPosition(1000, 500);
+     }
+
+     void player::PowerUP_activator(){
+
+       
+        if(powerUP=="SPEED_BOOST")
+        {
+           if( Power_UP_TIMER.getElapsedTime().asSeconds()<7.0f)
+            {
+                Speed_poerup=true;
+            }
+            else
+            {
+                Speed_poerup=false;
+               powerUP="NONE";
+            }
+
+        }
+        if(powerUP=="DISTANCE_INCREASE")
+        {
+            if( Power_UP_TIMER.getElapsedTime().asSeconds()<7.0f)
+            {
+                ENCASE_POERUP=true;
+            }
+            else
+            {
+                ENCASE_POERUP=false;           
+               powerUP="NONE";
+            }
+
+        }
+        else if(powerUP=="SNOWBALL_BOOST")
+        {
+            if( Power_UP_TIMER.getElapsedTime().asSeconds()<7.0f)
+            {
+                SNOW_PU=true;
+            }
+            else
+            {
+                SNOW_PU=false;
+               powerUP="NONE";
+            }
+            
+
+        }
+        else if(powerUP=="BALLOON_MODE"){
+
+
+            if( Power_UP_TIMER.getElapsedTime().asSeconds()<7.0f)
+            {
+                ballon_powerup=true;
+                
+                player_sprite.setTextureRect(sf::IntRect(1575, 2490, 450, 420));
+    
+            }
+            else
+            {
+                ballon_powerup=false;
+               powerUP="NONE";
+            }
+
+
+        }
+        
+
+     }
+
+    string player::get_powerUP(){
+
+
+
+        return powerUP;
+
+    }
+
+    void player::set_powerUP(string x){
+        if(x == "NONE") 
+        return;
+                Power_UP_TIMER.restart(); 
+        powerUP=x;
+        ballon_powerup=false;
+    }
+
+    bool player::is_ballon_active(){
+        return ballon_powerup;
+    }
+
+    bool player::is_Speed_poerup(){
+
+            return Speed_poerup;
+         }
+
+    bool player::is_SNOW_PU(){
+
+            return SNOW_PU;
+        }
+
+    bool player::ENCASE_POERUP_GETTER(){
+
+        return ENCASE_POERUP;
+        }
