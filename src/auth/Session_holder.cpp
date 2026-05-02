@@ -29,3 +29,8 @@ string Session::setUsername(string username) {
 void Session::setUserId(int user_id) {
     this->user_id = user_id;
 }
+
+bool Session::setLoggedIn(bool log) {
+    loggedIn = log;
+    return loggedIn;
+}

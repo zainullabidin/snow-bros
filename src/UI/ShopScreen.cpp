@@ -63,6 +63,7 @@ GameState ShopScreen::Update(float deltaTime, RenderWindow &window, PowerUpType 
         }
     }
 
+
     powerUp = PowerUpType::NONE;
     // Return current state if no button clicked
     return GameState::SHOP;

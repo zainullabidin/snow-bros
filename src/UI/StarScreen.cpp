@@ -57,7 +57,8 @@ GameState StarScreen::Update(float deltaTime, RenderWindow &window, PowerUpType 
         }
     }
 
-    return GameState::SHOP; // Stay in shop if no star clicked
+    
+    return GameState::STAR_EVENT; 
 }
 
 // load random 3 powerUps

@@ -27,7 +27,7 @@ AuthResult Authentication::registerUser(const string& username, const string& pa
 
     // If user is found, it means username is already taken
     if (userRepo.findByUsername(username))
-        return USERNAME_TAKEN;
+        return ALREADY_TAKEN;
 
     // Create the new user
     string hashedPass = hashPassword(password);
@@ -60,19 +60,18 @@ AuthResult Authentication::login(const string &username, const string &password)
         return INVALID_INPUT;
 
     if (!userRepo.findByUsername(username))
-        return USER_NOT_FOUND;
+        return NOT_FOUND;
 
     if (userRepo.getPasswordHash() != hashPassword(password))
-        return WRONG_PASSWORD;
+        return WRONG_PASS;
 
     // set data
-    session->isLoggedIn();
+    session->setLoggedIn(true);
     session->setUsername(username);
     session->setUserId(userRepo.getUserId());
 
     return SUCCESS;
 }
-
 
 bool Authentication::isLoggedIn() {
     return session->isLoggedIn();
@@ -81,3 +80,4 @@ bool Authentication::isLoggedIn() {
 Session* Authentication::getSession() {
     return session;
 }
+

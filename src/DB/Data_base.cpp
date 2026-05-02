@@ -105,7 +105,7 @@ void Data_base::appendLine(const string& filename, const string& line) {
     
     // Add to current memory 
     if (count >= capacity) resize();
-    lines[count++] = line;          // ← ADD THIS
+    lines[count++] = line;          
 
     
     ofstream out;
