@@ -474,7 +474,7 @@
                if(P_obj!=PowerUpType::NONE)
                {
 
-                 cout << "P_obj value: " << (int)P_obj << endl;
+
                if(P_obj==PowerUpType::BALLOON_MODE&&coins>=2)
                {
                 coins-=2;
