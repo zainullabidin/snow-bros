@@ -219,8 +219,6 @@
 
             }
 
-
-
             if(current_state==GameState::PLAYING)
             {
 
@@ -588,10 +586,6 @@ if(!star_event_started)
     
             if(current_state==GameState::PLAYING)
             {
-
-
-
-
                 window.draw(level1_bg_sprite[level % 2]);
 
                 if(player1.is_life())
@@ -656,7 +650,7 @@ if(!star_event_started)
                 leaderboard_screen.draw(window);
 
             if(current_state==GameState::PAUSED)
-                pause_menu_screen.draw(window);
+            pause_menu_screen.draw(window);
 
             if(current_state==GameState::GAME_OVER)
                 game_over_screen.draw(window);
@@ -776,10 +770,9 @@ if(current_state==GameState::STAR_EVENT)
 
                     }
                 }
-                if(current_state==GameState::SHOP)
+                if(event.type==sf::Event::KeyPressed && event.key.code==sf::Keyboard::P && current_state==GameState::PLAYING)
                 {
-                    
-                    
+                    current_state=GameState::PAUSED;
                 }
 
 
