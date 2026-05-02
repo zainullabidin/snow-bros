@@ -33,32 +33,36 @@ GameState ShopScreen::Update(float deltaTime, RenderWindow &window, PowerUpType 
             if (mousePos.x >= 180 && mousePos.x <= 300)
             {
                 OnExit();
-                return GameState::PLAYING;
                 powerUp = PowerUpType::SPEED_BOOST;
+                return GameState::PLAYING;
+                
             }
 
             // snowball
             if (mousePos.x >= 450 && mousePos.x <= 574)
             {
                 OnExit();
+                 powerUp = PowerUpType::SNOWBALL_BOOST;
                 return GameState::PLAYING;
-                powerUp = PowerUpType::SNOWBALL_BOOST;
+               
             }
 
             // distance increase
             if (mousePos.x >= 720 && mousePos.x <= 840)
             {
                 OnExit();
-                return GameState::PLAYING;
                 powerUp = PowerUpType::DISTANCE_INCREASE;
+                return GameState::PLAYING;
+                
             }
 
             // ballon mode
             if (mousePos.x >= 990 && mousePos.x <= 1114)
             {
                 OnExit();
-                return GameState::PLAYING;
                 powerUp = PowerUpType::BALLOON_MODE;
+                return GameState::PLAYING;
+                
             }
         }
     }

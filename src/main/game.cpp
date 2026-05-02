@@ -2,7 +2,7 @@
 #include "../../include/UI/LeaderboardScreen.h"
 #include<iostream>
 
- 
+ //2 places
         game::game(){
 
 
@@ -203,7 +203,8 @@
 
 
         }
-        
+ 
+        //MULTIPLE PLACES
         void game::update(float change_in_time){
 
         
@@ -217,6 +218,8 @@
 
             }
 
+
+
             if(current_state==GameState::PLAYING)
             {
 
@@ -226,10 +229,23 @@
                         level_music.play();
                     }
 
+
+                   
+
                   if(player1.is_life())   
                 player1.update_sprite_position(change_in_time);
+                player1.PowerUP_activator();
                  if(player2.is_life())
                 player2.update_sprite_position(change_in_time);
+                player2.PowerUP_activator();
+
+                //bonus levels
+                if( arr_main_levels[level].bonus)
+                {
+                     current_state=GameState::STAR_EVENT;
+                     return;
+                }
+                  
 
 
                 for(int I=0;I<enemy_count;I++)
@@ -262,6 +278,19 @@
                 if(!(snowBALL_PTR==NULL)&&snow_checker)
             {
                 snowBALL_PTR->update_sprite_position(change_in_time);
+            }
+            if(player1.is_ballon_active()||player2.is_ballon_active())
+            for(int i=0;i<enemy_count;i++)
+            {
+
+                if(collision_detector.projectile_HitsEnemy(player1.getHitbox(),BOTTOM[i]->getHIT_box()))
+                {
+                     BOTTOM[i]->set_dead();
+                }
+                if(collision_detector.projectile_HitsEnemy(player2.getHitbox(),BOTTOM[i]->getHIT_box()))
+                {
+                     BOTTOM[i]->set_dead();
+                }
             }
 
             for(int i=0;i<enemy_count;i++)
@@ -316,6 +345,8 @@
     level_complete_timer.restart();
 }
             
+//poerup implementation
+
 
 
 
@@ -329,12 +360,13 @@
                
                 if (BOTTOM[i]->get_snow_ball_counter()>=4)
                 {
+                   
                     BOTTOM[i]->set_rooling(player1.left_chcker());
                     
 
                     // if(collision_detector.player_HitsEnemy(BOTTOM->getHIT_box(),))
                 }
-                else if(BOTTOM[i]->get_snow_ball_counter()==0)
+                else if(BOTTOM[i]->get_snow_ball_counter()==0&&(!player1.is_ballon_active()&&!player2.is_ballon_active()))
                 {
                     if(player1.is_life())
                     player1.decrease_life();
@@ -343,6 +375,7 @@
                 }   
                 
             }
+
                 for(int i=0;i<enemy_count;i++)
             if(collision_detector.player_HitsEnemy(player2.getHitbox() ,BOTTOM[i]->getHIT_box())&& (player2.is_life()))
             {
@@ -353,6 +386,8 @@
                
                 if (BOTTOM[i]->get_snow_ball_counter()>=4)
                 {
+
+                    
                     BOTTOM[i]->set_rooling(player2.left_chcker());
                     
 
@@ -424,15 +459,68 @@
                 
             if(current_state==GameState::SHOP)
             {
+                PowerUpType P_obj=PowerUpType::NONE;
 
-                current_state=scrreen_SHOP_obj.Update(change_in_time,window);
+               GameState x=scrreen_SHOP_obj.Update(change_in_time,window,P_obj);
+
+               if(P_obj!=PowerUpType::NONE)
+               {
+
+                 cout << "P_obj value: " << (int)P_obj << endl;
+               if(P_obj==PowerUpType::BALLOON_MODE)
+               {
+                player1.set_powerUP("BALLOON_MODE");
+                player2.set_powerUP("BALLOON_MODE");
+               }
+               
+
+               if(P_obj==PowerUpType::SPEED_BOOST)
+               {
+                player1.set_powerUP("SPEED_BOOST");
+                player2.set_powerUP("SPEED_BOOST");
+               }
+               
+
+               if(P_obj==PowerUpType::DISTANCE_INCREASE)
+               {
+                player1.set_powerUP("DISTANCE_INCREASE");
+                player2.set_powerUP("DISTANCE_INCREASE");
+               }
+               
+
+               if(P_obj==PowerUpType::SNOWBALL_BOOST)
+               {
+                if(snowBALL_PTR != NULL)
+                {
+
+                        snowBALL_PTR->set_P_UP(true);
+                        player1.set_powerUP("SNOWBALL_BOOST");
+            
+
+                        player2.set_powerUP("SNOWBALL_BOOST");
+                    
+                    
+
+                }
+
+               }
+               
+
+             current_state=x;
+                
+               }
 
             }
+            // if(current_state==GameState::STAR_EVENT)
+            // {
+
+            // }
         
           
         
         }//(tam change in kitne sec)
 
+        //IG ONLY 2 PLACES
         void game::display(){
     
             window.clear(sf::Color::Black);
@@ -475,6 +563,8 @@
             {
 
 
+
+
                 window.draw(level1_bg_sprite[level % 2]);
 
                 if(player1.is_life())
@@ -508,9 +598,13 @@
             life.setString("P1:"+to_string(player1.get_lives())+" P2:"+to_string(player2.get_lives()));
             level_number.setString("LEVEL: "+to_string(level+1));
 
+
             window.draw(score);
             window.draw(life);
             window.draw(level_number);
+           
+
+
 
             window.draw(Shop_sprite);
             
@@ -548,6 +642,7 @@
            
 
         } //all the screen shtuff goes here 
+
 
         void game::check_event(){
 
@@ -593,11 +688,15 @@
                     {
                         snowBALL_PTR= new snow_ball(player1.get_positionof_player().x,(player1.get_positionof_player().y+50),true);
                         snow_checker=true;
+                        if(player1.is_SNOW_PU())
+                         snowBALL_PTR->set_P_UP(true);
                     }
                     else if(snow_checker==false&&player1.right_chcker())
                     {
                          snowBALL_PTR= new snow_ball(player1.get_positionof_player().x+96,(player1.get_positionof_player().y+50),false);
                         snow_checker=true;
+                        if(player1.is_SNOW_PU())
+                         snowBALL_PTR->set_P_UP(true);
                     }
                     player1.activate_SNOWBALL();
                     
@@ -610,11 +709,15 @@
                     {
                         snowBALL_PTR= new snow_ball(player2.get_positionof_player().x,(player2.get_positionof_player().y+50),true);
                         snow_checker=true;
+                        if(player2.is_SNOW_PU())
+                        snowBALL_PTR->set_P_UP(true);
                     }
                     else if(snow_checker==false&&player2.right_chcker())
                     {
                          snowBALL_PTR= new snow_ball(player2.get_positionof_player().x+96,(player2.get_positionof_player().y+50),false);
                         snow_checker=true;
+                        if(player2.is_SNOW_PU())
+                        snowBALL_PTR->set_P_UP(true);
                     }
                     player2.activate_SNOWBALL();
                 }
@@ -644,6 +747,7 @@
 
         }//updates current_state
 
+
         void game::run() {
         
             while (window.isOpen()) {
@@ -657,8 +761,11 @@
                 display();
     }
 }
-            
+   
+//HERE TOO
         void game::gAme_load(int level_number){
+
+
             if(BOTTOM!=NULL)
             {
                 for(int i=0;i<enemy_count;i++)
@@ -668,22 +775,40 @@
                 delete [] BOTTOM;
 
             }
+            // if(!arr_main_levels[level_number].bonus)
+            // {
 
-            enemy_count=arr_main_levels[level_number].T_enemies;
 
-            BOTTOM=new enemy_bottom*[enemy_count];
 
-            for(int i=0; i<enemy_count; i++)
-{
-    if(level_number == 3 && i == enemy_count-1)
-        BOTTOM[i] = new FF(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, "assets/Images/FlyingFoogaFoog_Orange.png");
-    else
-        BOTTOM[i] = new enemy_bottom(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, arr_main_levels[level_number].BOTTOM_TEXTURE);
+            
+            
 
-    BOTTOM[i]->set_Dimension(platforms, platform_count);
+                      enemy_count=arr_main_levels[level_number].T_enemies;
 
-    BOTTOM[i]->set_nick_texture(player1.get_texture());
-}
 
+                        BOTTOM=new enemy_bottom*[enemy_count];
+
+                        for(int i=0; i<enemy_count; i++)
+                        {
+                        if(level_number == 3 && i == enemy_count-1)
+                        BOTTOM[i] = new FF(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, "assets/Images/FlyingFoogaFoog_Orange.png");
+                        else
+                        BOTTOM[i] = new enemy_bottom(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, arr_main_levels[level_number].BOTTOM_TEXTURE);
+
+                        BOTTOM[i]->set_Dimension(platforms, platform_count);
+
+                        BOTTOM[i]->set_nick_texture(player1.get_texture());
+
+                        }
+                        // }
+                        // else
+                        // {
+
+
+
+                        // }
 
         }
+
+//so the thing is level is being used in the fillloeing thinfs ^^^^
+//see
