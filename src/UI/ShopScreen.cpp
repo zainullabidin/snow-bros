@@ -4,7 +4,7 @@
 
 ShopScreen::ShopScreen()
 {
-    loadBackground("assets/Images/Shop.jpeg");
+    loadBackground("assets/Images/Shop.png");
     // loadBackgroundMusic("../../assets/Sounds/gameOver.mp3");     // sound
     // playMusic();
 
@@ -26,6 +26,13 @@ GameState ShopScreen::Update(float deltaTime, RenderWindow &window, PowerUpType 
     if (Mouse::isButtonPressed(Mouse::Left))
     {
         Vector2i mousePos = Mouse::getPosition(window);
+
+if(mousePos.x >= 24 && mousePos.x <= 334 && mousePos.y >= 29 && mousePos.y <= 116)
+{
+
+    OnExit();
+    return GameState::MAIN_MENU;
+}
 
         if (mousePos.y >= 590 && mousePos.y <= 660)
         {
@@ -63,12 +70,16 @@ GameState ShopScreen::Update(float deltaTime, RenderWindow &window, PowerUpType 
                 powerUp = PowerUpType::BALLOON_MODE;
                 return GameState::PLAYING;
                 
+                //adde main_menu check
             }
+
+
+
         }
     }
 
     powerUp = PowerUpType::NONE;
-    // Return current state if no button clicked
+    // Return current state if no button clickedx
     return GameState::SHOP;
 
 }
@@ -80,10 +91,16 @@ void ShopScreen::OnActivate()
 
 void ShopScreen::draw(RenderWindow &window)
 {
-    window.draw(backgroundSprite);
+
+      window.draw(backgroundSprite);
+    
+
 }
 
 void ShopScreen::OnExit()
 {
     stopMusic();
 }
+
+
+

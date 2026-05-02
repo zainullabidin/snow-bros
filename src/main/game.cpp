@@ -459,6 +459,8 @@
                 
             if(current_state==GameState::SHOP)
             {
+
+     scrreen_SHOP_obj.draw(window);
                 PowerUpType P_obj=PowerUpType::NONE;
 
                GameState x=scrreen_SHOP_obj.Update(change_in_time,window,P_obj);
