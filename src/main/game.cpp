@@ -250,11 +250,22 @@
                    
 
                 if(player1.is_life())   
-                player1.update_sprite_position(change_in_time);
-                player1.PowerUP_activator();
+                
+                {
+                
+                    player1.update_sprite_position(change_in_time);
+                
+                    player1.PowerUP_activator();
+
+                }
+
                  if(player2.is_life())
-                player2.update_sprite_position(change_in_time);
-                player2.PowerUP_activator();
+                 {
+                    player2.update_sprite_position(change_in_time);
+                    player2.PowerUP_activator();
+                 }
+                
+                
 
                 //bonus levels
                 if( arr_main_levels[level].bonus)
@@ -278,6 +289,7 @@
                                 flying_ff->position_getter_player(player1.get_positionof_player());
                                 else if(x%2==1&&player2.is_life())
                                 flying_ff->position_getter_player(player2.get_positionof_player());
+                                x++;
                             }
                                 BOTTOM[I]->update_sprite_position(change_in_time);;
 
@@ -347,7 +359,7 @@
 
                     //leaderboard update in realtime 
 
-                    if(logged_In_User != "" && user_db.findByUsername(logged_In_User) && !score_saved)
+                    if(logged_In_User != "" && user_db.findByUsername(logged_In_User) )
                     {
                         leaderboard_db.insertScore(logged_In_User, score_total, level + 1, getTodaysDate());
                     }
@@ -491,6 +503,8 @@
                             {
                                 level = progress_db.getCurrentLevel() - 1;
                                 score_total = progress_db.getHighScore();
+                                    player1.set_lives(progress_db.getLivesRemaining());
+                                   player2.set_lives(progress_db.getLivesRemaining());
                             }
                         }
                     }
@@ -501,8 +515,9 @@
 
             if(current_state==GameState::GAME_OVER)
             {
+                GameState checker=game_over_screen.Update(change_in_time, window);
 
-            if( game_over_screen.Update(change_in_time, window)==GameState::MAIN_MENU)
+            if( checker==GameState::MAIN_MENU)
                {
 
                        //mnahil-db's calls
@@ -527,7 +542,7 @@
                     player2.set_ID(2);
 
                 }
-                current_state=game_over_screen.Update(change_in_time, window);
+                current_state=checker;
 
                        
 
@@ -889,6 +904,11 @@ if(current_state==GameState::STAR_EVENT)
         void game::gAme_load(int level_number){
 
 
+                if(level_number >= TOTAL_LEVELS)
+                {
+                    current_state = GameState::GAME_OVER;
+                    return;
+                }
             if(BOTTOM!=NULL)
             {
                 for(int i=0;i<enemy_count;i++)

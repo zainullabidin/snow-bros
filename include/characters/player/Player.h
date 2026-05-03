@@ -127,6 +127,8 @@ public:
 
      bool ENCASE_POERUP_GETTER();
 
+     void set_lives(int n);
+
 
 
 

@@ -1,8 +1,5 @@
 #include"../../../include/characters/powerup/PowerUp.h"
 
-//==================================================================================
-// needs implementation in update timer(to be done by Z) at bottom + set sound path
-//==================================================================================
 
 // constructor
 PowerUp::PowerUp() : Volume(0), 

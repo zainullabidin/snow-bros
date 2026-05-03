@@ -395,3 +395,8 @@
 
         return ENCASE_POERUP;
         }
+
+     void player::set_lives(int n){
+        lives=n;
+
+     }
