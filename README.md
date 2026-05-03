@@ -1,45 +1,66 @@
-# snow-bros
+# Snow Bros  
+By Zain ul Abidin (i253086) & Minahil Ashraf (i252596)
 
-Student A Comments:
-Z's comments ???
+---
 
+## About
+A 10-level arcade game replica of the classic Snow Bros (1990), built in C++ using SFML 2.6.x. Two snowmen brothers Nick and Tom battle through enemies by throwing snowballs to encase and roll them into chain reactions.
 
+---
 
+## How to Build
 
+### Mac
+brew install sfml@2
+cmake -B build -S .
+cmake --build build
+./build/SnowBros
 
+### Windows
+Make sure SFML 2.6.1 is installed at C:\SFML\
+cmake -B build -S .
+cmake --build build
+.\build\Debug\SnowBros.exe
 
+---
 
+## Controls
 
+Action          | Player 1  | Player 2
+----------------|-----------|----------
+Move            | A / D     | Left / Right arrows
+Jump            | W         | Up arrow
+Throw Snowball  | Space     | Down arrow
+Pause           | P         | P
 
-Student B Comments:
+---
 
-------------------------
-1st day -> 19th April
-------------------------
-- Enemy.h, PowerUp.h, Projectile.h, Screen.h
+## Features
+- 10 levels with different enemy types and speeds
+- Multiplayer (2 players on same machine)
+- Login and registration system with hashed passwords
+- Character selection screen (3 characters)
+- In-game shop with coin-based powerups
+- 4 powerups: Speed Boost, Balloon Mode, Snowball Boost, Distance Increase
+- Bonus levels on levels 4 and 9 with coin rewards
+- Leaderboard with real-time updates
+- Progress save and load on login
+- Pause menu with resume and main menu options
+- FlyingFoogaFoog enemy with flight AI
 
-.was difficulut to decide for members and functions.
-.needed to figure out how to use enums
-.needed to figure out how to use pure virtuals correctly
+---
 
-------------------------
-2nd day -> 20th April
-------------------------
-- Corrected Enemy.h, PowerUp.h, Projectile.h, Screen.h
+## Dependencies
+- C++17
+- SFML 2.6.x (graphics, window, audio, system)
+- CMake 3.x
 
+---
 
-.With proper instructions in data files, easier to figure things out
-.But still took tooooo much time and already 6:07 pm
-
-- Need to work on Boss.h + cpp
-- Need to work on EnemyFactory.h + cpp
-- Need to work on EventBus.h + cpp
-
-
-----------------------------
-24th April
-----------------------------
-- trying to apply database system
-1. diff to figure out which funtions to include where
-2. need to tackle inheritence / composition problem (aaaaaaaaaaaaaaaaaaaaaagh)
-- wasted so much of my time
+## Project Structure
+snow-bros/
+├── src/           Source files
+├── include/       Header files
+├── assets/        Images, fonts, sounds
+├── data/          User data, leaderboard, progress
+└── CMakeLists.txt
