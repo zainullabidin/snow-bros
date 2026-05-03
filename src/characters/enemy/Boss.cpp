@@ -1,8 +1,5 @@
 #include"../../../include/characters/enemy/Boss.h"
 
-//=====================================================================
-// needs health bar implementation
-//====================================================================
 
 
 // void Boss::drawHealthBar(RenderWindow& w) {
