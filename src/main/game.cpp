@@ -343,7 +343,14 @@
                 if(!BOTTOM[j]->check_alive())
                 {
                     score_total+=100;
-                coins++;
+                    coins++;
+
+                    //leaderboard update in realtime 
+
+                    if(logged_In_User != "" && user_db.findByUsername(logged_In_User) && !score_saved)
+                    {
+                        leaderboard_db.insertScore(logged_In_User, score_total, level + 1, getTodaysDate());
+                    }
 
                 }
                 
@@ -452,6 +459,7 @@
 
                     //saving data of the user- Minahil DB' calls
 
+                    ///auto_save on level completion
                     if(logged_In_User != "" && user_db.findByUsername(logged_In_User))
                     {
                         progress_db.saveProgress(user_db.getUserId(), level, player1.get_lives(), coins, score_total);
