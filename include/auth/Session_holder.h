@@ -20,6 +20,7 @@ protected:
 
     string setUsername(string username);
     void setUserId(int user_id);
+    bool setLoggedIn(bool log);
 
 
     bool isLoggedIn();

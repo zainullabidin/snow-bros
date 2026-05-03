@@ -78,6 +78,7 @@ if(mousePos.x >= 24 && mousePos.x <= 334 && mousePos.y >= 29 && mousePos.y <= 11
         }
     }
 
+
     powerUp = PowerUpType::NONE;
     // Return current state if no button clickedx
     return GameState::SHOP;

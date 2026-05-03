@@ -7,38 +7,49 @@
 class LoginScreen : public Screen
 {
 private:
+    Authentication* auth;       
+    
+    GameState current_mode;
 
-    Authentication* auth;
 
     Text usernameText;
     Text passwordText;
     Text ErrorMsg;
     Font font;
 
-    // setter
-    void setAuth(Authentication* authManager);
-
+    // Input state
+    string usernameBuffer;
+    string passwordBuffer;
+    string displayedPassword;
+    
     // Input tracking
     bool isTypingUsername;
     bool isTypingPassword;
     float blinkTimer;
     bool showCursor;
     
-    // Button bounds
-    FloatRect loginButtonBounds;
-    FloatRect registerButtonBounds;
-
-    // void handleTextInput(sf::Event &event);
-    // void processLogin(RenderWindow &window);
-    // void processRegister(RenderWindow &window);
-    // void updateDisplay();
+    // simple login dekhne ke liye
+    void handleTextInput(Event &event, string& output, bool isPassword);
+    void processLogin(RenderWindow &window);
+    void processRegister(RenderWindow &window);
+    void updateDisplay();
+    
 
 public:
-    LoginScreen();
+    LoginScreen();  
     ~LoginScreen();
+
+    void setMode(GameState mode);
+
+
+    // check for in boxes etc
+    void handleEvent(Event& event, RenderWindow& window);  
+
 
     GameState Update(float deltaTime, RenderWindow &window) override;
     void OnActivate() override;
     void draw(RenderWindow &window) override;
     void OnExit() override;
 };
+
+

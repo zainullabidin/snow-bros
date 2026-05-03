@@ -5,11 +5,7 @@
 
 enum AuthResult
 {
-    SUCCESS,
-    USER_NOT_FOUND,
-    WRONG_PASSWORD,
-    USERNAME_TAKEN,
-    INVALID_INPUT
+    SUCCESS, NOT_FOUND, WRONG_PASS, ALREADY_TAKEN, INVALID_INPUT
 };
 
 class Authentication
