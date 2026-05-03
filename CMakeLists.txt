@@ -30,6 +30,10 @@ REQUIRED)
 file(GLOB_RECURSE SOURCES
     "src/*.cpp"
 )
+list(REMOVE_ITEM SOURCES
+    ${CMAKE_SOURCE_DIR}/src/login_test.cpp
+    ${CMAKE_SOURCE_DIR}/src/register_test.cpp
+)
 
 # ─────────────────────────────────────────
 # Only build if there are source files
