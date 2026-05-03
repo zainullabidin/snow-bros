@@ -214,7 +214,7 @@
         
             if (current_state == GameState::TRAILER) {
    
-                if (trailer_timer.getElapsedTime().asSeconds() >= 3.5f) {
+                if (trailer_timer.getElapsedTime().asSeconds() >= 4.0f) {
     
                     current_state = GameState::MAIN_MENU;
    
