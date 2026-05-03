@@ -190,11 +190,13 @@ void LoginScreen::processRegister(RenderWindow &window)
         ErrorMsg.setString("Sucess! Press login to continue.");
         // clear buffer
 
-        usernameBuffer = "";
-        passwordBuffer = "";
-        displayedPassword = "";
-        updateDisplay();
-        break;
+            auth->login(usernameBuffer, passwordBuffer);
+         //   usernameBuffer = ""; gane.cpp needs it
+            passwordBuffer = "";
+            displayedPassword = "";
+            updateDisplay();
+            break;
+      
 
     case AuthResult::ALREADY_TAKEN:
         ErrorMsg.setString("Username already taken! Please choose another.");
@@ -233,7 +235,12 @@ GameState LoginScreen::Update(float deltaTime, RenderWindow &window)
                 processLogin(window);
 
             // Check if login was successful
-            if (auth && auth->isLoggedIn())
+
+           if (current_mode == GameState::REGISTER)
+            {
+                processRegister(window);
+            }
+                        if (auth && auth->isLoggedIn())
             {
                 // Wait a moment to show success message
                 sleep(milliseconds(500));
@@ -244,10 +251,6 @@ GameState LoginScreen::Update(float deltaTime, RenderWindow &window)
                 else
                     return GameState::CHARACTER_SELECT;
                 
-            }
-            else if (current_mode == GameState::REGISTER)
-            {
-                processRegister(window);
             }
 
         }
@@ -319,4 +322,12 @@ void LoginScreen::handleEvent(Event &event, RenderWindow &window)
 void LoginScreen::setMode(GameState mode)
 {
     current_mode = mode;
+}
+
+string LoginScreen::getLoggedInUsername()
+{
+    //directly reading from session so that if something jhappens to username buffer we sxcsn read correctly
+    if(auth && auth->getSession())
+        return auth->getSession()->getUsername();
+    return usernameBuffer;
 }

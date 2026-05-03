@@ -13,6 +13,9 @@
 #include "../characters/enemy/FlyngFoogaFoog.h"
 
 
+#include "../DB/User_data.h"
+#include "../DB/Progress_data.h"
+#include "../DB/Leaderboard_data.h"
 
 
 #include "../UI/GameOverScreen.h"
@@ -165,8 +168,17 @@ sf::Clock level_complete_timer;
         PauseMenuScreen pause_menu_screen;
         CharacterSelect character_screen;
 
+        //db stuff
+        string logged_In_User;
+
+        //db files onjects
+        User_data user_db;
+        Progress_data progress_db;
+        Leaderboard leaderboard_db;
+
 
 public:
+        bool score_saved;
 
         int coins;
 

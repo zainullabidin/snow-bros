@@ -5,6 +5,8 @@
  //2 places
         game::game(){
 
+            logged_In_User="";
+            score_saved=false;
             coins = 0;
 
             SHOP.loadFromFile("assets/Images/shopicon.png");
@@ -80,6 +82,7 @@
             enemy_count = 0;
             snowBALL_PTR=NULL;
             snow_checker=false;
+            score_saved=false;
     
 
             
@@ -221,8 +224,12 @@
 
             if(current_state==GameState::REGISTER)
             {
-                login_screen.setMode(GameState::REGISTER);
-                current_state = login_screen.Update(change_in_time, window);
+                    login_screen.setMode(GameState::REGISTER);
+                    current_state = login_screen.Update(change_in_time, window);
+                    if(current_state == GameState::PLAYING || current_state == GameState::CHARACTER_SELECT)
+                    {
+                        logged_In_User = login_screen.getLoggedInUsername();
+                    }
             }
 
             if(current_state == GameState::CHARACTER_SELECT)
@@ -290,18 +297,23 @@
                 snowBALL_PTR->update_sprite_position(change_in_time);
             }
             if(player1.is_ballon_active()||player2.is_ballon_active())
-            for(int i=0;i<enemy_count;i++)
             {
 
-                if(collision_detector.projectile_HitsEnemy(player1.getHitbox(),BOTTOM[i]->getHIT_box()))
+                for(int i=0;i<enemy_count;i++)
                 {
-                     BOTTOM[i]->set_dead();
+
+                    if(collision_detector.projectile_HitsEnemy(player1.getHitbox(),BOTTOM[i]->getHIT_box()))
+                    {
+                        BOTTOM[i]->set_dead();
+                    }
+                    if(collision_detector.projectile_HitsEnemy(player2.getHitbox(),BOTTOM[i]->getHIT_box()))
+                    {
+                        BOTTOM[i]->set_dead();
+                    }
                 }
-                if(collision_detector.projectile_HitsEnemy(player2.getHitbox(),BOTTOM[i]->getHIT_box()))
-                {
-                     BOTTOM[i]->set_dead();
-                }
+
             }
+
 
             for(int i=0;i<enemy_count;i++)
             if(snowBALL_PTR!=NULL)
@@ -331,7 +343,14 @@
                 if(!BOTTOM[j]->check_alive())
                 {
                     score_total+=100;
-                coins++;
+                    coins++;
+
+                    //leaderboard update in realtime 
+
+                    if(logged_In_User != "" && user_db.findByUsername(logged_In_User) && !score_saved)
+                    {
+                        leaderboard_db.insertScore(logged_In_User, score_total, level + 1, getTodaysDate());
+                    }
 
                 }
                 
@@ -437,6 +456,15 @@
                     gAme_load(level);
                     level_complete_timer.restart();
 
+
+                    //saving data of the user- Minahil DB' calls
+
+                    ///auto_save on level completion
+                    if(logged_In_User != "" && user_db.findByUsername(logged_In_User))
+                    {
+                        progress_db.saveProgress(user_db.getUserId(), level, player1.get_lives(), coins, score_total);
+                    }
+
                 }
 
             }
@@ -447,9 +475,26 @@
                 current_state = leaderboard_screen.Update(change_in_time, window);
             }
                 
+            //minahils db callss 
 
             if(current_state==GameState::LOGIN)
-                current_state = login_screen.Update(change_in_time, window);
+              {
+
+                    current_state = login_screen.Update(change_in_time, window);
+                    if(current_state == GameState::PLAYING || current_state == GameState::CHARACTER_SELECT)
+                    {
+                        logged_In_User = login_screen.getLoggedInUsername();
+                        if(user_db.findByUsername(logged_In_User))
+                        {
+                            int uid = user_db.getUserId();
+                            if(progress_db.loadProgress(uid))
+                            {
+                                level = progress_db.getCurrentLevel() - 1;
+                                score_total = progress_db.getHighScore();
+                            }
+                        }
+                    }
+              }
 
             if(current_state==GameState::PAUSED)
                 current_state = pause_menu_screen.Update(change_in_time, window);
@@ -458,7 +503,16 @@
             {
 
             if( game_over_screen.Update(change_in_time, window)==GameState::MAIN_MENU)
-                {
+               {
+
+                       //mnahil-db's calls
+                    if(logged_In_User != "" && user_db.findByUsername(logged_In_User)&&!score_saved)
+                    {
+                        leaderboard_db.insertScore(logged_In_User, score_total, level + 1, getTodaysDate());
+
+                            score_saved = true;
+                    }
+                      
 
                     BOTTOM = NULL;
                     level=0;
@@ -466,6 +520,7 @@
                     snowBALL_PTR=NULL;
                     snow_checker=false;
                     score_total=0;
+                    score_saved=false;
                                 
                     gAme_load(0);
                     player1.set_ID(1);
@@ -473,7 +528,8 @@
 
                 }
                 current_state=game_over_screen.Update(change_in_time, window);
-                
+
+                       
 
             }
                 
@@ -857,7 +913,7 @@ if(current_state==GameState::STAR_EVENT)
 
                         for(int i=0; i<enemy_count; i++)
                         {
-                        if(level_number == 2 && i == enemy_count-1)
+                        if(level_number >=2 && i == enemy_count-1)
                         BOTTOM[i] = new FF(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, "assets/Images/FlyingFoogaFoog_Orange.png");
                         else
                         BOTTOM[i] = new enemy_bottom(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, arr_main_levels[level_number].BOTTOM_TEXTURE);
