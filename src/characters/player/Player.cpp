@@ -189,11 +189,8 @@
     }
 
     void player::texture_setter(int player_id){
-        
         if(player_id==1)
         {
-
-     
             Player_texture.loadFromFile("assets/Images/Nick.png");
             player_sprite.setTexture(Player_texture);
             player_sprite.setTextureRect(sf::IntRect(0, 0, 322, 350));
@@ -399,9 +396,7 @@
         return ENCASE_POERUP;
         }
 
-    void player::set_lives(int a){
+     void player::set_lives(int n){
+        lives=n;
 
-        lives=a;
-
-    }
-
+     }

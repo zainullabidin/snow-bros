@@ -2,9 +2,7 @@
 #include <iostream>
 using namespace std;
 
-//===================================================================
-// need inplementation by Z on bottom + add sound effect
-//===================================================================
+
 
 // constructors 
 Enemy::Enemy() : Volume(0),
