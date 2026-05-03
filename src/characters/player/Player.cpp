@@ -8,6 +8,7 @@
            position.x-= 300.0f * delta_T;
            else
            position.x-= 200.0f * delta_T;
+
             right=false;
             left=true;
  
@@ -18,6 +19,7 @@
            position.x+= 300.0f * delta_T;
            else
             position.x+= 200.0f * delta_T;
+            
             left=false;
             right=true;
 

@@ -72,6 +72,12 @@ public:
 
         snow_sprites_count=0;
 
+
+        ballon_powerup=false;   
+        Speed_poerup=false;     
+        SNOW_PU=false;          
+        ENCASE_POERUP=false;    
+        powerUP="NONE";         
        
 
         throw_SNOWBALL=false;

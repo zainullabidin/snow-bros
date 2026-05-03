@@ -320,3 +320,8 @@ void LoginScreen::setMode(GameState mode)
 {
     current_mode = mode;
 }
+
+string LoginScreen::getLoggedInUsername()
+{
+    return usernameBuffer;
+}

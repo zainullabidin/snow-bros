@@ -5,6 +5,8 @@
  //2 places
         game::game(){
 
+            logged_In_User="";
+            score_saved=false;
             coins = 0;
 
             SHOP.loadFromFile("assets/Images/shopicon.png");
@@ -80,6 +82,7 @@
             enemy_count = 0;
             snowBALL_PTR=NULL;
             snow_checker=false;
+            score_saved=false;
     
 
             
@@ -290,18 +293,23 @@
                 snowBALL_PTR->update_sprite_position(change_in_time);
             }
             if(player1.is_ballon_active()||player2.is_ballon_active())
-            for(int i=0;i<enemy_count;i++)
             {
 
-                if(collision_detector.projectile_HitsEnemy(player1.getHitbox(),BOTTOM[i]->getHIT_box()))
+                for(int i=0;i<enemy_count;i++)
                 {
-                     BOTTOM[i]->set_dead();
+
+                    if(collision_detector.projectile_HitsEnemy(player1.getHitbox(),BOTTOM[i]->getHIT_box()))
+                    {
+                        BOTTOM[i]->set_dead();
+                    }
+                    if(collision_detector.projectile_HitsEnemy(player2.getHitbox(),BOTTOM[i]->getHIT_box()))
+                    {
+                        BOTTOM[i]->set_dead();
+                    }
                 }
-                if(collision_detector.projectile_HitsEnemy(player2.getHitbox(),BOTTOM[i]->getHIT_box()))
-                {
-                     BOTTOM[i]->set_dead();
-                }
+
             }
+
 
             for(int i=0;i<enemy_count;i++)
             if(snowBALL_PTR!=NULL)
@@ -437,6 +445,14 @@
                     gAme_load(level);
                     level_complete_timer.restart();
 
+
+                    //saving data of the user- Minahil DB' calls
+
+                    if(logged_In_User != "" && user_db.findByUsername(logged_In_User))
+                    {
+                        progress_db.saveProgress(user_db.getUserId(), level, player1.get_lives(), coins, score_total);
+                    }
+
                 }
 
             }
@@ -447,9 +463,26 @@
                 current_state = leaderboard_screen.Update(change_in_time, window);
             }
                 
+            //minahils db callss 
 
             if(current_state==GameState::LOGIN)
-                current_state = login_screen.Update(change_in_time, window);
+              {
+
+                    current_state = login_screen.Update(change_in_time, window);
+                    if(current_state == GameState::PLAYING || current_state == GameState::CHARACTER_SELECT)
+                    {
+                        logged_In_User = login_screen.getLoggedInUsername();
+                        if(user_db.findByUsername(logged_In_User))
+                        {
+                            int uid = user_db.getUserId();
+                            if(progress_db.loadProgress(uid))
+                            {
+                                level = progress_db.getCurrentLevel() - 1;
+                                score_total = progress_db.getHighScore();
+                            }
+                        }
+                    }
+              }
 
             if(current_state==GameState::PAUSED)
                 current_state = pause_menu_screen.Update(change_in_time, window);
@@ -466,6 +499,7 @@
                     snowBALL_PTR=NULL;
                     snow_checker=false;
                     score_total=0;
+                    score_saved=false;
                                 
                     gAme_load(0);
                     player1.set_ID(1);
@@ -473,7 +507,15 @@
 
                 }
                 current_state=game_over_screen.Update(change_in_time, window);
-                
+
+                //mnahil-db's calls
+                if(logged_In_User != "" && user_db.findByUsername(logged_In_User)&&!score_saved)
+                    {
+                        leaderboard_db.insertScore(logged_In_User, score_total, level + 1, getTodaysDate());
+
+                            score_saved = true;
+                    }
+                                    
 
             }
                 
