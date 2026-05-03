@@ -131,7 +131,8 @@ sf::Clock level_complete_timer;
      //level1
 
      sf::Texture level1_bg_texture[2];
-        sf::Sprite level1_bg_sprite[2];
+     
+     sf::Sprite level1_bg_sprite[2];
 
         //now the jumping bars
         dimension_er* platforms[10];

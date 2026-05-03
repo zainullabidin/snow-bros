@@ -11,9 +11,11 @@
 class CharacterSelect : public Screen
 {
 
+    int selectedCharacter;
+
 public:
     CharacterSelect();
-    ~CharacterSelect();
+~CharacterSelect();
 
     // original  
     // GameState Update(float deltaTime, RenderWindow &window) override;
@@ -26,4 +28,6 @@ public:
     void OnActivate() override;
     void draw(RenderWindow &window) override;
     void OnExit() override;
+
+        int getSelectedCharacter();
 };

@@ -487,11 +487,14 @@
                         if(user_db.findByUsername(logged_In_User))
                         {
                             int uid = user_db.getUserId();
-                            if(progress_db.loadProgress(uid))
-                            {
-                                level = progress_db.getCurrentLevel() - 1;
-                                score_total = progress_db.getHighScore();
-                            }
+                           if(progress_db.loadProgress(uid))
+                    {
+                        level = progress_db.getCurrentLevel() - 1;
+                        score_total = progress_db.getHighScore();
+                        player1.set_lives(progress_db.getLivesRemaining());
+                        player2.set_lives(progress_db.getLivesRemaining());
+                        gAme_load(level);
+                    }
                         }
                     }
               }
