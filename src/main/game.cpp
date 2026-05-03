@@ -823,7 +823,7 @@ if(current_state==GameState::STAR_EVENT)
 
                         for(int i=0; i<enemy_count; i++)
                         {
-                        if(level_number == 2 && i == enemy_count-1)
+                        if(level_number >=2 && i == enemy_count-1)
                         BOTTOM[i] = new FF(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, "assets/Images/FlyingFoogaFoog_Orange.png");
                         else
                         BOTTOM[i] = new enemy_bottom(arr_main_levels[level_number].enemy_x[i], arr_main_levels[level_number].enemy_y[i], arr_main_levels[level_number].enemy_speed, arr_main_levels[level_number].BOTTOM_TEXTURE);
