@@ -125,7 +125,7 @@ void LoginScreen::handleTextInput(Event &event, string &output, bool isPassword)
 
     
     // Return current state if no button clicked
-    return GameState::LOGIN;  
+    return;  
 }
 
 void LoginScreen::updateDisplay()
