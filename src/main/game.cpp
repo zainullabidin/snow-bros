@@ -224,8 +224,12 @@
 
             if(current_state==GameState::REGISTER)
             {
-                login_screen.setMode(GameState::REGISTER);
-                current_state = login_screen.Update(change_in_time, window);
+                    login_screen.setMode(GameState::REGISTER);
+                    current_state = login_screen.Update(change_in_time, window);
+                    if(current_state == GameState::PLAYING || current_state == GameState::CHARACTER_SELECT)
+                    {
+                        logged_In_User = login_screen.getLoggedInUsername();
+                    }
             }
 
             if(current_state == GameState::CHARACTER_SELECT)
@@ -491,7 +495,16 @@
             {
 
             if( game_over_screen.Update(change_in_time, window)==GameState::MAIN_MENU)
-                {
+               {
+
+                       //mnahil-db's calls
+                    if(logged_In_User != "" && user_db.findByUsername(logged_In_User)&&!score_saved)
+                    {
+                        leaderboard_db.insertScore(logged_In_User, score_total, level + 1, getTodaysDate());
+
+                            score_saved = true;
+                    }
+                      
 
                     BOTTOM = NULL;
                     level=0;
@@ -508,14 +521,7 @@
                 }
                 current_state=game_over_screen.Update(change_in_time, window);
 
-                //mnahil-db's calls
-                if(logged_In_User != "" && user_db.findByUsername(logged_In_User)&&!score_saved)
-                    {
-                        leaderboard_db.insertScore(logged_In_User, score_total, level + 1, getTodaysDate());
-
-                            score_saved = true;
-                    }
-                                    
+                       
 
             }
                 
