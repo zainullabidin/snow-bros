@@ -20,6 +20,7 @@
 #include "../UI/LoginScreen.h"
 #include "../UI/PauseMenuScreen.h"
 #include"../UI/ShopScreen.h"
+#include "../UI/Character_Selectn.h"
 
 
 
@@ -162,6 +163,7 @@ sf::Clock level_complete_timer;
         LeaderboardScreen leaderboard_screen;
         LoginScreen login_screen;
         PauseMenuScreen pause_menu_screen;
+        CharacterSelect character_screen;
 
 
 public:
