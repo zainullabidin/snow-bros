@@ -5,6 +5,7 @@
 
 CharacterSelect::CharacterSelect()
 {
+    selectedCharacter = 1;
 
     loadBackground("assets/Images/CutieCharacters.png");
     // loadBackgroundMusic("../../assets/Sounds/gameOver.mp3");     // sound
@@ -33,18 +34,21 @@ GameState CharacterSelect::Update(float deltaTime, RenderWindow &window /*,Chara
 
         if(mousePos.x > 280 && mousePos.x < 490 && mousePos.y > 310 && mousePos.y < 560)
         {
+             selectedCharacter = 1;
             // characterType = CharacterType::YELLOW;
             return GameState::PLAYING;
         }
 
         else if(mousePos.x > 540 && mousePos.x < 740 && mousePos.y > 310 && mousePos.y < 560)
         {
+            selectedCharacter = 2;
             // characterType = CharacterType::RED;
             return GameState::PLAYING;
         }
 
         else if(mousePos.x > 790 && mousePos.x < 1280 && mousePos.y > 310 && mousePos.y < 1000)
         {
+             selectedCharacter = 3;
             // characterType = CharacterType::GREEN;
             return GameState::PLAYING;
 
@@ -70,4 +74,8 @@ void CharacterSelect::draw(RenderWindow &window)
 void CharacterSelect::OnExit()
 {
     stopMusic();
+}
+int CharacterSelect::getSelectedCharacter()
+{
+    return selectedCharacter;
 }
