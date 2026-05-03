@@ -238,11 +238,18 @@ GameState LoginScreen::Update(float deltaTime, RenderWindow &window)
                 // Wait a moment to show success message
                 sleep(milliseconds(500));
                 OnExit();
-                return GameState::PLAYING;
+                if (current_mode == GameState::LOGIN)
+                    return GameState::PLAYING;
+                
+                else
+                    return GameState::CHARACTER_SELECT;
+                
+            }
+            else if (current_mode == GameState::REGISTER)
+            {
+                processRegister(window);
             }
 
-            else if (current_mode == GameState::REGISTER)
-                processRegister(window);
         }
     }
 

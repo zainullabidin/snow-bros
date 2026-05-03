@@ -27,17 +27,10 @@ GameState ShopScreen::Update(float deltaTime, RenderWindow &window, PowerUpType 
     {
         Vector2i mousePos = Mouse::getPosition(window);
 
-if(mousePos.x >= 24 && mousePos.x <= 334 && mousePos.y >= 29 && mousePos.y <= 116)
-{
-
-    OnExit();
-    return GameState::MAIN_MENU;
-}
-
-        if (mousePos.y >= 590 && mousePos.y <= 660)
+        if (mousePos.y >= 500 && mousePos.y <= 555)
         {
             // speed boost
-            if (mousePos.x >= 180 && mousePos.x <= 300)
+            if (mousePos.x >= 177 && mousePos.x <= 300)
             {
                 OnExit();
                 powerUp = PowerUpType::SPEED_BOOST;
@@ -46,7 +39,7 @@ if(mousePos.x >= 24 && mousePos.x <= 334 && mousePos.y >= 29 && mousePos.y <= 11
             }
 
             // snowball
-            if (mousePos.x >= 450 && mousePos.x <= 574)
+            if (mousePos.x >= 450 && mousePos.x <= 577)
             {
                 OnExit();
                  powerUp = PowerUpType::SNOWBALL_BOOST;
@@ -55,7 +48,7 @@ if(mousePos.x >= 24 && mousePos.x <= 334 && mousePos.y >= 29 && mousePos.y <= 11
             }
 
             // distance increase
-            if (mousePos.x >= 720 && mousePos.x <= 840)
+            if (mousePos.x >= 725 && mousePos.x <= 850)
             {
                 OnExit();
                 powerUp = PowerUpType::DISTANCE_INCREASE;
@@ -64,7 +57,7 @@ if(mousePos.x >= 24 && mousePos.x <= 334 && mousePos.y >= 29 && mousePos.y <= 11
             }
 
             // ballon mode
-            if (mousePos.x >= 990 && mousePos.x <= 1114)
+            if (mousePos.x >= 1000 && mousePos.x <= 1123)
             {
                 OnExit();
                 powerUp = PowerUpType::BALLOON_MODE;
@@ -72,14 +65,16 @@ if(mousePos.x >= 24 && mousePos.x <= 334 && mousePos.y >= 29 && mousePos.y <= 11
                 
                 //adde main_menu check
             }
-
-
-
+        }
+        
+        if(mousePos.y >= 22 && mousePos.y <= 92 && mousePos.x >= 22 && mousePos.x <= 268)
+        {
+            OnExit();
+            powerUp = PowerUpType::NONE;
+            return GameState::PLAYING;
         }
     }
 
-
-    powerUp = PowerUpType::NONE;
     // Return current state if no button clickedx
     return GameState::SHOP;
 
