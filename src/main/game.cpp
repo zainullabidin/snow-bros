@@ -219,6 +219,17 @@
 
             }
 
+            if(current_state==GameState::REGISTER)
+            {
+                login_screen.setMode(GameState::REGISTER);
+                current_state = login_screen.Update(change_in_time, window);
+            }
+
+            if(current_state == GameState::CHARACTER_SELECT)
+            {
+                current_state = character_screen.Update(change_in_time, window);
+            }
+
             if(current_state==GameState::PLAYING)
             {
 
@@ -231,7 +242,7 @@
 
                    
 
-                  if(player1.is_life())   
+                if(player1.is_life())   
                 player1.update_sprite_position(change_in_time);
                 player1.PowerUP_activator();
                  if(player2.is_life())
@@ -431,7 +442,11 @@
             }
   
             if(current_state==GameState::LEADERBOARD)
+            {
+                leaderboard_screen.OnActivate();
                 current_state = leaderboard_screen.Update(change_in_time, window);
+            }
+                
 
             if(current_state==GameState::LOGIN)
                 current_state = login_screen.Update(change_in_time, window);
@@ -475,33 +490,33 @@
                {
 
 
-               if(P_obj==PowerUpType::BALLOON_MODE&&coins>=2)
+               if(P_obj==PowerUpType::BALLOON_MODE&&coins>=35)
                {
-                coins-=2;
+                coins-=35;
                 player1.set_powerUP("BALLOON_MODE");
                 player2.set_powerUP("BALLOON_MODE");
                }
                
 
-               if(P_obj==PowerUpType::SPEED_BOOST&&coins>=3)
+               if(P_obj==PowerUpType::SPEED_BOOST&&coins>=20)
                {
-                coins-=3;
+                coins-=20;
                 player1.set_powerUP("SPEED_BOOST");
                 player2.set_powerUP("SPEED_BOOST");
                }
                
 
-               if(P_obj==PowerUpType::DISTANCE_INCREASE&&coins>=4)
+               if(P_obj==PowerUpType::DISTANCE_INCREASE&&coins>=25)
                {
-                coins-=4;
+                coins-=25;
                 player1.set_powerUP("DISTANCE_INCREASE");
                 player2.set_powerUP("DISTANCE_INCREASE");
                }
                
 
-               if(P_obj==PowerUpType::SNOWBALL_BOOST&&coins>=2)
+               if(P_obj==PowerUpType::SNOWBALL_BOOST&&coins>=20)
                {
-                coins-=2;
+                coins-=20;
                 if(snowBALL_PTR != NULL)
                 {
 
@@ -509,18 +524,21 @@
                         player1.set_powerUP("SNOWBALL_BOOST");
             
 
-                        player2.set_powerUP("SNOWBALL_BOOST");
-                    
-                    
+                        player2.set_powerUP("SNOWBALL_BOOST");   
 
                 }
 
                }
                
 
-             current_state=x;
+
                 
                }
+
+                if(x != GameState::SHOP)
+                {
+                    current_state = x;
+                }
 
             }
 
@@ -643,6 +661,12 @@ if(!star_event_started)
                 window.draw(txt);
             }
 
+            if(current_state==GameState::REGISTER)
+                login_screen.draw(window);
+
+            if(current_state==GameState::CHARACTER_SELECT)
+                character_screen.draw(window);
+
             if(current_state==GameState::LOGIN)
                 login_screen.draw(window);
 
@@ -655,8 +679,8 @@ if(!star_event_started)
             if(current_state==GameState::GAME_OVER)
                 game_over_screen.draw(window);
 
-                 if(current_state==GameState::SHOP)
-                 scrreen_SHOP_obj.draw(window);
+            if(current_state==GameState::SHOP)
+            scrreen_SHOP_obj.draw(window);
 
 if(current_state==GameState::STAR_EVENT)
 {
@@ -690,6 +714,13 @@ if(current_state==GameState::STAR_EVENT)
        
                 }
        
+                if (current_state == GameState::REGISTER || current_state == GameState::LOGIN)
+                {
+                    login_screen.handleEvent(event, window);
+                }
+
+
+
                 if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
             
                     window.close();
@@ -701,11 +732,14 @@ if(current_state==GameState::STAR_EVENT)
                         sf::Vector2f mouse_click_position(event.mouseButton.x,event.mouseButton.y);
                         //now checkinh again each button
                         if(B_NewGameSprite.getGlobalBounds().contains(mouse_click_position))
-                        current_state=GameState::PLAYING;
+                        current_state = GameState::REGISTER;
+                        
                         if(B_LoginSprite.getGlobalBounds().contains(mouse_click_position))
                         current_state=GameState::LOGIN;
+
                         if(B_LeaderboardSprite.getGlobalBounds().contains(mouse_click_position))
                         current_state=GameState::LEADERBOARD;
+
                         if(B_ExitSprite.getGlobalBounds().contains(mouse_click_position))
                         window.close();
                     }
