@@ -64,3 +64,5 @@ logs/
 .vscode/c_cpp_properties.json
 
 build/
+
+*guide
