@@ -1,5 +1,5 @@
 # Snow Bros  
-By Zain ul Abidin (i253086) & Minahil Ashraf (i252596)
+By Zain ul Abidin  & Minahil Ashraf 
 
 ---
 
