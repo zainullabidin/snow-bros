@@ -4,9 +4,7 @@ project(SnowBros)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# ─────────────────────────────────────────
-# Platform-specific SFML path
-# ─────────────────────────────────────────
+
 if(WIN32)
     set(SFML_DIR "C:/SFML/lib/cmake/SFML")
 elseif(APPLE)
@@ -14,9 +12,7 @@ elseif(APPLE)
     include_directories(BEFORE /usr/local/Cellar/sfml@2/2.6.2_1/include)
 endif()
 
-# ─────────────────────────────────────────
-# Find SFML
-# ─────────────────────────────────────────
+
 find_package(SFML 2.5 COMPONENTS
     graphics
     window
@@ -24,9 +20,7 @@ find_package(SFML 2.5 COMPONENTS
     audio
 REQUIRED)
 
-# ─────────────────────────────────────────
-# Collect all source files recursively
-# ─────────────────────────────────────────
+
 file(GLOB_RECURSE SOURCES
     "src/*.cpp"
 )
@@ -35,23 +29,17 @@ list(REMOVE_ITEM SOURCES
     ${CMAKE_SOURCE_DIR}/src/register_test.cpp
 )
 
-# ─────────────────────────────────────────
-# Only build if there are source files
-# ─────────────────────────────────────────
+
 if(NOT SOURCES)
     message(WARNING "No source files found in src/ — adding dummy main.cpp")
     file(WRITE ${CMAKE_BINARY_DIR}/dummy_main.cpp "int main(){return 0;}")
     list(APPEND SOURCES ${CMAKE_BINARY_DIR}/dummy_main.cpp)
 endif()
 
-# ─────────────────────────────────────────
-# Create executable
-# ─────────────────────────────────────────
+
 add_executable(SnowBros ${SOURCES})
 
-# ─────────────────────────────────────────
-# Include directories
-# ─────────────────────────────────────────
+
 set(INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/include/main
@@ -77,9 +65,7 @@ endforeach()
 
 target_include_directories(SnowBros PRIVATE ${VALID_INCLUDE_DIRS})
 
-# ─────────────────────────────────────────
-# Link SFML
-# ─────────────────────────────────────────
+
 target_link_libraries(SnowBros
     sfml-graphics
     sfml-window
@@ -87,9 +73,7 @@ target_link_libraries(SnowBros
     sfml-audio
 )
 
-# ─────────────────────────────────────────
-# Copy assets/config/data if they exist
-# ─────────────────────────────────────────
+
 if(EXISTS ${CMAKE_SOURCE_DIR}/assets)
     add_custom_command(TARGET SnowBros POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
